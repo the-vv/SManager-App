@@ -1,0 +1,7 @@
+{
+  "name": "SManager",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
