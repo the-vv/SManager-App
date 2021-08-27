@@ -1,9 +1,33 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>login</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
-
+  <div >
+    <div id="title" class="ion-text-center">
+      SManager
+    </div>
+    <div class="" id="description">
+      Manage your Income and expense simply
+    </div>
+  </div>
+  <div class="ion-text-center login">
+    Login Now
+  </div>
+  <div class="form-control" id="top-control">
+    <ion-item>
+      <ion-label position="floating">Email</ion-label>
+      <ion-input></ion-input>
+    </ion-item>
+  </div>
+  <div class="form-control">
+    <ion-item>
+      <ion-label position="floating">Password</ion-label>
+      <ion-input type="password" placeholder="Enter Password"></ion-input>
+    </ion-item>
+  </div>
+  <div id="signup">
+    <a routerLink="signup">
+      Don't have an account? Signin
+    </a>
+  </div>
 </ion-content>
+<ion-footer>
+  <ion-button expand="full" size="large">Login</ion-button>
+</ion-footer>
