@@ -7,12 +7,25 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { UserService } from './services/user.service';
+import { CommonService } from './services/common.service';
+import { HttpService } from './services/http.service';
+import { AuthGuard } from './guards/auth.guard';
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [
+    {
+      provide: RouteReuseStrategy,
+      useClass: IonicRouteStrategy
+    },
+    UserService,
+    CommonService,
+    HttpService,
+    AuthGuard
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule { }
