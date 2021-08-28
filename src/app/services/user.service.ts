@@ -17,15 +17,15 @@ export class UserService {
 
   login(values: User) {
     return this.http.postAsync(values, [this.userUrl, 'login'].join('/'))
-      .pipe(tap((user: User) => {
-        this.currentUser = user;
+      .pipe(tap((user) => {
+        this.currentUser = user.user;
         this.setUser(user);
       }));
   }
   signup(values: User) {
     return this.http.postAsync(values, [this.userUrl, 'signup'].join('/'))
-      .pipe(tap((user: User) => {
-        this.currentUser = user;
+      .pipe(tap((user) => {
+        this.currentUser = user.user;
         this.setUser(user);
       }));
   }
@@ -39,10 +39,12 @@ export class UserService {
   getUser(): Promise<User> {
     return new Promise<User>(async (resolve, reject) => {
       const { value } = await Storage.get({ key: 'user' });
-      console.log(value);
       if (value) {
         try {
-          resolve(JSON.parse(value));
+          const user = JSON.parse(value).user;
+          this.currentUser = user;
+          console.log(user);
+          resolve(user);
         } catch (err) {
           reject(err);
         }
