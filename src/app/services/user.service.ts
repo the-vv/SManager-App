@@ -12,6 +12,7 @@ export class UserService {
 
   userUrl = 'user';
   currentUser: User = null;
+  isLoggedIn = false;
   constructor(private http: HttpService,
     private router: Router) { }
 
@@ -19,6 +20,7 @@ export class UserService {
     return this.http.postAsync(values, [this.userUrl, 'login'].join('/'))
       .pipe(tap((user) => {
         this.currentUser = user.user;
+        this.isLoggedIn = true;
         this.setUser(user);
       }));
   }
@@ -26,6 +28,7 @@ export class UserService {
     return this.http.postAsync(values, [this.userUrl, 'signup'].join('/'))
       .pipe(tap((user) => {
         this.currentUser = user.user;
+        this.isLoggedIn = true;
         this.setUser(user);
       }));
   }
@@ -57,6 +60,8 @@ export class UserService {
     await Storage.remove({
       key: 'user'
     });
+    this.currentUser = null;
+    this.isLoggedIn = false;
     this.router.navigate(['login'], { replaceUrl: true });
   }
   gLoginSetupUser(userCred: User) {
@@ -64,6 +69,7 @@ export class UserService {
     return this.http.putAsync(userCred, this.userUrl)
     .pipe(tap((user) => {
       this.currentUser = user.user;
+      this.isLoggedIn = true;
       this.setUser(user);
     }));
   }
