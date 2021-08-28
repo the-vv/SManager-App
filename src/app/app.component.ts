@@ -22,6 +22,5 @@ export class AppComponent {
       .catch(err => {
         this.router.navigate(['/login']);
       });
-    console.log('check');
   }
 }

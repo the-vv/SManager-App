@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
+import { Router } from '@angular/router';
+import { CommonService } from '../services/common.service';
 
 @Component({
   selector: 'app-login',
@@ -9,6 +11,9 @@ import { UserService } from '../services/user.service';
 })
 export class LoginPage implements OnInit {
 
+  isLoading = false;
+  errorMessages = '';
+  loader: HTMLIonLoadingElement;
   showPassword = false;
   loginForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
@@ -16,15 +21,26 @@ export class LoginPage implements OnInit {
   });
   constructor(
     private formBuilder: FormBuilder,
-    public user: UserService
+    public user: UserService,
+    private router: Router,
+    private common: CommonService
   ) { }
 
   ngOnInit() {
   }
   onLogin() {
-    console.log(this.loginForm);
     if (this.loginForm.valid) {
-      this.user.signup(this.loginForm.value);
+      this.common.showSpinner();
+      this.user.login(this.loginForm.value)
+        .subscribe(res => {
+          this.common.hideSpinner();
+          if (res) {
+            this.router.navigate(['home'], { replaceUrl: true });
+          }
+        }, err => {
+          this.errorMessages = err.error.status;
+          this.common.hideSpinner();
+        });
     }
   }
   get f() {

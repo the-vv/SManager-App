@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
+import { Router } from '@angular/router';
+import { CommonService } from '../services/common.service';
 
 @Component({
   selector: 'app-signup',
@@ -9,6 +11,8 @@ import { UserService } from '../services/user.service';
 })
 export class SignupPage implements OnInit {
 
+  errorMessages = '';
+  loader: HTMLIonLoadingElement;
   showPassword = false;
   signupForm = this.formBuilder.group({
     name: ['', Validators.required],
@@ -18,16 +22,27 @@ export class SignupPage implements OnInit {
   });;
   constructor(
     private formBuilder: FormBuilder,
-    public user: UserService
+    public user: UserService,
+    private router: Router,
+    private common: CommonService
   ) { }
 
   ngOnInit() {
   }
   onSignup() {
     console.log(this.signupForm);
+    this.common.showSpinner();
     if (this.signupForm.valid) {
-      this.user.signup(this.signupForm.value)
-      ;
+      this.user.signup(this.signupForm.value).subscribe(res => {
+        console.log('signed up');
+        this.common.hideSpinner();
+        if (res) {
+          this.router.navigate(['home'], { replaceUrl: true });
+        }
+      }, err => {
+        this.common.hideSpinner();
+        this.errorMessages = err.error.status;
+      });
     }
   }
   get f() {

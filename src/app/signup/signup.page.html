@@ -50,9 +50,16 @@
     </ion-item>
   </div>
   <div id="signup" class="text-center">
-    <a routerLink="/login">
+    <a routerLink="/login" [replaceUrl]="true">
       Already have an account? Login
     </a>
+  </div>
+  <div class="errors mt-3 px-2" *ngIf="errorMessages">
+    <ion-item color="danger">
+      <ion-label>
+        {{errorMessages}}
+      </ion-label>
+    </ion-item>
   </div>
 </ion-content>
 <ion-footer>

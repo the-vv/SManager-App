@@ -13,7 +13,6 @@ export class HttpService {
 
   postAsync(body, endpoint): Observable<any> {
     return this.http.post<any>([this.baseUrl, endpoint].join('/'), body, {
-      withCredentials: true
     });
   }
 

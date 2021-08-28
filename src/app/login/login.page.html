@@ -36,11 +36,18 @@
     </ion-item>
   </div>
   <div class="ion-text-center mt-3">
-    <a routerLink="/signup">
+    <a routerLink="/signup" [replaceUrl]="true">
       Don't have an account? Signin
     </a>
   </div>
+  <div class="errors mt-3 px-2" *ngIf="errorMessages">
+    <ion-item color="danger">
+      <ion-label>
+        {{errorMessages}}
+      </ion-label>
+    </ion-item>
+  </div>
 </ion-content>
 <ion-footer>
-  <ion-button expand="full" size="large">Login</ion-button>
+  <ion-button expand="full" size="large" (click)="onLogin()">Login</ion-button>
 </ion-footer>
