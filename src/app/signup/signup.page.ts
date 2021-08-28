@@ -18,8 +18,8 @@ export class SignupPage implements OnInit {
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    cpassword: ['', this.confirmPassword()]
-  });;
+    cpassword: ['', [Validators.required, this.confirmPassword()]]
+  });
   constructor(
     private formBuilder: FormBuilder,
     public user: UserService,

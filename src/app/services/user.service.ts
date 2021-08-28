@@ -57,9 +57,10 @@ export class UserService {
     await Storage.remove({
       key: 'user'
     });
-    this.router.navigate(['signup'], { replaceUrl: true });
+    this.router.navigate(['login'], { replaceUrl: true });
   }
   gLoginSetupUser(userCred: User) {
+    console.log(userCred);
     return this.http.putAsync(userCred, this.userUrl)
     .pipe(tap((user) => {
       this.currentUser = user.user;

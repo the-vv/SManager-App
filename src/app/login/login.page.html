@@ -4,7 +4,7 @@
       SManager
     </div>
     <div class="text-center" id="description">
-      Manage your Income and expense simply
+      Manage your Income and expenses simply
     </div>
   </div>
   <div class="ion-text-center h3 font-lighter mt-3">
@@ -16,7 +16,7 @@
         <ion-label position="stacked">Email</ion-label>
         <ion-input placeholder="Enter Email" formControlName="email"></ion-input>
       </ion-item>
-      <small class="text-danger" *ngIf="f.email.errors?.required && f.email.touched">Email is a required field</small>
+      <small class="text-danger" *ngIf="f.email.errors?.required && f.email.touched">Email is required</small>
       <small class="text-danger" *ngIf="f.email.errors?.email && f.email.touched">Email is Invalid</small>
     </div>
     <div class="mt-2">
@@ -25,8 +25,7 @@
         <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Enter Password" formControlName="password">
         </ion-input>
       </ion-item>
-      <small class="text-danger" *ngIf="f.password.errors?.required && f.password.touched">Password is a required
-        field</small>
+      <small class="text-danger" *ngIf="f.password.errors?.required && f.password.touched">Password is required</small>
     </div>
   </form>
   <div class="px-2 mt-2">
@@ -40,20 +39,20 @@
       Don't have an account? Signin
     </a>
   </div>
-  <div class="google text-center mt-3">
-    <ion-button (click)="gLogin()" size="default" color="danger">
-      Continue With Google&nbsp;
+  <div class="google text-center mt-4">
+    <ion-button (click)="gLogin()" size="large" color="danger" fill="outline">
+      Login With Google&nbsp;
       <ion-icon name="logo-google"></ion-icon>
     </ion-button>
   </div>
   <div class="errors mt-3 px-2" *ngIf="errorMessages">
     <ion-item color="danger">
-      <ion-label>
+      <ion-label text-wrap class="ion-text-center">
         {{errorMessages}}
       </ion-label>
     </ion-item>
   </div>
 </ion-content>
 <ion-footer>
-  <ion-button expand="full" size="large" (click)="onLogin()">Login</ion-button>
+  <ion-button expand="full" size="large" (click)="onLogin()" [disabled]="!loginForm.valid">Login</ion-button>
 </ion-footer>

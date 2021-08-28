@@ -64,10 +64,9 @@ export class LoginPage implements OnInit {
 
   async gLogin() {
     this.common.showSpinner();
-    GoogleAuth.signIn().then(res => {
-      console.log(res);
-      const { name, email, imageUrl } = res;
-      this.user.gLoginSetupUser({ name, email, imageUrl } as User)
+    GoogleAuth.signIn().then((res: any) => {
+      const { name, email, displayName, imageUrl } = res;
+      this.user.gLoginSetupUser({ name: name ? name : displayName, email, imageUrl } as User)
         .subscribe(ures => {
           this.common.hideSpinner();
           if (res) {
@@ -75,11 +74,11 @@ export class LoginPage implements OnInit {
           }
         }, err => {
           this.common.hideSpinner();
-          this.errorMessages = err.error.status ? err.error.status : 'Something Went Wrong, Please try again later';
+          this.errorMessages = err.error.status ? err.error.status : 'Something went wrong, Please try again later';
         });
     }).catch(err => {
       this.common.hideSpinner();
-      this.errorMessages = err.error.status ? err.error.status : 'Something Went Wrong, Please try again later';
+      this.errorMessages = err.error.status ? err.error.status : 'Something went wrong, Please try again later';
     });
   }
 }

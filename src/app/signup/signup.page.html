@@ -4,7 +4,7 @@
       SManager
     </div>
     <div class="text-center" id="description">
-      Manage your Income and expense simply
+      Manage your Income and expenses simply
     </div>
   </div>
   <div class="ion-text-center h3 font-lighter mt-3">
@@ -16,31 +16,36 @@
         <ion-label position="stacked">Full Name</ion-label>
         <ion-input placeholder="Enter Name" color="" formControlName="name"></ion-input>
       </ion-item>
-      <small class="text-danger pl-1" *ngIf="f.name.errors?.required && f.name.touched">Name is a required field</small>
+      <small class="text-danger" *ngIf="f.name.errors?.required && f.name.touched">Name is required</small>
     </div>
     <div class="mt-2" id="">
       <ion-item>
         <ion-label position="stacked">Email</ion-label>
         <ion-input placeholder="Enter Email" formControlName="email"></ion-input>
       </ion-item>
-      <small class="text-danger" *ngIf="f.email.errors?.required && f.email.touched">Email is a required field</small>
+      <small class="text-danger" *ngIf="f.email.errors?.required && f.email.touched">Email is required</small>
       <small class="text-danger" *ngIf="f.email.errors?.email && f.email.touched">Email is Invalid</small>
     </div>
     <div class="mt-2">
       <ion-item>
         <ion-label position="stacked">Password</ion-label>
-        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Enter Password" formControlName="password"></ion-input>
+        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Enter Password" formControlName="password">
+        </ion-input>
       </ion-item>
-      <small class="text-danger" *ngIf="f.password.errors?.required && f.password.touched">Password is a required field</small>
-      <small class="text-danger" *ngIf="f.password.errors?.minlength && f.password.touched">Password must be minimum of 6 charecters</small>
+      <small class="text-danger" *ngIf="f.password.errors?.required && f.password.touched">Password is required</small>
+      <small class="text-danger" *ngIf="f.password.errors?.minlength && f.password.touched">Password must be minimum of
+        6 charecters</small>
     </div>
     <div class="mt-2">
       <ion-item>
         <ion-label position="stacked">Confirm Password</ion-label>
-        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Re-Enter Password" formControlName="cpassword"></ion-input>
+        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Re-Enter Password"
+          formControlName="cpassword"></ion-input>
       </ion-item>
-      <small class="text-danger" *ngIf="f.cpassword.errors?.confirm && f.cpassword.touched">Passwords are not matching</small>
-      <small class="text-danger" *ngIf="f.cpassword.errors?.required && f.cpassword.touched">Confirm Password is required</small>
+      <small class="text-danger" *ngIf="f.cpassword.errors?.confirm && f.cpassword.touched">Passwords are not
+        matching</small>
+      <small class="text-danger" *ngIf="f.cpassword.errors?.required && f.cpassword.touched">Confirm Password is
+        required</small>
     </div>
   </form>
   <div class="p-2">
@@ -56,12 +61,12 @@
   </div>
   <div class="errors mt-3 px-2" *ngIf="errorMessages">
     <ion-item color="danger">
-      <ion-label>
+      <ion-label text-wrap class="ion-text-center">
         {{errorMessages}}
       </ion-label>
     </ion-item>
   </div>
 </ion-content>
 <ion-footer>
-  <ion-button expand="block" size="large" (click)="onSignup()">Signup</ion-button>
+  <ion-button expand="block" size="large" (click)="onSignup()" [disabled]="!signupForm.valid">Signup</ion-button>
 </ion-footer>
