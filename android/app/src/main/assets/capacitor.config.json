@@ -7,7 +7,7 @@
 		"SplashScreen": {
 			"launchShowDuration": 3000,
 			"launchAutoHide": true,
-			"backgroundColor": "#ffffffff",
+			"backgroundColor": "#000",
 			"androidSplashResourceName": "splash",
 			"androidScaleType": "CENTER_CROP",
 			"showSpinner": false,
@@ -17,7 +17,7 @@
 			"splashFullScreen": true,
 			"splashImmersive": true,
 			"layoutName": "launch_screen",
-			"useDialog": false
+			"useDialog": true
 		}
 	},
 	"server": {

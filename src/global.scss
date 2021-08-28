@@ -24,3 +24,157 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+$valuefor1: 10px;
+$valuefor2: 20px;
+$valuefor3: 30px;
+$valuefor4: 40px;
+$valuefor5: 60px;
+$valuefor6: 70px;
+$valueforn: 1 10px,
+2 20px,
+3 30px,
+4 40px,
+5 60px,
+6 70px;
+
+$bcolorvalues: "danger"#dc3545,
+"dark"#212529,
+"warning"#ffc107,
+"info"#101414,
+"success"#198754,
+"secondary"#6c757d,
+"white"#fff,
+"grey"#6c757d;
+
+
+$valueforfontn: 1 5rem,
+2 4.5rem,
+3 4rem,
+4 3.5rem,
+5 3rem,
+6 2.5rem;
+
+$valueforhn: 1 2.5rem,
+2 2rem,
+3 1.75rem,
+4 1.5rem,
+5 1.25rem,
+6 1rem;
+
+$valueforfontweightn: "lighter" 200,
+"light" 300,
+"normal" 400,
+"bold" 700,
+"bolder" 800;
+
+//Global Utility Styles
+
+@each $name, $val in $valueforfontweightn {
+    .font-#{$name} {
+        font-weight: $val;
+    }
+}
+
+@each $i,
+$val in $valueforn {
+    .p-#{$i} {
+        padding: #{$val};
+    }
+
+    .pl-#{$i} {
+        padding-left: #{$val};
+    }
+
+    .pr-#{$i} {
+        padding-right: #{$val};
+    }
+
+    .px-#{$i} {
+        padding-left : #{$val};
+        padding-right: #{$val};
+    }
+
+    .py-#{$i} {
+        padding-top   : #{$val};
+        padding-bottom: #{$val};
+    }
+
+    .pt-#{$i} {
+        padding-top: #{$val};
+    }
+
+    .pb-#{$i} {
+        padding-bottom: #{$val};
+    }
+
+    .m-#{$i} {
+        margin: #{$val};
+    }
+
+    .mx-#{$i} {
+        margin-left : #{$val};
+        margin-right: #{$val};
+    }
+
+    .my-#{$i} {
+        margin-top   : #{$val};
+        margin-bottom: #{$val};
+    }
+
+    .mt-#{$i} {
+        margin-top: #{$val};
+    }
+
+    .mb-#{$i} {
+        margin-bottom: #{$val};
+    }
+
+    .ml-#{$i} {
+        margin-left: #{$val};
+    }
+
+    .mr-#{$i} {
+        margin-right: #{$val};
+    }
+
+}
+
+
+@each $name,
+$val in $bcolorvalues {
+    .bg-#{$name} {
+        background-color: #{$val};
+    }
+
+    .text-#{$name} {
+        color: #{$val};
+    }
+}
+
+.text-center {
+    text-align: center
+}
+
+.text-end {
+    text-align: end;
+}
+
+.text-start {
+    text-align: start;
+}
+
+@each $i,
+$val in $valueforfontn {
+    .fs-#{$i} {
+        font-size: #{$val};
+    }
+}
+
+@each $i,
+$val in $valueforhn {
+    .h#{$i} {
+        font-size: #{$val};
+        font-weight: 700;
+    }
+}

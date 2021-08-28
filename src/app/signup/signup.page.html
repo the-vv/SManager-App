@@ -1,0 +1,60 @@
+<ion-content>
+  <div>
+    <div id="title" class="ion-text-center mt-4">
+      SManager
+    </div>
+    <div class="text-center" id="description">
+      Manage your Income and expense simply
+    </div>
+  </div>
+  <div class="ion-text-center h3 font-lighter mt-3">
+    Signup Now
+  </div>
+  <form (ngSubmit)="onSignup()" [formGroup]="signupForm" class="px-2">
+    <div class="mt-2" id="top-control">
+      <ion-item>
+        <ion-label position="stacked">Full Name</ion-label>
+        <ion-input placeholder="Enter Name" color="" formControlName="name"></ion-input>
+      </ion-item>
+      <small class="text-danger pl-1" *ngIf="f.name.errors?.required && f.name.touched">Name is a required field</small>
+    </div>
+    <div class="mt-2" id="">
+      <ion-item>
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input placeholder="Enter Email" formControlName="email"></ion-input>
+      </ion-item>
+      <small class="text-danger" *ngIf="f.email.errors?.required && f.email.touched">Email is a required field</small>
+      <small class="text-danger" *ngIf="f.email.errors?.email && f.email.touched">Email is Invalid</small>
+    </div>
+    <div class="mt-2">
+      <ion-item>
+        <ion-label position="stacked">Password</ion-label>
+        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Enter Password" formControlName="password"></ion-input>
+      </ion-item>
+      <small class="text-danger" *ngIf="f.password.errors?.required && f.password.touched">Password is a required field</small>
+      <small class="text-danger" *ngIf="f.password.errors?.minlength && f.password.touched">Password must be minimum of 6 charecters</small>
+    </div>
+    <div class="mt-2">
+      <ion-item>
+        <ion-label position="stacked">Confirm Password</ion-label>
+        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Re-Enter Password" formControlName="cpassword"></ion-input>
+      </ion-item>
+      <small class="text-danger" *ngIf="f.cpassword.errors?.confirm && f.cpassword.touched">Passwords are not matching</small>
+      <small class="text-danger" *ngIf="f.cpassword.errors?.required && f.cpassword.touched">Confirm Password is required</small>
+    </div>
+  </form>
+  <div class="p-2">
+    <ion-item>
+      <ion-label for="show">Show Password</ion-label>
+      <ion-checkbox name="show" id="show" [(ngModel)]="showPassword"></ion-checkbox>
+    </ion-item>
+  </div>
+  <div id="signup" class="text-center">
+    <a routerLink="/login">
+      Already have an account? Login
+    </a>
+  </div>
+</ion-content>
+<ion-footer>
+  <ion-button expand="block" size="large" (click)="onSignup()">Signup</ion-button>
+</ion-footer>

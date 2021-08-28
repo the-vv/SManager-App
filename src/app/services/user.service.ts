@@ -23,8 +23,8 @@ export class UserService {
     this.http.postAsync(values, [this.userUrl, 'signup'].join('/'))
       .subscribe(user => {
         if (user) {
-          console.log('user');
         }
+        console.log(user);
       });
   }
   async setUser(user: User) {
