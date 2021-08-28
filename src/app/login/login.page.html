@@ -40,6 +40,12 @@
       Don't have an account? Signin
     </a>
   </div>
+  <div class="google text-center mt-3">
+    <ion-button (click)="gLogin()" size="default" color="danger">
+      Continue With Google&nbsp;
+      <ion-icon name="logo-google"></ion-icon>
+    </ion-button>
+  </div>
   <div class="errors mt-3 px-2" *ngIf="errorMessages">
     <ion-item color="danger">
       <ion-label>

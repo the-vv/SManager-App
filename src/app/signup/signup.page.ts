@@ -3,7 +3,6 @@ import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../services/common.service';
-import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 
 @Component({
   selector: 'app-signup',
@@ -29,14 +28,12 @@ export class SignupPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    // GoogleAuth.init();
   }
   onSignup() {
     console.log(this.signupForm);
     this.common.showSpinner();
     if (this.signupForm.valid) {
       this.user.signup(this.signupForm.value).subscribe(res => {
-        console.log('signed up');
         this.common.hideSpinner();
         if (res) {
           this.router.navigate(['home'], { replaceUrl: true });
@@ -53,9 +50,5 @@ export class SignupPage implements OnInit {
   confirmPassword(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null =>
       control.value === this.f?.password.value ? null : { confirm: true };
-  }
-  async gLogin() {
-    const user = await GoogleAuth.signIn();
-    console.log(user);
   }
 }

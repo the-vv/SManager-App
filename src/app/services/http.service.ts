@@ -15,5 +15,9 @@ export class HttpService {
     return this.http.post<any>([this.baseUrl, endpoint].join('/'), body, {
     });
   }
+  putAsync(body, endpoint): Observable<any> {
+    return this.http.put<any>([this.baseUrl, endpoint].join('/'), body, {
+    });
+  }
 
 }

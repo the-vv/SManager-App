@@ -59,4 +59,11 @@ export class UserService {
     });
     this.router.navigate(['signup'], { replaceUrl: true });
   }
+  gLoginSetupUser(userCred: User) {
+    return this.http.putAsync(userCred, this.userUrl)
+    .pipe(tap((user) => {
+      this.currentUser = user.user;
+      this.setUser(user);
+    }));
+  }
 }

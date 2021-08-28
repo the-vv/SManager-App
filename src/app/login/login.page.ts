@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { CommonService } from '../services/common.service';
 import { IonRouterOutlet, Platform } from '@ionic/angular';
 import { App } from '@capacitor/app';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+import { User } from '../models/user';
 
 @Component({
   selector: 'app-login',
@@ -36,6 +38,10 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit() {
+    if (this.platform.is('pwa') || this.platform.is('mobileweb')) {
+      GoogleAuth.init();
+      console.log('web');
+    }
   }
   onLogin() {
     if (this.loginForm.valid) {
@@ -56,4 +62,24 @@ export class LoginPage implements OnInit {
     return this.loginForm?.controls;
   }
 
+  async gLogin() {
+    this.common.showSpinner();
+    GoogleAuth.signIn().then(res => {
+      console.log(res);
+      const { name, email, imageUrl } = res;
+      this.user.gLoginSetupUser({ name, email, imageUrl } as User)
+        .subscribe(ures => {
+          this.common.hideSpinner();
+          if (res) {
+            this.router.navigate(['home'], { replaceUrl: true });
+          }
+        }, err => {
+          this.common.hideSpinner();
+          this.errorMessages = err.error.status ? err.error.status : 'Something Went Wrong, Please try again later';
+        });
+    }).catch(err => {
+      this.common.hideSpinner();
+      this.errorMessages = err.error.status ? err.error.status : 'Something Went Wrong, Please try again later';
+    });
+  }
 }
