@@ -3,6 +3,8 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../services/common.service';
+import { IonRouterOutlet, Platform } from '@ionic/angular';
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-login',
@@ -23,8 +25,15 @@ export class LoginPage implements OnInit {
     private formBuilder: FormBuilder,
     public user: UserService,
     private router: Router,
-    private common: CommonService
-  ) { }
+    private common: CommonService,
+    private platform: Platform,
+    private routerOutlet: IonRouterOutlet) {
+    this.platform.backButton.subscribeWithPriority(10, () => {
+      if (!this.routerOutlet.canGoBack()) {
+        App.exitApp();
+      }
+    });
+  }
 
   ngOnInit() {
   }

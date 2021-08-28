@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { Plugins } from '@capacitor/core';
-import { Platform } from '@ionic/angular';
+import { IonRouterOutlet, Platform } from '@ionic/angular';
 import { UserService } from '../services/user.service';
-const { app } = Plugins;
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-home',
@@ -13,9 +12,12 @@ export class HomePage {
 
   constructor(
     public user: UserService,
-    private platform: Platform) {
+    private platform: Platform,
+    private routerOutlet: IonRouterOutlet) {
     this.platform.backButton.subscribeWithPriority(10, () => {
-      console.log('Handler was called!');
+      if (!this.routerOutlet.canGoBack()) {
+        App.exitApp();
+      }
     });
   }
   logout() {

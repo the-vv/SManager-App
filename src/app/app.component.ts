@@ -13,14 +13,17 @@ export class AppComponent {
     private router: Router) {
     this.user.getUser().then(u => {
       if (u) {
-        this.router.navigate(['/home']);
+        this.router.navigate(['/home'], { replaceUrl: true });
+        SplashScreen.hide();
       }
       else {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/login'], { replaceUrl: true });
+        SplashScreen.hide();
       }
     })
       .catch(err => {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/login'], { replaceUrl: true });
+        SplashScreen.hide();
       });
   }
 }
