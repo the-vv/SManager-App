@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { SplashScreen } from '@capacitor/splash-screen';
+import { MenuController } from '@ionic/angular';
 import { UserService } from './services/user.service';
 
 @Component({
@@ -9,21 +10,35 @@ import { UserService } from './services/user.service';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor(private user: UserService,
-    private router: Router) {
-    this.user.getUser().then(u => {
+  constructor(
+    private user: UserService,
+    private router: Router,
+    private menu: MenuController) {
+    this.user.getUser().then(async (u) => {
       if (u) {
-        this.router.navigate(['/home'], { replaceUrl: true });
+        await this.router.navigate(['/dashboard'], { replaceUrl: true });
         SplashScreen.hide();
       }
       else {
-        this.router.navigate(['/login'], { replaceUrl: true });
+        await this.router.navigate(['/home'], { replaceUrl: true });
         SplashScreen.hide();
       }
     })
-      .catch(err => {
-        this.router.navigate(['/login'], { replaceUrl: true });
+      .catch(async (err) => {
+        await this.router.navigate(['/home'], { replaceUrl: true });
         SplashScreen.hide();
       });
+  }
+
+  ionViewDidEnter() {
+    console.log('view');
+    this.user.authEvents.subscribe(user => {
+      console.log(user);
+      if(user) {
+        this.menu.enable(true, 'main');
+      } else {
+        this.menu.enable(false, 'main');
+      }
+    });
   }
 }

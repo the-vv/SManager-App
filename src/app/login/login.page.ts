@@ -50,7 +50,7 @@ export class LoginPage implements OnInit {
         .subscribe(res => {
           this.common.hideSpinner();
           if (res) {
-            this.router.navigate(['home'], { replaceUrl: true });
+            this.router.navigate(['dashboard'], { replaceUrl: true });
           }
         }, err => {
           this.errorMessages = err.error.status;
@@ -70,7 +70,7 @@ export class LoginPage implements OnInit {
         .subscribe(ures => {
           this.common.hideSpinner();
           if (res) {
-            this.router.navigate(['home'], { replaceUrl: true });
+            this.router.navigate(['dashboard'], { replaceUrl: true });
           }
         }, err => {
           this.common.hideSpinner();

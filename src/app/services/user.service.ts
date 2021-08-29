@@ -4,6 +4,7 @@ import { HttpService } from './http.service';
 import { Storage } from '@capacitor/storage';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class UserService {
 
   userUrl = 'user';
   currentUser: User = null;
+  authEvents: BehaviorSubject<User | null> = new BehaviorSubject(null);
   isLoggedIn = false;
   constructor(private http: HttpService,
     private router: Router) { }
@@ -21,6 +23,7 @@ export class UserService {
       .pipe(tap((user) => {
         this.currentUser = user.user;
         this.isLoggedIn = true;
+        this.authEvents.next(user.user);
         this.setUser(user);
       }));
   }
@@ -29,6 +32,7 @@ export class UserService {
       .pipe(tap((user) => {
         this.currentUser = user.user;
         this.isLoggedIn = true;
+        this.authEvents.next(user.user);
         this.setUser(user);
       }));
   }
@@ -46,6 +50,8 @@ export class UserService {
         try {
           const user = JSON.parse(value).user;
           this.currentUser = user;
+          this.isLoggedIn = true;
+          this.authEvents.next(user);
           console.log(user);
           resolve(user);
         } catch (err) {
@@ -62,6 +68,7 @@ export class UserService {
     });
     this.currentUser = null;
     this.isLoggedIn = false;
+    this.authEvents.next(null);
     this.router.navigate(['login'], { replaceUrl: true });
   }
   gLoginSetupUser(userCred: User) {
@@ -70,6 +77,7 @@ export class UserService {
     .pipe(tap((user) => {
       this.currentUser = user.user;
       this.isLoggedIn = true;
+      this.authEvents.next(user.user);
       this.setUser(user);
     }));
   }

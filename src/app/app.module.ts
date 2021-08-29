@@ -11,9 +11,10 @@ import { UserService } from './services/user.service';
 import { CommonService } from './services/common.service';
 import { HttpService } from './services/http.service';
 import { AuthGuard } from './guards/auth.guard';
+import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, SidemenuComponent],
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule],
   providers: [
