@@ -13,7 +13,8 @@ export class OverviewPage implements OnInit {
   @ViewChildren('barCanvas') doughnutCanvas: QueryList<ElementRef>;
   chartRenders: Chart[] = [];
 
-  constructor() { }
+  constructor(
+  ) { }
 
   ngOnInit() { }
 

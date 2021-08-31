@@ -15,6 +15,7 @@ import { OverviewPage } from './overview.page';
     IonicModule,
     OverviewPageRoutingModule
   ],
-  declarations: [OverviewPage]
+  declarations: [OverviewPage],
+  providers: []
 })
 export class OverviewPageModule {}

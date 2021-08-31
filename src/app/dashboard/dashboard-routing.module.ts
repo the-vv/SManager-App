@@ -28,7 +28,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'pages/income',
+    redirectTo: 'pages/account',
     pathMatch: 'full'
   }
 ];

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from 'src/app/services/user.service';
+
 
 @Component({
   selector: 'app-account',
@@ -7,9 +9,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AccountPage implements OnInit {
 
-  constructor() { }
+  constructor(
+    public user: UserService
+  ) { }
 
   ngOnInit() {
+    this.getProfileIcon();
+  }
+  getProfileIcon() {
   }
 
 }

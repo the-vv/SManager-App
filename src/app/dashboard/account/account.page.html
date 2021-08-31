@@ -1,9 +1,29 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>account</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Account</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
 
+<ion-content>
+  <ion-card>
+    <ion-card-header class="ion-justify-content-center">
+      <ion-item>
+        <ion-avatar slot="start">
+          <img [src]="!user.currentUser.imageUrl ? user.currentUser.imageUrl : 'assets/images/avatar-alt.png'">
+        </ion-avatar>
+        <ion-label>
+          <ion-text class="h4">{{user.currentUser.name}}</ion-text>
+          <ion-text class="d-block" color="medium"><small>{{user.currentUser.email}}</small></ion-text>
+        </ion-label>
+      </ion-item>
+    </ion-card-header>
+  
+    <ion-card-content>
+      A SManager USer
+    </ion-card-content>
+  </ion-card>
 </ion-content>
