@@ -1,9 +1,47 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>expense</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Expense</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <ion-card button>
+    <ion-card-header>
+      <ion-card-title>This Month</ion-card-title>
+      <ion-card-subtitle>August 2021</ion-card-subtitle>
+    </ion-card-header>  
+    <ion-card-content>
+      <ion-text class="h1" color="primary">Total Expense:</ion-text>
+      <ion-text class="ion-text-end h2 d-block" color="danger">
+        ₹ 12340.5
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Last Month</ion-card-title>
+      <ion-card-subtitle>July 2021</ion-card-subtitle>
+    </ion-card-header>  
+    <ion-card-content>
+      <ion-text class="h1" color="primary">Total Expense:</ion-text>
+      <ion-text class="ion-text-end h2 d-block" color="danger">
+        ₹ 45340.5
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>2 Months ago</ion-card-title>
+      <ion-card-subtitle>August 2021</ion-card-subtitle>
+    </ion-card-header>  
+    <ion-card-content>
+      <ion-text class="h1" color="primary">Total Expense:</ion-text>
+      <ion-text class="ion-text-end h2 d-block" color="danger">
+        ₹ 45340.5
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

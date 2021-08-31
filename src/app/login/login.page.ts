@@ -65,6 +65,7 @@ export class LoginPage implements OnInit {
   async gLogin() {
     this.common.showSpinner();
     GoogleAuth.signIn().then((res: any) => {
+      console.log(res);
       const { name, email, displayName, imageUrl } = res;
       this.user.gLoginSetupUser({ name: name ? name : displayName, email, imageUrl } as User)
         .subscribe(ures => {
