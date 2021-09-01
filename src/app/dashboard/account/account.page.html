@@ -7,13 +7,12 @@
   </ion-toolbar>
 </ion-header>
 
-
 <ion-content>
   <ion-card>
     <ion-card-header class="ion-justify-content-center">
-      <ion-item>
+      <ion-item lines="none">
         <ion-avatar slot="start">
-          <img [src]="!user.currentUser.imageUrl ? user.currentUser.imageUrl : 'assets/images/avatar-alt.png'">
+          <img [src]="user.currentUser.imageUrl ? user.currentUser.imageUrl : 'assets/images/avatar-alt.png'">
         </ion-avatar>
         <ion-label>
           <ion-text class="h4">{{user.currentUser.name}}</ion-text>
@@ -21,9 +20,47 @@
         </ion-label>
       </ion-item>
     </ion-card-header>
-  
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-label>App Settings</ion-label>
+    </ion-card-header>
     <ion-card-content>
-      A SManager USer
+      <ion-list>
+        <ion-item>
+          <ion-label>Dark Theme</ion-label>
+          <ion-toggle></ion-toggle>
+        </ion-item>
+        <ion-item>
+          <ion-label>Remember last Page</ion-label>
+          <ion-toggle></ion-toggle>
+        </ion-item>
+        <ion-item>
+          <ion-label>Default Page</ion-label>
+          <ion-select placeholder="Select One" interface="action-sheet">
+            <ion-select-option value="Overview">Overview</ion-select-option>
+            <ion-select-option value="Income">Income</ion-select-option>
+            <ion-select-option value="Expense">Expense</ion-select-option>
+            <ion-select-option value="Sessions">Sessions</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Aduto add sessions to account</ion-label>
+          <ion-toggle></ion-toggle>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-label>
+        Account
+      </ion-label>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-button color="warning" expand="block">Clear History</ion-button>
+      <ion-button color="danger" expand="block" class="ion-margin-top">Logout</ion-button>
     </ion-card-content>
   </ion-card>
 </ion-content>

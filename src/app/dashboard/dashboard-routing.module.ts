@@ -23,12 +23,16 @@ const routes: Routes = [
       {
         path: 'account',
         loadChildren: () => import('./account/account.module').then( m => m.AccountPageModule)
+      },
+      {
+        path: 'sessions',
+        loadChildren: () => import('./sessions/sessions.module').then( m => m.SessionsPageModule)
       }
     ]
   },
   {
     path: '',
-    redirectTo: 'pages/account',
+    redirectTo: 'pages/overview',
     pathMatch: 'full'
   }
 ];

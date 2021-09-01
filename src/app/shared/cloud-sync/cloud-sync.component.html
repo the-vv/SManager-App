@@ -1,0 +1,40 @@
+<ion-icon name="cloud-done-outline" slot="icon-only" color="primary" (click)="presentPopover()"
+  *ngIf="!offline && !popMode && syncDone">
+</ion-icon>
+<ion-icon name="cloud-offline-outline" slot="icon-only" color="danger" (click)="presentPopover()"
+  *ngIf="offline && !popMode">
+</ion-icon>
+<ion-spinner *ngIf="!offline && !popMode && !syncDone" color="danger" (click)="presentPopover()"></ion-spinner>
+<ion-content *ngIf="!offline && popMode && !syncDone">
+  <ion-card>
+    <ion-card-header>
+      <ion-label>Cloud Sync</ion-label>
+    </ion-card-header>
+    <ion-card-content class="ion-text-center">
+      <span class="h6 d-block text-warning">Cloud Sync In Progress</span>
+      <ion-spinner name="dots" color="danger"></ion-spinner>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+<ion-content *ngIf="!offline && popMode && syncDone">
+  <ion-card>
+    <ion-card-header>
+      <ion-label>Cloud Sync</ion-label>
+    </ion-card-header>
+    <ion-card-content class="ion-text-center">
+      <span class="h6 d-block text-success">Cloud Sync Completed</span>
+      <ion-icon name="cloud-done-sharp" class="fs-4" slot="icon-only" color="primary"></ion-icon>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+<ion-content *ngIf="offline && popMode">
+  <ion-card>
+    <ion-card-header>
+      <ion-label>Cloud Sync</ion-label>
+    </ion-card-header>
+    <ion-card-content class="ion-text-center">
+      <span class="h6 d-block text-danger">You are offline</span>
+      <ion-icon name="cloud-offline-sharp" class="fs-5" slot="icon-only" color="danger"></ion-icon>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -22,9 +22,6 @@ import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy
     },
-    UserService,
-    CommonService,
-    HttpService,
     AuthGuard
   ],
   bootstrap: [AppComponent],
