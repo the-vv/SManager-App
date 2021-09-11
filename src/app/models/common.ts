@@ -5,6 +5,7 @@ export interface IncomeExpense {
     datetime: string | Date;
     type: CashType;
     amount: number;
+    synced: boolean;
 }
 
 export enum CashType {

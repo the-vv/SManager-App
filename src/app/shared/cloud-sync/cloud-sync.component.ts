@@ -1,5 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, NgZone, OnInit } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
+import { ConnectivityService } from 'src/app/services/connectivity.service';
 
 @Component({
   selector: 'app-cloud-sync',
@@ -14,11 +16,21 @@ export class CloudSyncComponent implements OnInit {
   syncDone = true;
   offline = false;
 
-  constructor(
-    public popoverController: PopoverController
-  ) { }
+  subscription: Subscription;
 
-  ngOnInit() {}
+  constructor(
+    public popoverController: PopoverController,
+    public connection: ConnectivityService,
+    private zone: NgZone
+  ) {
+    this.connection.appIsOnline.subscribe(res => {
+      this.zone.run(() => {
+        this.offline = !res;
+      });
+    });
+  }
+
+  ngOnInit() { }
 
   async presentPopover(ev: any) {
     const popover = await this.popoverController.create({
@@ -30,6 +42,12 @@ export class CloudSyncComponent implements OnInit {
       }
     });
     return await popover.present();
+  }
+
+  ionViewWillLeave() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
 }

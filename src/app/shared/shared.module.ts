@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { CloudSyncComponent } from './cloud-sync/cloud-sync.component';
 import { FabComponent } from './fab/fab.component';
 import { CreateSharedComponent } from './create-shared/create-shared.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
 
 @NgModule({
   declarations: [
@@ -11,7 +13,10 @@ import { CreateSharedComponent } from './create-shared/create-shared.component';
     CreateSharedComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    IonicModule
   ],
   exports: [
     CloudSyncComponent,
