@@ -11,18 +11,20 @@
 </ion-header>
 
 <ion-content>
-  <ion-card *ngFor="let cash of cashService.allIncomes">
-    <ion-card-header>
-      <ion-card-title>{{cash.datetime | date: 'short'}}</ion-card-title>
-      <ion-card-subtitle></ion-card-subtitle>
-    </ion-card-header>  
-    <ion-card-content>
-      <ion-text class="h1" color="primary">Total Income:</ion-text>
-      <ion-text class="ion-text-end h2 d-block" color="danger">
-        ₹ 12340.5
-      </ion-text>
-    </ion-card-content>
-  </ion-card>
+  <ng-container *ngFor="let month of cashService.allMonthWise">
+    <ion-card *ngIf="month.type === cashType.income" button>
+      <ion-card-header>
+        <ion-card-title>{{month.month}} {{month.year}}</ion-card-title>
+        <ion-card-subtitle></ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-text class="h1" color="primary">Total Income:</ion-text>
+        <ion-text class="ion-text-end h2 d-block" color="danger">
+          ₹ {{month.total}}
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
 </ion-content>
 <ion-footer>
   <app-fab></app-fab>

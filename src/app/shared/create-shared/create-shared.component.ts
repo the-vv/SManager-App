@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { CashType, IncomeExpense } from 'src/app/models/common';
 import { CashService } from 'src/app/services/cash.service';
-import { ToastController } from '@ionic/angular';
 import { v4 as uuidv4 } from 'uuid';
 
 @Component({
@@ -22,8 +21,7 @@ export class CreateSharedComponent implements OnInit {
   constructor(
     public modalController: ModalController,
     private formBuilder: FormBuilder,
-    public cashService: CashService,
-    public toastController: ToastController
+    public cashService: CashService
   ) {
     this.cashForm = this.formBuilder.group({
       title: ['', Validators.required],
@@ -61,21 +59,12 @@ export class CreateSharedComponent implements OnInit {
       console.log(body);
       if (this.isExpense) {
         this.cashService.addExpense(body);
-        this.presentToast(`Successfully added ${ this.isExpense ? 'Expense' : 'Income'}`);
         this.dismissModal();
       } else  {
         this.cashService.addIncome(body);
-        this.presentToast(`Successfully added ${ this.isExpense ? 'Expense' : 'Income'}`);
         this.dismissModal();
       }
     }
   }
 
-  async presentToast(msg: string) {
-    const toast = await this.toastController.create({
-      message: msg,
-      duration: 3000
-    });
-    toast.present();
-  }
 }

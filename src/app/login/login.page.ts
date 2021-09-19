@@ -7,6 +7,7 @@ import { IonRouterOutlet, Platform } from '@ionic/angular';
 import { App } from '@capacitor/app';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { User } from '../models/user';
+import { CashService } from '../services/cash.service';
 
 @Component({
   selector: 'app-login',
@@ -29,7 +30,9 @@ export class LoginPage implements OnInit {
     private router: Router,
     private common: CommonService,
     private platform: Platform,
-    private routerOutlet: IonRouterOutlet) {
+    private routerOutlet: IonRouterOutlet,
+    private cashService: CashService
+    ) {
     this.platform.backButton.subscribeWithPriority(10, () => {
       if (!this.routerOutlet.canGoBack()) {
         App.exitApp();
@@ -72,6 +75,7 @@ export class LoginPage implements OnInit {
           this.common.hideSpinner();
           if (res) {
             this.router.navigate(['dashboard'], { replaceUrl: true });
+            this.cashService.setup();
           }
         }, err => {
           this.common.hideSpinner();

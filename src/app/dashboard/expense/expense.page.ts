@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { CashType } from 'src/app/models/common';
+import { CashService } from 'src/app/services/cash.service';
 
 @Component({
   selector: 'app-expense',
@@ -7,7 +9,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ExpensePage implements OnInit {
 
-  constructor() { }
+  public cashType = CashType;
+
+  constructor(
+    public cashService: CashService
+  ) { }
 
   ngOnInit() {
   }
