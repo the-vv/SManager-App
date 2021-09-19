@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CashService } from 'src/app/services/cash.service';
 
 @Component({
   selector: 'app-income',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class IncomePage implements OnInit {
 
-  constructor() { }
+  constructor(
+    public cashService: CashService
+  ) { }
 
   ngOnInit() {
   }

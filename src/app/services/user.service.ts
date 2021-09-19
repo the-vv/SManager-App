@@ -5,6 +5,7 @@ import { Storage } from '@capacitor/storage';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { StorageKeyNames } from '../models/common';
 
 @Injectable({
   providedIn: 'root'
@@ -39,13 +40,13 @@ export class UserService {
   async setUser(user: User) {
     console.log(user);
     await Storage.set({
-      key: 'user',
+      key: StorageKeyNames.userKey,
       value: JSON.stringify(user),
     });
   };
   getUser(): Promise<User> {
     return new Promise<User>(async (resolve, reject) => {
-      const { value } = await Storage.get({ key: 'user' });
+      const { value } = await Storage.get({ key: StorageKeyNames.userKey });
       if (value) {
         try {
           const user = JSON.parse(value).user;
@@ -64,7 +65,7 @@ export class UserService {
   }
   async logout() {
     await Storage.remove({
-      key: 'user'
+      key: StorageKeyNames.userKey
     });
     this.currentUser = null;
     this.isLoggedIn = false;

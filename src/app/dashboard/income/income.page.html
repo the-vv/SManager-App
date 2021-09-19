@@ -11,51 +11,15 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
+  <ion-card *ngFor="let cash of cashService.allIncomes">
     <ion-card-header>
-      <ion-card-title>This Month</ion-card-title>
-      <ion-card-subtitle>August 2021</ion-card-subtitle>
+      <ion-card-title>{{cash.datetime | date: 'short'}}</ion-card-title>
+      <ion-card-subtitle></ion-card-subtitle>
     </ion-card-header>  
     <ion-card-content>
       <ion-text class="h1" color="primary">Total Income:</ion-text>
       <ion-text class="ion-text-end h2 d-block" color="danger">
         ₹ 12340.5
-      </ion-text>
-    </ion-card-content>
-  </ion-card>
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Last Month</ion-card-title>
-      <ion-card-subtitle>July 2021</ion-card-subtitle>
-    </ion-card-header>  
-    <ion-card-content>
-      <ion-text class="h1" color="primary">Total Income:</ion-text>
-      <ion-text class="ion-text-end h2 d-block" color="danger">
-        ₹ 45340.5
-      </ion-text>
-    </ion-card-content>
-  </ion-card>
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>2 Months ago</ion-card-title>
-      <ion-card-subtitle>August 2021</ion-card-subtitle>
-    </ion-card-header>  
-    <ion-card-content>
-      <ion-text class="h1" color="primary">Total Income:</ion-text>
-      <ion-text class="ion-text-end h2 d-block" color="danger">
-        ₹ 45340.5
-      </ion-text>
-    </ion-card-content>
-  </ion-card>
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>2 Months ago</ion-card-title>
-      <ion-card-subtitle>August 2021</ion-card-subtitle>
-    </ion-card-header>  
-    <ion-card-content>
-      <ion-text class="h1" color="primary">Total Income:</ion-text>
-      <ion-text class="ion-text-end h2 d-block" color="danger">
-        ₹ 45340.5
       </ion-text>
     </ion-card-content>
   </ion-card>

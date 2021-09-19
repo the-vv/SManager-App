@@ -1,5 +1,5 @@
 export interface IncomeExpense {
-    _id?: string;
+    _id: string;
     title: string;
     description?: string;
     datetime: string | Date;
@@ -11,4 +11,17 @@ export interface IncomeExpense {
 export enum CashType {
     expense = 'expense',
     income = 'income'
+}
+
+export interface MonthWise {
+    month: string;
+    year: number;
+    total: number;
+    type: CashType;
+    items: IncomeExpense[];
+}
+
+export enum StorageKeyNames {
+    uuidKeys = 'keys',
+    userKey = 'user'
 }
