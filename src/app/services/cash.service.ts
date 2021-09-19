@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IncomeExpense, MonthWise } from '../models/common';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,9 @@ export class CashService {
   allMonthWise: MonthWise[] = [];
   allSessions: unknown;
 
-  constructor() { }
+  constructor(
+    private storageService: StorageService
+  ) { }
 
   addExpense(expense: IncomeExpense) {
     this.allExpenses.unshift(expense);
@@ -43,6 +46,11 @@ export class CashService {
       this.allMonthWise.push(montObj);
     }
     console.log(this.allMonthWise);
+    this.storageService.addOne(item)
+      .then(res => {
+        console.log(res);
+        this.storageService.getAll().then(console.log);
+      });
   }
 
 }
