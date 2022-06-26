@@ -11,11 +11,11 @@ export class HttpService {
   baseUrl = environment.baseUrl;
   constructor(private http: HttpClient) { }
 
-  postAsync(body, endpoint): Observable<any> {
+  postAsync(body: any, endpoint: string): Observable<any> {
     return this.http.post<any>([this.baseUrl, endpoint].join('/'), body, {
     });
   }
-  putAsync(body, endpoint): Observable<any> {
+  putAsync(body: any, endpoint: string): Observable<any> {
     return this.http.put<any>([this.baseUrl, endpoint].join('/'), body, {
     });
   }

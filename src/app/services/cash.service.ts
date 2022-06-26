@@ -30,7 +30,7 @@ export class CashService {
     this.addMonthWise(income);
   }
 
-  addMonthWise(item: IncomeExpense, fromStorage: boolean = false) {
+  addMonthWise(item: IncomeExpense, fromStorage: boolean = false, needSort: boolean = false) {
     const dateObj = new Date(item.datetime);
     const month = dateObj.toLocaleDateString(undefined, { month: 'long' });
     const year = dateObj.getFullYear();
@@ -47,6 +47,7 @@ export class CashService {
         type: item.type
       };
       this.allMonthWise.push(montObj);
+      this.sortMonthWise();
     }
     if (fromStorage) {
       this.sortMonthWise();
@@ -93,9 +94,9 @@ export class CashService {
       'July', 'August', 'September', 'October', 'November', 'December'];
     this.allMonthWise.sort((a, b) => {
       if (a.year !== b.year) {
-        return a.year - b.year;
+        return b.year - a.year;
       } else {
-        return months.indexOf(a.month) - months.indexOf(b.month);
+        return months.indexOf(b.month) - months.indexOf(a.month);
       };
     });
   }

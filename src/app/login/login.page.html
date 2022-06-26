@@ -15,10 +15,10 @@
       Manage your Income and expenses simply
     </div>
   </div>
-  <div class="ion-text-center h3 font-lighter mt-3">
+  <!-- <div class="ion-text-center h3 font-lighter mt-3">
     Login Now
-  </div>
-  <form (ngSubmit)="onLogin()" [formGroup]="loginForm" class="px-2">
+  </div> -->
+  <!-- <form (ngSubmit)="onLogin()" [formGroup]="loginForm" class="px-2">
     <div class="mt-2" id="">
       <ion-item>
         <ion-label position="stacked">Email</ion-label>
@@ -37,7 +37,7 @@
     </div>
   </form>
   <div class="px-2 mt-2">
-    <ion-item>
+    <ion-item class="bg-dark">
       <ion-label for="show">Show Password</ion-label>
       <ion-checkbox name="show" id="show" [(ngModel)]="showPassword"></ion-checkbox>
     </ion-item>
@@ -46,12 +46,15 @@
     <a routerLink="/signup" [replaceUrl]="true">
       Don't have an account? Signin
     </a>
-  </div>
-  <div class="google text-center mt-4">
+  </div> -->
+  <!-- <div class="google text-center mt-4">
     <ion-button (click)="gLogin()" size="large" color="danger" fill="outline">
       Login With Google&nbsp;
       <ion-icon name="logo-google"></ion-icon>
     </ion-button>
+  </div> -->
+  <div class="mt-6  text-center">
+    <img src="assets/images/home-image.png" alt="" style="width: 90%;">
   </div>
   <div class="errors mt-3 px-2" *ngIf="errorMessages">
     <ion-item color="danger">
@@ -62,5 +65,9 @@
   </div>
 </ion-content>
 <ion-footer>
-  <ion-button expand="full" shape="round" size="large" (click)="onLogin()" [disabled]="!loginForm.valid">Login</ion-button>
+  <!-- <ion-button expand="full" shape="round" size="large" (click)="onLogin()" [disabled]="!loginForm.valid">Login</ion-button> -->
+  <ion-button (click)="gLogin()" expand="full" shape="round" size="large" color="danger" fill="outline">
+    Continue With Google&nbsp;
+    <ion-icon name="logo-google"></ion-icon>
+  </ion-button>
 </ion-footer>
