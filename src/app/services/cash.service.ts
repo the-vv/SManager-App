@@ -20,13 +20,13 @@ export class CashService {
 
   addExpense(expense: IIncomeExpense) {
     this.allExpenses.unshift(expense);
-    // console.log(this.allExpenses);
+    console.log(this.allExpenses);
     this.addMonthWise(expense);
   }
 
   addIncome(income: IIncomeExpense) {
     this.allIncomes.unshift(income);
-    // console.log(this.allIncomes);
+    console.log(this.allIncomes);
     this.addMonthWise(income);
   }
 

@@ -10,7 +10,7 @@
   <div class="ion-text-center h3 font-lighter mt-3">
     Create an {{isExpense ? 'Expense' : 'Income'}}
   </div>
-  <form (ngSubmit)="onSignup()" [formGroup]="cashForm" class="px-2">
+  <form (ngSubmit)="onCreate()" [formGroup]="cashForm" class="px-2">
     <div class="mt-2" id="top-control">
       <ion-item>
         <ion-label position="stacked">Full Name</ion-label>
@@ -41,13 +41,6 @@
       <small class="text-danger" *ngIf="f.amount.errors?.required && f.amount.touched">Amount is required</small>
     </div>
   </form>
-  <div class="errors mt-3 px-2" *ngIf="errorMessages">
-    <ion-item color="danger">
-      <ion-label text-wrap class="ion-text-center">
-        {{errorMessages}}
-      </ion-label>
-    </ion-item>
-  </div>
 </ion-content>
 <ion-footer>
   <ion-button shape="round" expand="block" size="large" (click)="onCreate()" [disabled]="!cashForm.valid">Create
