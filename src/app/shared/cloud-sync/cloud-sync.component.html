@@ -1,10 +1,10 @@
-<ion-icon name="cloud-done-outline" slot="icon-only" color="primary" (click)="presentPopover()"
+<ion-icon name="cloud-done-outline" slot="icon-only" color="primary" (click)="presentPopover($event)"
   *ngIf="!offline && !popMode && syncDone">
 </ion-icon>
-<ion-icon name="cloud-offline-outline" slot="icon-only" color="danger" (click)="presentPopover()"
+<ion-icon name="cloud-offline-outline" slot="icon-only" color="danger" (click)="presentPopover($event)"
   *ngIf="offline && !popMode">
 </ion-icon>
-<ion-spinner *ngIf="!offline && !popMode && !syncDone" color="danger" (click)="presentPopover()"></ion-spinner>
+<ion-spinner *ngIf="!offline && !popMode && !syncDone" color="danger" (click)="presentPopover($event)"></ion-spinner>
 <ion-content *ngIf="!offline && popMode && !syncDone">
   <ion-card>
     <ion-card-header>

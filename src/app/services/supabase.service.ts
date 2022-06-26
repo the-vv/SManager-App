@@ -28,9 +28,9 @@ export class SupabaseService {
       this.supabase.from(ETableNames.users).select().eq('email', user.email).single()
         .then(dbUserRes => {
           if (dbUserRes) {
-            this.supabase.from(ETableNames.users).update(user, { returning: 'minimal' }).eq('email', user.email)
+            this.supabase.from(ETableNames.users).update(user).eq('email', user.email)
               .then(dbRes => {
-                resolve(dbRes);
+                resolve(dbRes.body?.[0]);
               }, err => {
                 reject(err);
               });
@@ -41,7 +41,7 @@ export class SupabaseService {
             };
             this.supabase.from(ETableNames.users).insert(userWithId, { returning: 'minimal' })
               .then(dbRes => {
-                resolve(dbRes);
+                resolve(userWithId);
               }, err => {
                 reject(err);
               });

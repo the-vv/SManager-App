@@ -10,6 +10,7 @@ export class ConfigService {
   public currentUser: IUser = null;
   public authEvents: BehaviorSubject<IUser | null> = new BehaviorSubject(null);
   public isLoggedIn = false;
+  public cloudSyncing: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor() { }
 }

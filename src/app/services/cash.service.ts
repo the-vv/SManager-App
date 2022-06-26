@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ECashType, IIncomeExpense, IMonthWise } from '../models/common';
 import { CommonService } from './common.service';
+import { ConfigService } from './config.service';
 import { StorageService } from './storage.service';
+import { SupabaseService } from './supabase.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,19 +17,38 @@ export class CashService {
 
   constructor(
     private storageService: StorageService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private supabase: SupabaseService,
+    private config: ConfigService
   ) { }
 
   addExpense(expense: IIncomeExpense) {
     this.allExpenses.unshift(expense);
     console.log(this.allExpenses);
     this.addMonthWise(expense);
+    this.addToCloud(expense);
   }
 
   addIncome(income: IIncomeExpense) {
     this.allIncomes.unshift(income);
     console.log(this.allIncomes);
     this.addMonthWise(income);
+    this.addToCloud(income);
+  }
+
+  addToCloud(item: IIncomeExpense) {
+    this.config.cloudSyncing.next(true);
+    this.supabase.addIncomeExpense(item)
+      .then(res => {
+        console.log(res);
+        item.synced = true;
+        this.storageService.updateOne(item);
+        this.config.cloudSyncing.next(false);
+      })
+      .catch(err => {
+        console.log(err);
+        this.config.cloudSyncing.next(false);
+      });
   }
 
   addMonthWise(item: IIncomeExpense, fromStorage: boolean = false, needSort: boolean = false) {
@@ -67,6 +88,10 @@ export class CashService {
     this.storageService.storageEvents.subscribe(status => {
       if (status) {
         this.storageService.getAll().then(res => {
+          this.allExpenses = [];
+          this.allIncomes = [];
+          this.allMonthWise = [];
+          this.allSessions = [];
           res.forEach(el => {
             if (el.type === ECashType.expense) {
               this.allExpenses = [...this.allExpenses, el];
