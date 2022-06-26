@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CashType } from 'src/app/models/common';
+import { ECashType } from 'src/app/models/common';
 import { CashService } from 'src/app/services/cash.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { CashService } from 'src/app/services/cash.service';
 })
 export class IncomePage implements OnInit {
 
-  public cashType = CashType;
+  public cashType = ECashType;
 
   constructor(
     public cashService: CashService

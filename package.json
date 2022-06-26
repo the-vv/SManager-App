@@ -33,6 +33,7 @@
     "@ionic-native/theme-detection": "^5.36.0",
     "@ionic/angular": "^5.5.2",
     "@ionic/storage-angular": "^3.0.6",
+    "@supabase/supabase-js": "^1.35.3",
     "chart.js": "^3.5.1",
     "chartjs-plugin-datalabels": "^2.0.0",
     "rxjs": "~6.6.0",

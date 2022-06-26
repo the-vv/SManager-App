@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from 'src/app/services/user.service';
 import { AlertController } from '@ionic/angular';
 import { CashService } from 'src/app/services/cash.service';
+import { ConfigService } from 'src/app/services/config.service';
+import { UserService } from 'src/app/services/user.service';
 
 
 @Component({
@@ -12,15 +13,13 @@ import { CashService } from 'src/app/services/cash.service';
 export class AccountPage implements OnInit {
 
   constructor(
-    public user: UserService,
+    public config: ConfigService,
     public alertController: AlertController,
-    public cashService: CashService
+    public cashService: CashService,
+    private user: UserService
   ) { }
 
   ngOnInit() {
-    this.getProfileIcon();
-  }
-  getProfileIcon() {
   }
 
   async confirmClear() {
@@ -45,6 +44,10 @@ export class AccountPage implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  onLogout() {
+    this.user.logout();
   }
 
 }

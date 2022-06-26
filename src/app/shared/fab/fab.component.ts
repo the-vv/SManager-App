@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { CashType } from 'src/app/models/common';
+import { ECashType } from 'src/app/models/common';
 import { CreateSharedComponent } from '../create-shared/create-shared.component';
 
 @Component({
@@ -21,7 +21,7 @@ export class FabComponent implements OnInit {
       component: CreateSharedComponent,
       cssClass: '',
       componentProps: {
-        type: CashType.expense
+        type: ECashType.expense
       }
     });
     return await modal.present();
@@ -31,7 +31,7 @@ export class FabComponent implements OnInit {
       component: CreateSharedComponent,
       cssClass: '',
       componentProps: {
-        type: CashType.income
+        type: ECashType.income
       }
     });
     return await modal.present();

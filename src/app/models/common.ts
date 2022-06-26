@@ -1,27 +1,31 @@
-export interface IncomeExpense {
+export interface IIncomeExpense {
     _id: string;
     title: string;
     description?: string;
     datetime: string | Date;
-    type: CashType;
+    type: ECashType;
     amount: number;
     synced: boolean;
 }
 
-export enum CashType {
+export enum ECashType {
     expense = 'expense',
     income = 'income'
 }
 
-export interface MonthWise {
+export interface IMonthWise {
     month: string;
     year: number;
     total: number;
-    type: CashType;
-    items: IncomeExpense[];
+    type: ECashType;
+    items: IIncomeExpense[];
 }
 
-export enum StorageKeyNames {
+export enum EStorageKeyNames {
     uuidKeys = 'keys',
-    userKey = 'user'
+    user = 'user'
+}
+
+export enum ETableNames {
+    users = 'users',
 }

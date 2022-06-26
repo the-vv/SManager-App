@@ -12,11 +12,11 @@
     <ion-card-header class="ion-justify-content-center">
       <ion-item lines="none">
         <ion-avatar slot="start">
-          <img [src]="user.currentUser.imageUrl ? user.currentUser.imageUrl : 'assets/images/avatar-alt.png'">
+          <img [src]="config.currentUser.imageUrl ? config.currentUser.imageUrl : 'assets/images/avatar-alt.png'">
         </ion-avatar>
         <ion-label>
-          <ion-text class="h4">{{user.currentUser.name}}</ion-text>
-          <ion-text class="d-block" color="medium"><small>{{user.currentUser.email}}</small></ion-text>
+          <ion-text class="h4">{{config.currentUser.name}}</ion-text>
+          <ion-text class="d-block" color="medium"><small>{{config.currentUser.email}}</small></ion-text>
         </ion-label>
       </ion-item>
     </ion-card-header>
@@ -60,7 +60,7 @@
     </ion-card-header>
     <ion-card-content>
       <ion-button color="warning" expand="block" (click)="confirmClear()">Clear History</ion-button>
-      <ion-button color="danger" expand="block" class="ion-margin-top">Logout</ion-button>
+      <ion-button color="danger" expand="block" class="ion-margin-top" (click)="onLogout()">Logout</ion-button>
     </ion-card-content>
   </ion-card>
 </ion-content>

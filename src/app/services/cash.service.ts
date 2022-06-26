@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CashType, IncomeExpense, MonthWise } from '../models/common';
+import { ECashType, IIncomeExpense, IMonthWise } from '../models/common';
 import { CommonService } from './common.service';
 import { StorageService } from './storage.service';
 
@@ -8,9 +8,9 @@ import { StorageService } from './storage.service';
 })
 export class CashService {
 
-  allIncomes: IncomeExpense[] = [];
-  allExpenses: IncomeExpense[] = [];
-  allMonthWise: MonthWise[] = [];
+  allIncomes: IIncomeExpense[] = [];
+  allExpenses: IIncomeExpense[] = [];
+  allMonthWise: IMonthWise[] = [];
   allSessions: unknown;
 
   constructor(
@@ -18,19 +18,19 @@ export class CashService {
     private commonService: CommonService
   ) { }
 
-  addExpense(expense: IncomeExpense) {
+  addExpense(expense: IIncomeExpense) {
     this.allExpenses.unshift(expense);
     // console.log(this.allExpenses);
     this.addMonthWise(expense);
   }
 
-  addIncome(income: IncomeExpense) {
+  addIncome(income: IIncomeExpense) {
     this.allIncomes.unshift(income);
     // console.log(this.allIncomes);
     this.addMonthWise(income);
   }
 
-  addMonthWise(item: IncomeExpense, fromStorage: boolean = false, needSort: boolean = false) {
+  addMonthWise(item: IIncomeExpense, fromStorage: boolean = false, needSort: boolean = false) {
     const dateObj = new Date(item.datetime);
     const month = dateObj.toLocaleDateString(undefined, { month: 'long' });
     const year = dateObj.getFullYear();
@@ -39,7 +39,7 @@ export class CashService {
       monthObject.items.push(item);
       monthObject.total += item.amount;
     } else {
-      const montObj: MonthWise = {
+      const montObj: IMonthWise = {
         items: [item],
         month,
         year,
@@ -54,10 +54,10 @@ export class CashService {
     } else {
       this.storageService.addOne(item)
         .then(res => {
-          this.commonService.showToast(`Successfully added ${item.type === CashType.income ? 'Income' : 'Expense'}`, 3000, true);
+          this.commonService.showToast(`Successfully added ${item.type === ECashType.income ? 'Income' : 'Expense'}`, 3000, true);
         }).catch(err => {
           this.commonService.showToast(
-            `An error occured while adding an ${item.type === CashType.income ? 'Income' : 'Expense'}`,
+            `An error occured while adding an ${item.type === ECashType.income ? 'Income' : 'Expense'}`,
             3000, true);
         });
     }
@@ -68,7 +68,7 @@ export class CashService {
       if (status) {
         this.storageService.getAll().then(res => {
           res.forEach(el => {
-            if (el.type === CashType.expense) {
+            if (el.type === ECashType.expense) {
               this.allExpenses = [...this.allExpenses, el];
             } else {
               this.allIncomes = [...this.allIncomes, el];

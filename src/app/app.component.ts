@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { MenuController } from '@ionic/angular';
+import { ConfigService } from './services/config.service';
 import { UserService } from './services/user.service';
 
 @Component({
@@ -13,8 +14,10 @@ export class AppComponent {
   constructor(
     private user: UserService,
     private router: Router,
-    private menu: MenuController) {
+    private menu: MenuController,
+    private config: ConfigService) {
     this.user.getUser().then(async (u) => {
+      console.log(u);
       if (u) {
         await this.router.navigate(['/dashboard'], { replaceUrl: true });
         SplashScreen.hide();
@@ -32,7 +35,7 @@ export class AppComponent {
 
   ionViewDidEnter() {
     console.log('view');
-    this.user.authEvents.subscribe(user => {
+    this.config.authEvents.subscribe(user => {
       console.log(user);
       if(user) {
         this.menu.enable(true, 'main');
