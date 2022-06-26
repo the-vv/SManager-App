@@ -1,11 +1,12 @@
 export interface IIncomeExpense {
-    _id: string;
+    id: string;
     title: string;
     description?: string;
     datetime: string | Date;
     type: ECashType;
     amount: number;
     synced: boolean;
+    userId: string;
 }
 
 export enum ECashType {
@@ -28,4 +29,5 @@ export enum EStorageKeyNames {
 
 export enum ETableNames {
     users = 'users',
+    statements = 'statements',
 }

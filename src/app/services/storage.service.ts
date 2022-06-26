@@ -8,7 +8,7 @@ import { IIncomeExpense } from '../models/common';
 })
 export class StorageService {
 
-  public  storage: Storage | null = null;
+  public storage: Storage | null = null;
   public storageEvents: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(
@@ -19,7 +19,6 @@ export class StorageService {
 
   async init(): Promise<void> {
     return new Promise(async (resolve, reject) => {
-      // If using, define drivers here: await this.storage.defineDriver(/*...*/);
       const storage = await this.storageService.create();
       this.storage = storage;
       this.storageEvents.next(true);
@@ -29,8 +28,7 @@ export class StorageService {
 
   public addOne(item: IIncomeExpense): Promise<any> {
     return new Promise((resolve, reject) => {
-      /* eslint no-underscore-dangle: ["error", { "allow": ["_id"] }]*/
-      this.storage?.set(item._id, JSON.stringify(item))
+      this.storage?.set(item.id, JSON.stringify(item))
         .then(res => {
           resolve(res);
         })
@@ -64,7 +62,7 @@ export class StorageService {
     });
   }
 
-  getAll(): Promise<IIncomeExpense[]>{
+  getAll(): Promise<IIncomeExpense[]> {
     return new Promise((resolve, reject) => {
       const allIncomeExpenses: IIncomeExpense[] = [];
       try {
@@ -83,6 +81,17 @@ export class StorageService {
     });
   }
 
+  deleteOne(id: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.storage?.remove(id)
+        .then(res => {
+          resolve(res);
+        }).catch(err => {
+          reject(err);
+        });
+    });
+  }
+
   deleteAll(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.storage?.clear()
@@ -92,6 +101,32 @@ export class StorageService {
         .catch(err => {
           reject();
         });
+    });
+  }
+
+  updateOne(item: IIncomeExpense): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.storage?.set(item.id, JSON.stringify(item))
+        .then(res => {
+          resolve();
+        })
+        .catch(err => {
+          reject();
+        });
+    });
+  }
+
+  updateMany(items: IIncomeExpense[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const promises = [];
+      items.forEach(item => {
+        promises.push(this.storage?.set(item.id, JSON.stringify(item)));
+      });
+      Promise.all(promises).then(res => {
+        resolve();
+      }).catch(err => {
+        reject();
+      });
     });
   }
 

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { ECashType, IIncomeExpense } from 'src/app/models/common';
 import { CashService } from 'src/app/services/cash.service';
+import { ConfigService } from 'src/app/services/config.service';
 import { v4 as uuidv4 } from 'uuid';
 
 @Component({
@@ -21,7 +22,8 @@ export class CreateSharedComponent implements OnInit {
   constructor(
     public modalController: ModalController,
     private formBuilder: FormBuilder,
-    public cashService: CashService
+    public cashService: CashService,
+    private config: ConfigService
   ) {
     this.cashForm = this.formBuilder.group({
       title: ['', Validators.required],
@@ -48,13 +50,14 @@ export class CreateSharedComponent implements OnInit {
   onCreate() {
     if (this.cashForm.valid) {
       const body: IIncomeExpense = {
-        _id: uuidv4(),
+        id: uuidv4(),
         title: this.cashForm.value.title,
         description: this.cashForm.value.description,
         datetime: this.cashForm.value.datetime,
         amount: this.cashForm.value.amount,
         type: this.isExpense ? ECashType.expense : ECashType.income,
-        synced: false
+        synced: false,
+        userId: this.config.currentUser.id
       };
       console.log(body);
       if (this.isExpense) {

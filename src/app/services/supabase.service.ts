@@ -5,7 +5,7 @@ import {
   SupabaseClient,
 } from '@supabase/supabase-js';
 import { environment } from 'src/environments/environment';
-import { ETableNames } from '../models/common';
+import { ETableNames, IIncomeExpense } from '../models/common';
 import { IUser } from '../models/user';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -46,6 +46,17 @@ export class SupabaseService {
                 reject(err);
               });
           }
+        }, err => {
+          reject(err);
+        });
+    });
+  }
+
+  addIncomeExpense(incomeExpense: IIncomeExpense) {
+    return new Promise((resolve, reject) => {
+      this.supabase.from(ETableNames.statements).insert(incomeExpense, { returning: 'minimal' })
+        .then(dbRes => {
+          resolve(dbRes);
         }, err => {
           reject(err);
         });
