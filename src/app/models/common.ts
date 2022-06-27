@@ -17,9 +17,8 @@ export enum ECashType {
 export interface IMonthWise {
     month: string;
     year: number;
-    total: number;
-    type: ECashType;
-    items: IIncomeExpense[];
+    totalIncome: number;
+    totalExpense: number;
 }
 
 export enum EStorageKeyNames {

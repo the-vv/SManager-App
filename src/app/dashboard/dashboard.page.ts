@@ -9,9 +9,8 @@ import { CashService } from '../services/cash.service';
 export class DashboardPage implements OnInit {
 
   constructor(private cashService: CashService) {
-    this.cashService.setup();
-    console.log('setup called');
-   }
+    this.cashService.setup(new Date());
+  }
 
   ngOnInit() {
   }

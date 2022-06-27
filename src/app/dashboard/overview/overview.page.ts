@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { CashService } from 'src/app/services/cash.service';
 Chart.register(...registerables);
 
 @Component({
@@ -10,10 +11,11 @@ Chart.register(...registerables);
 })
 export class OverviewPage implements OnInit {
 
-  @ViewChildren('barCanvas') doughnutCanvas: QueryList<ElementRef>;
+  @ViewChildren('barCanvas',) doughnutCanvas: QueryList<ElementRef>;
   chartRenders: Chart[] = [];
 
   constructor(
+    public cashService: CashService
   ) { }
 
   ngOnInit() { }
@@ -29,7 +31,7 @@ export class OverviewPage implements OnInit {
             datasets: [
               {
                 label: 'Overview',
-                data: [25, 75],
+                data: [0,1],
                 backgroundColor: [
                   'rgba(0, 255, 0, 0.5)',
                   'rgba(255, 0, 0, 0.5)'

@@ -55,7 +55,6 @@ export class LoginPage implements OnInit {
       this.supabase.saveUser(user).then((userRes: IUser) => {
         this.user.setUser(userRes);
         this.common.hideSpinner();
-        this.cashService.setup();
         this.router.navigate(['/dashboard'], { replaceUrl: true });
       });
     }).catch(err => {

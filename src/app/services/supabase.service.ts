@@ -73,11 +73,14 @@ export class SupabaseService {
     });
   }
 
-  getAllIncomeExpenses() {
-    // get all income expense by user id
+  getAllIncomeExpenses(start: string, end: string) {
     return new Promise((resolve, reject) => {
-      this.supabase.from(ETableNames.statements).select().eq('userId', this.config.currentUser.id)
+      this.supabase.from(ETableNames.statements).select()
+        .eq('userId', this.config.currentUser.id)
+        .gte('datetime', start)
+        .lte('datetime', end)
         .then(dbRes => {
+          console.log(dbRes);
           resolve(dbRes);
         }, err => {
           reject(err);
@@ -85,4 +88,10 @@ export class SupabaseService {
     });
   }
 
+  onIncomeExpenseChange(start: string, end: string, callback: (payload: any) => void) {
+    return this.supabase
+      .from(`statements:userId=eq.${this.config.currentUser.id}`)
+      .on('*', callback)
+      .subscribe();
+  }
 }
