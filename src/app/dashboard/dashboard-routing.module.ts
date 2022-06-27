@@ -32,7 +32,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'pages/income',
+    redirectTo: 'pages/overview',
     pathMatch: 'full'
   }
 ];

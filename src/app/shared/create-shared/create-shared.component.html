@@ -7,14 +7,15 @@
   </ion-toolbar>
 </ion-header>
 <ion-content fullscreen>
-  <div class="ion-text-center h3 font-lighter mt-3">
+  <div class="ion-text-center h3 font-lighter mt-3 bg-opacity-30 rounded-2xl mx-2 p-2"
+  [ngClass]="isExpense ? 'bg-red-500' : 'bg-green-500'">
     Create an {{isExpense ? 'Expense' : 'Income'}}
   </div>
   <form (ngSubmit)="onCreate()" [formGroup]="cashForm" class="px-2">
     <div class="mt-2" id="top-control">
       <ion-item>
-        <ion-label position="stacked">Full Name</ion-label>
-        <ion-input placeholder="Enter Name" formControlName="title"></ion-input>
+        <ion-label position="stacked">Title</ion-label>
+        <ion-input placeholder="Enter Title" formControlName="title"></ion-input>
       </ion-item>
       <small class="text-danger" *ngIf="f.title.errors?.required && f.title.touched">Title is required</small>
     </div>
@@ -28,7 +29,7 @@
       <ion-item>
         <ion-label>Date</ion-label>
         <ion-datetime placeholder="Select Date" position="stacked" displayFormat="DD MMM YYYY h:mm A"
-          formControlName="datetime"></ion-datetime>
+          formControlName="datetime" [value]="currentTime"></ion-datetime>
       </ion-item>
       <small class="text-danger" *ngIf="f.datetime.errors?.required && f.datetime.touched">Date is required</small>
     </div>

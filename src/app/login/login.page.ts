@@ -60,7 +60,7 @@ export class LoginPage implements OnInit {
       });
     }).catch(err => {
       this.common.hideSpinner();
-      this.errorMessages = err.error.status ? err.error.status : 'Something went wrong, Please try again later';
+      this.errorMessages = err.error?.status ? err.error.status : 'Something went wrong, Please try again later';
     });
   }
 }

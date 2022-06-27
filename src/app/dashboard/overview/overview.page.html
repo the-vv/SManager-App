@@ -11,9 +11,28 @@
 </ion-header>
  
 <ion-content>
+  <ion-card class="">    
+    <ion-card-header class="pb-0 mb-0">
+      <ion-card-title>This Month Overview</ion-card-title>
+      <ion-card-subtitle>August 2021</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="text-center my-2">
+        <div class="flex justify-evenly">
+          <ion-text class="text-2xl text-white font-bold font-sans bg-opacity-40 bg-red-500 rounded-lg p-1 flex ion-align-items-center">
+            <ion-icon name="wallet-outline" class="mr-1"></ion-icon> ₹5400000
+          </ion-text>
+          <ion-text class="text-2xl text-white font-bold font-sans bg-opacity-40 bg-green-500 rounded-lg p-1 flex ion-align-items-center">
+            <ion-icon name="cash-outline" class="mr-1"></ion-icon> ₹5400000
+          </ion-text>
+        </div>
+        <ion-text class="text-4xl font-bold font-sans block text-blue-500 mt-1">Balance: ₹140</ion-text>
+      </div>
+    </ion-card-content>
+  </ion-card>
   <ion-card>
     <ion-card-header>
-      <ion-card-title>This Month Overview</ion-card-title>
+      <ion-card-title>This Month Visualization</ion-card-title>
       <ion-card-subtitle>August 2021</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
@@ -23,21 +42,6 @@
       </ion-item>
     </ion-card-content>
   </ion-card>
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Last Month Overview</ion-card-title>
-      <ion-card-subtitle>July 2021</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        <canvas #barCanvas slot="start"></canvas>
-        <ion-label>B1</ion-label>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
-  <ion-button size="large" color="primary" expand="block" class="mb-1 mx-1">
-    Load More Month
-  </ion-button>
 </ion-content>
 <ion-footer>
   <app-fab></app-fab>

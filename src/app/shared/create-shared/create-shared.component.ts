@@ -18,6 +18,7 @@ export class CreateSharedComponent implements OnInit {
   isExpense: boolean;
 
   public cashForm: FormGroup;
+  public currentTime: string = new Date().toISOString();
 
   constructor(
     public modalController: ModalController,
@@ -29,7 +30,7 @@ export class CreateSharedComponent implements OnInit {
       title: ['', Validators.required],
       description: [''],
       amount: ['', Validators.required],
-      datetime: ['', Validators.required]
+      datetime: [this.currentTime, Validators.required]
     });
   }
 
