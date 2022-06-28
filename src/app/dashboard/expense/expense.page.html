@@ -10,21 +10,54 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ng-container *ngFor="let month of cashService.allMonthWise">
-    <ion-card *ngIf="month.type === cashType.expense" button>
-      <ion-card-header>
-        <ion-card-title>{{month.month}} {{month.year}}</ion-card-title>
-        <ion-card-subtitle></ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-text class="h1" color="primary">Total Expense:</ion-text>
-        <ion-text class="ion-text-end h2 d-block" color="danger">
-          ₹ {{month.total}}
+<ion-content  *ngIf="cashService.currentMonthData">
+  <div class="flex items-stretch h-full flex-col">
+  <ion-card ngClass="rounded-3xl">
+    <ion-card-header [classList]="'pb-0 mb-0'">
+      <ion-card-title>This Month Overview</ion-card-title>
+      <ion-card-subtitle>{{cashService.currentMonthData.month}} {{cashService.currentMonthData.year}}
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="text-center my-2">
+        <ion-text
+          class="text-2xl font-bold font-sans mt-1 bg-red-500 bg-opacity-40 text-white rounded-lg p-1 flex ion-align-items-center justify-center">
+          Total Income: ₹{{cashService.currentMonthData.totalExpense}}
         </ion-text>
-      </ion-card-content>
-    </ion-card>
-  </ng-container>
+      </div>
+    </ion-card-content>
+  </ion-card>
+  <ion-card ngClass="rounded-3xl flex-1 overflow-auto relative">
+    <ion-card-header class="sticky top-0 z-20 bg-red-900 py-1">
+      <ion-card-title>This Month Statement</ion-card-title>
+      <ion-card-subtitle>August 2021</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content [classList]="'p-0 m-0 overflow-auto'">
+      <ion-list [ngClass]="'overflow-auto'">
+        <ion-item-sliding *ngFor="let expense of cashService.allExpenses">
+          <ion-item>
+            <ion-icon size="large" name="wallet-outline"></ion-icon>
+            <ion-label class="pl-1">
+              <h1 class="flex justify-between ">
+                <span class="text-red-600 font-bold">₹{{expense.amount}}</span>
+                <span class="text-base align-middle text-gray-400">
+                  {{expense.datetime | date: 'dd/M/yyyy hh:mm a'}}
+                </span>
+              </h1>
+              <h3>
+                <span class="font-normal text-base">{{expense.title}}</span> <span *ngIf="expense.description?.length"
+                  class="align-middle"> • </span> <span class="italic font-extralight">{{expense.description}}</span>
+              </h3>
+            </ion-label>
+          </ion-item>
+          <ion-item-options side="end">
+            <ion-item-option>Unread</ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</div>
 </ion-content>
 <ion-footer>
   <app-fab></app-fab>

@@ -5,7 +5,7 @@ import { DashboardPage } from './dashboard.page';
 
 const routes: Routes = [
   {
-    path: 'pages',
+    path: '',
     component: DashboardPage,
     children: [
       {
@@ -27,13 +27,13 @@ const routes: Routes = [
       {
         path: 'sessions',
         loadChildren: () => import('./sessions/sessions.module').then( m => m.SessionsPageModule)
+      },
+      {
+        path: '',
+        redirectTo: 'income',
+        pathMatch: 'full'
       }
     ]
-  },
-  {
-    path: '',
-    redirectTo: 'pages/overview',
-    pathMatch: 'full'
   }
 ];
 
