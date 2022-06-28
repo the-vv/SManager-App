@@ -88,7 +88,7 @@ export class SupabaseService {
     });
   }
 
-  onIncomeExpenseChange(start: string, end: string, callback: (payload: any) => void) {
+  onIncomeExpenseChange(callback: (payload: any) => void) {
     return this.supabase
       .from(`statements:userId=eq.${this.config.currentUser.id}`)
       .on('*', callback)

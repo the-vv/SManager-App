@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { RealtimeSubscription } from '@supabase/supabase-js';
 import { endOfMonth, startOfMonth } from 'date-fns';
 import { ECashType, IIncomeExpense, IMonthWise } from '../models/common';
-import { CommonService } from './common.service';
 import { ConfigService } from './config.service';
 import { StorageService } from './storage.service';
 import { SupabaseService } from './supabase.service';
@@ -19,20 +18,23 @@ export class CashService {
 
   constructor(
     private storageService: StorageService,
-    private commonService: CommonService,
     private supabase: SupabaseService,
     private config: ConfigService
-  ) { }
+  ) {
+    this.config.authEvents.subscribe(user => {
+      if (!user) {
+        this.clearAll();
+      }
+    });
+  }
 
   addExpense(expense: IIncomeExpense) {
     console.log(this.allExpenses);
-    // this.addMonthWise(expense);
     this.addToCloud(expense);
   }
 
   addIncome(income: IIncomeExpense) {
     console.log(this.allIncomes);
-    // this.addMonthWise(income);
     this.addToCloud(income);
   }
 
@@ -65,11 +67,10 @@ export class CashService {
           totalIncome: 0
         };
         data.forEach(this.updateMonthWise.bind(this));
-        console.log(this.currentMonthData);
         if (this.changeSubscription) {
           this.changeSubscription.unsubscribe();
         }
-        this.changeSubscription = this.supabase.onIncomeExpenseChange(start, end, this.onChangeItem.bind(this));
+        this.changeSubscription = this.supabase.onIncomeExpenseChange(this.onChangeItem.bind(this));
       }).catch(err => {
         console.log(err);
       });
@@ -98,23 +99,10 @@ export class CashService {
   }
 
   clearAll() {
-    // this.allExpenses = [];
-    // this.allIncomes = [];
-    // this.allMonthWise = [];
-    // this.allSessions = [];
-    // this.storageService.deleteAll();
-  }
-
-  sortMonthWise() {
-    // const months = ['January', 'February', 'March', 'April', 'May', 'June',
-    //   'July', 'August', 'September', 'October', 'November', 'December'];
-    // this.allMonthWise.sort((a, b) => {
-    //   if (a.year !== b.year) {
-    //     return b.year - a.year;
-    //   } else {
-    //     return months.indexOf(b.month) - months.indexOf(a.month);
-    //   };
-    // });
+    this.allExpenses = [];
+    this.allIncomes = [];
+    this.currentMonthData = undefined;
+    this.storageService.deleteAll();
   }
 
 }
