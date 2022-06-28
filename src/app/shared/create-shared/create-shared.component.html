@@ -36,7 +36,7 @@
     <div class="mt-2" id="">
       <ion-item>
         <ion-label position="stacked">Amount</ion-label>
-        <ion-input placeholder="Enter Amount" formControlName="amount" [color]="isExpense ? 'danger' : 'primary'"
+        <ion-input placeholder="Enter Amount" formControlName="amount" [color]="isExpense ? 'danger' : 'success'"
           style="font-size: 1.5em;" type="number"></ion-input>
       </ion-item>
       <small class="text-danger" *ngIf="f.amount.errors?.required && f.amount.touched">Amount is required</small>

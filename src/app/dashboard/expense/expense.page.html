@@ -22,12 +22,12 @@
       <div class="text-center my-2">
         <ion-text
           class="text-2xl font-bold font-sans mt-1 bg-red-500 bg-opacity-40 text-white rounded-lg p-1 flex ion-align-items-center justify-center">
-          Total Income: ₹{{cashService.currentMonthData.totalExpense}}
+          Total Expense: ₹{{cashService.currentMonthData.totalExpense}}
         </ion-text>
       </div>
     </ion-card-content>
   </ion-card>
-  <ion-card ngClass="rounded-3xl flex-1 overflow-auto relative">
+  <ion-card ngClass="rounded-3xl flex-1 overflow-auto relative -mt-1">
     <ion-card-header class="sticky top-0 z-20 bg-red-900 py-1">
       <ion-card-title>This Month Statement</ion-card-title>
       <ion-card-subtitle>August 2021</ion-card-subtitle>
@@ -36,7 +36,7 @@
       <ion-list [ngClass]="'overflow-auto'">
         <ion-item-sliding *ngFor="let expense of cashService.allExpenses">
           <ion-item>
-            <ion-icon size="large" name="wallet-outline"></ion-icon>
+            <ion-icon size="large" name="cash-outline"></ion-icon>
             <ion-label class="pl-1">
               <h1 class="flex justify-between ">
                 <span class="text-red-600 font-bold">₹{{expense.amount}}</span>
