@@ -42,7 +42,6 @@ export class LoginPage implements OnInit {
     }
   }
 
-
   gLogin() {
     this.common.showSpinner();
     GoogleAuth.signIn().then((res: any) => {
