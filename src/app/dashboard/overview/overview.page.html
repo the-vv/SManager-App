@@ -37,12 +37,20 @@
   <ion-card [ngClass]="'rounded-3xl'">
     <ion-card-header>
       <ion-card-title>This Month Visualization</ion-card-title>
-      <ion-card-subtitle>August 2021</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-item>
-        <canvas #barCanvas slot="start"></canvas>
-        <ion-label>B1</ion-label>
+        <canvas #pieCanvas slot="start"></canvas>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+  <ion-card [ngClass]="'rounded-3xl'">
+    <ion-card-header>
+      <ion-card-title>This Month Visualization</ion-card-title>
+    </ion-card-header>
+    <ion-card-content [classList]="'p-0 m-0'">
+      <ion-item [classList]="'p-0 m-0'">
+        <canvas #lineCanvas slot="start"></canvas>
       </ion-item>
     </ion-card-content>
   </ion-card>

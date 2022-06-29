@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { RealtimeSubscription } from '@supabase/supabase-js';
 import { endOfMonth, startOfMonth } from 'date-fns';
 import { ECashType, IIncomeExpense, IMonthWise } from '../models/common';
+import { CommonService } from './common.service';
 import { ConfigService } from './config.service';
 import { StorageService } from './storage.service';
 import { SupabaseService } from './supabase.service';
@@ -19,14 +20,15 @@ export class CashService {
   constructor(
     private storageService: StorageService,
     private supabase: SupabaseService,
-    private config: ConfigService
+    private config: ConfigService,
+    private commonService: CommonService
   ) {
     this.config.authEvents.subscribe(user => {
       if (!user) {
         this.clearAll();
       }
     });
-  }
+   }
 
   addExpense(expense: IIncomeExpense) {
     console.log(this.allExpenses);
@@ -54,6 +56,7 @@ export class CashService {
   }
 
   setup(timestamp: Date) {
+    this.commonService.showSpinner();
     const start = startOfMonth(timestamp).toISOString();
     const end = endOfMonth(timestamp).toISOString();
     console.log(start, end);
@@ -71,8 +74,10 @@ export class CashService {
           this.changeSubscription.unsubscribe();
         }
         this.changeSubscription = this.supabase.onIncomeExpenseChange(this.onChangeItem.bind(this));
+        this.commonService.hideSpinner();
       }).catch(err => {
         console.log(err);
+        this.commonService.hideSpinner();
       });
   }
 

@@ -26,7 +26,8 @@ export class SupabaseService {
     return new Promise((resolve, reject) => {
       this.supabase.from(ETableNames.users).select().eq('email', user.email)
         .then((dbUserRes: any) => {
-          if (dbUserRes?.length) {
+          console.log(dbUserRes);
+          if (dbUserRes?.body?.length) {
             this.supabase.from(ETableNames.users).update(user).eq('email', user.email)
               .then(dbRes => {
                 resolve(dbRes.body?.[0]);

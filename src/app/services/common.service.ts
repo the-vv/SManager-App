@@ -19,7 +19,7 @@ export class CommonService {
     this.isLoading = true;
     this.loader = await this.loadingController.create({
       cssClass: '',
-      message: 'Please wait...'
+      message: 'Please wait...',
     });
     await this.loader.present();
     if (!this.isLoading) {
