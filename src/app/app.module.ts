@@ -12,22 +12,21 @@ import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
 import { IonicStorageModule } from '@ionic/storage-angular';
 
 @NgModule({
-  declarations: [AppComponent, SidemenuComponent],
-  entryComponents: [],
-  imports: [
-    BrowserModule,
-    IonicModule.forRoot(),
-    AppRoutingModule,
-    HttpClientModule,
-    IonicStorageModule.forRoot()
-  ],
-  providers: [
-    {
-      provide: RouteReuseStrategy,
-      useClass: IonicRouteStrategy
-    },
-    AuthGuard
-  ],
-  bootstrap: [AppComponent],
+    declarations: [AppComponent, SidemenuComponent],
+    imports: [
+        BrowserModule,
+        IonicModule.forRoot(),
+        AppRoutingModule,
+        HttpClientModule,
+        IonicStorageModule.forRoot()
+    ],
+    providers: [
+        {
+            provide: RouteReuseStrategy,
+            useClass: IonicRouteStrategy
+        },
+        AuthGuard
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
