@@ -36,14 +36,16 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit() {
-    if (this.platform.is('pwa') || this.platform.is('mobileweb')) {
-      GoogleAuth.init();
-      console.log('web');
-    }
+    GoogleAuth.initialize({
+      clientId: '592151284779-qaohe9j1un25j18brp0ba451dlip85jk.apps.googleusercontent.com',
+      scopes: ['profile', 'email'],
+      grantOfflineAccess: true,
+    });
+    console.log('web');
   }
 
   gLogin() {
-    this.common.showSpinner();
+    // this.common.showSpinner();
     GoogleAuth.signIn().then((res: any) => {
       console.log(res);
       const { name, email, imageUrl } = res;
@@ -59,6 +61,7 @@ export class LoginPage implements OnInit {
       });
     }).catch(err => {
       this.common.hideSpinner();
+      console.log(err);
       this.errorMessages = err.error?.status ? err.error.status : 'Something went wrong, Please try again later';
     });
   }
