@@ -53,7 +53,8 @@ export class LoginPage implements OnInit {
   gLogin() {
     this.common.showSpinner();
     GoogleAuth.signIn().then((res: any) => {
-      const credential = GoogleAuthProvider.credential(res.authentication.idToken);
+      console.log(res);
+      const credential = GoogleAuthProvider.credential(res.authentication.idToken, res.authentication.accessToken);
       this.auth.signInWithCredential(credential)
         .then(user => {
           console.log(user);
