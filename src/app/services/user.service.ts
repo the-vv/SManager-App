@@ -45,4 +45,5 @@ export class UserService {
     this.config.authEvents.next(null);
     this.router.navigate(['login'], { replaceUrl: true });
   }
+  
 }

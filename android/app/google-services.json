@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "592151284779",
-    "project_id": "vvs-smanager",
-    "storage_bucket": "vvs-smanager.appspot.com"
+    "project_number": "298206622192",
+    "project_id": "vvs-s-manager",
+    "storage_bucket": "vvs-s-manager.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:592151284779:android:07d75e2ac605255a232e6e",
+        "mobilesdk_app_id": "1:298206622192:android:897344d0d7d1edde356d35",
         "android_client_info": {
           "package_name": "com.vv.smanager"
         }
       },
       "oauth_client": [
         {
-          "client_id": "592151284779-snmki6ac442op7daekt8fnou4vebtnoi.apps.googleusercontent.com",
+          "client_id": "298206622192-c2h1rq5on575irt04fmfkoc3qa67cpqs.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.vv.smanager",
-            "certificate_hash": "8178a258a248d32653bf1d4902b5e3c580e12048"
+            "certificate_hash": "f1201c8f421d4c1fb6db03c09136071f3880a1aa"
           }
         },
         {
-          "client_id": "592151284779-qaohe9j1un25j18brp0ba451dlip85jk.apps.googleusercontent.com",
+          "client_id": "298206622192-ke686j1gaesu2t9fj72oad9tfep3esb9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBERyl1AKgMB3DwyaUcxaYnK8VysdN38t8"
+          "current_key": "AIzaSyAT0qnqNEa1DzbjZiUeNndavRpwiAS3jg4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "592151284779-qaohe9j1un25j18brp0ba451dlip85jk.apps.googleusercontent.com",
+              "client_id": "298206622192-ke686j1gaesu2t9fj72oad9tfep3esb9.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

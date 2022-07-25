@@ -10,6 +10,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AuthGuard } from './guards/auth.guard';
 import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
 import { IonicStorageModule } from '@ionic/storage-angular';
+import { AngularFireModule } from '@angular/fire/compat';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
     declarations: [AppComponent, SidemenuComponent],
@@ -18,7 +20,8 @@ import { IonicStorageModule } from '@ionic/storage-angular';
         IonicModule.forRoot(),
         AppRoutingModule,
         HttpClientModule,
-        IonicStorageModule.forRoot()
+        IonicStorageModule.forRoot(),
+        AngularFireModule.initializeApp(environment.firebaseConfig),
     ],
     providers: [
         {
