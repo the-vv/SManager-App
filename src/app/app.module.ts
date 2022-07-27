@@ -12,6 +12,7 @@ import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { AngularFireModule } from '@angular/fire/compat';
 import { environment } from 'src/environments/environment';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
 @NgModule({
     declarations: [AppComponent, SidemenuComponent],
@@ -22,6 +23,7 @@ import { environment } from 'src/environments/environment';
         HttpClientModule,
         IonicStorageModule.forRoot(),
         AngularFireModule.initializeApp(environment.firebaseConfig),
+        AngularFirestoreModule
     ],
     providers: [
         {

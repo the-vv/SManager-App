@@ -33,14 +33,14 @@ export class CreateSharedComponent implements OnInit {
       datetime: [this.currentTime, Validators.required]
     });
   }
+  get f() {
+    return this.cashForm.controls;
+  }
 
   ngOnInit() {
     this.isExpense = this.type === ECashType.expense;
   }
 
-  get f() {
-    return this.cashForm.controls;
-  }
 
   dismissModal() {
     this.modalController.dismiss({

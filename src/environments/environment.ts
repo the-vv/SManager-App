@@ -6,8 +6,6 @@
 export const environment = {
   production: false,
   baseUrl: 'http://localhost:3000',
-  supabaseUrl: 'https://wqyboimmwmmttlwyqmod.supabase.co',
-  supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxeWJvaW1td21tdHRsd3lxbW9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NTYyNTQ3MjIsImV4cCI6MTk3MTgzMDcyMn0.YIL830W2oZUoTG_mm2t4Lzupm61jvqUFJer32vGjGIw',
   firebaseConfig: {
     apiKey: 'AIzaSyB6k2Bn2AXZNc0DGJ8H9blJTzGjRQbGxJI',
     authDomain: 'vvs-s-manager.firebaseapp.com',

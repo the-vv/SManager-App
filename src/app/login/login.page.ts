@@ -6,7 +6,7 @@ import { IonRouterOutlet, Platform } from '@ionic/angular';
 import { App } from '@capacitor/app';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { CashService } from '../services/cash.service';
-import { SupabaseService } from '../services/supabase.service';
+import { FirebaseService } from '../services/firebase.service';
 import { IUser } from '../models/user';
 import { environment } from 'src/environments/environment';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -29,7 +29,7 @@ export class LoginPage implements OnInit {
     private platform: Platform,
     private routerOutlet: IonRouterOutlet,
     private cashService: CashService,
-    private supabase: SupabaseService,
+    private supabase: FirebaseService,
     public auth: AngularFireAuth
   ) {
     this.platform.backButton.subscribeWithPriority(10, () => {
@@ -53,23 +53,20 @@ export class LoginPage implements OnInit {
   gLogin() {
     this.common.showSpinner();
     GoogleAuth.signIn().then((res: any) => {
-      console.log(res);
       const credential = GoogleAuthProvider.credential(res.authentication.idToken, res.authentication.accessToken);
       this.auth.signInWithCredential(credential)
         .then(user => {
-          console.log(user);
-          console.log(res);
-          const { name, email, imageUrl } = res;
           const customUser: IUser = {
-            name,
-            email,
-            imageUrl
+            name: user.user.displayName,
+            email: user.user.email,
+            imageUrl: user.user.photoURL,
+            id: user.user.uid,
           };
-          // this.supabase.saveUser(user).then((userRes: IUser) => {
-          //   this.user.setUser(userRes);
-          //   this.common.hideSpinner();
-          //   this.router.navigate(['/dashboard'], { replaceUrl: true });
-          // });
+          this.supabase.saveUser(customUser).then((userRes: IUser) => {
+            this.user.setUser(customUser);
+            this.common.hideSpinner();
+            this.router.navigate(['/dashboard'], { replaceUrl: true });
+          });
         }).catch(err => {
           console.log(err);
         });

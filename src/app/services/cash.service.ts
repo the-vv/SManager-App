@@ -5,7 +5,7 @@ import { ECashType, IIncomeExpense, IMonthWise } from '../models/common';
 import { CommonService } from './common.service';
 import { ConfigService } from './config.service';
 import { StorageService } from './storage.service';
-import { SupabaseService } from './supabase.service';
+import { FirebaseService } from './firebase.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,7 @@ export class CashService {
 
   constructor(
     private storageService: StorageService,
-    private supabase: SupabaseService,
+    private supabase: FirebaseService,
     private config: ConfigService,
     private commonService: CommonService
   ) {

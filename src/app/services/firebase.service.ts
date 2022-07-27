@@ -1,20 +1,23 @@
 import { Injectable } from '@angular/core';
 // import { createClient, SupabaseClient, } from '@supabase/supabase-js';
 import { environment } from 'src/environments/environment';
-import { ETableNames, IIncomeExpense } from '../models/common';
+import { ECollectionNames, IIncomeExpense } from '../models/common';
 import { IUser } from '../models/user';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from './config.service';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SupabaseService {
+export class FirebaseService {
 
   // private supabase: SupabaseClient;
 
   constructor(
-    private config: ConfigService
+    private config: ConfigService,
+    private firestore: AngularFirestore
   ) {
     // this.supabase = createClient(
     //   environment.supabaseUrl,
@@ -24,42 +27,24 @@ export class SupabaseService {
 
   saveUser(user: IUser) {
     return new Promise((resolve, reject) => {
-    //   this.supabase.from(ETableNames.users).select().eq('email', user.email)
-    //     .then((dbUserRes: any) => {
-    //       console.log(dbUserRes);
-    //       if (dbUserRes?.body?.length) {
-    //         this.supabase.from(ETableNames.users).update(user).eq('email', user.email)
-    //           .then(dbRes => {
-    //             resolve(dbRes.body?.[0]);
-    //           }, err => {
-    //             reject(err);
-    //           });
-    //       } else {
-    //         const userWithId = {
-    //           ...user,
-    //           id: uuidv4()
-    //         };
-    //         this.supabase.from(ETableNames.users).insert(userWithId, { returning: 'minimal' })
-    //           .then(dbRes => {
-    //             resolve(userWithId);
-    //           }, err => {
-    //             reject(err);
-    //           });
-    //       }
-    //     }, err => {
-    //       reject(err);
-    //     });
+      this.firestore.doc(`${ECollectionNames.users}/${user.id}`).set(user, { merge: true })
+        .then(dbRes => {
+          console.log(dbRes);
+          resolve(dbRes);
+        }, err => {
+          reject(err);
+        });
     });
   }
 
   addIncomeExpense(incomeExpense: IIncomeExpense) {
     return new Promise((resolve, reject) => {
-    //   this.supabase.from(ETableNames.statements).insert(incomeExpense, { returning: 'minimal' })
-    //     .then(dbRes => {
-    //       resolve(dbRes);
-    //     }, err => {
-    //       reject(err);
-    //     });
+      this.firestore.collection(ECollectionNames.statements).add(incomeExpense)
+        .then(dbRes => {
+          resolve(dbRes);
+        }, err => {
+          reject(err);
+        });
     });
   }
 
@@ -76,6 +61,16 @@ export class SupabaseService {
 
   getAllIncomeExpenses(start: string, end: string) {
     return new Promise((resolve, reject) => {
+      this.firestore.collection(ECollectionNames.statements, ref => ref.where('userId', '==', this.config.currentUser.id)
+        .where('datetime', '>=', start).where('datetime', '<=', end)).valueChanges().pipe(take(1))
+        .subscribe({
+          next: (dbRes) => {
+            resolve(dbRes);
+          },
+          error: (err) => {
+            reject(err);
+          }
+        });
       // this.supabase.from(ETableNames.statements).select()
       //   .eq('userId', this.config.currentUser.id)
       //   .gte('datetime', start)

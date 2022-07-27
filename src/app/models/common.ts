@@ -26,7 +26,7 @@ export enum EStorageKeyNames {
     user = 'user'
 }
 
-export enum ETableNames {
+export enum ECollectionNames {
     users = 'users',
     statements = 'statements',
 }
