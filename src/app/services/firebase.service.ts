@@ -6,23 +6,17 @@ import { IUser } from '../models/user';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from './config.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { take } from 'rxjs';
+import { map, take, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirebaseService {
 
-  // private supabase: SupabaseClient;
-
   constructor(
     private config: ConfigService,
     private firestore: AngularFirestore
   ) {
-    // this.supabase = createClient(
-    //   environment.supabaseUrl,
-    //   environment.supabaseKey
-    // );
   }
 
   saveUser(user: IUser) {
@@ -48,18 +42,7 @@ export class FirebaseService {
     });
   }
 
-  upsertMultipleIncomeExpenses(incomeExpenses: IIncomeExpense[]) {
-    return new Promise((resolve, reject) => {
-      // this.supabase.from(ETableNames.statements).upsert(incomeExpenses, { returning: 'minimal', onConflict: 'id' })
-      //   .then(dbRes => {
-      //     resolve(dbRes);
-      //   }, err => {
-      //     reject(err);
-      //   });
-    });
-  }
-
-  getAllIncomeExpenses(start: string, end: string) {
+  getAllIncomeExpenses(start: Date, end: Date) {
     return new Promise((resolve, reject) => {
       this.firestore.collection(ECollectionNames.statements, ref => ref.where('userId', '==', this.config.currentUser.id)
         .where('datetime', '>=', start).where('datetime', '<=', end)).valueChanges().pipe(take(1))
@@ -71,23 +54,19 @@ export class FirebaseService {
             reject(err);
           }
         });
-      // this.supabase.from(ETableNames.statements).select()
-      //   .eq('userId', this.config.currentUser.id)
-      //   .gte('datetime', start)
-      //   .lte('datetime', end)
-      //   .then(dbRes => {
-      //     console.log(dbRes);
-      //     resolve(dbRes);
-      //   }, err => {
-      //     reject(err);
-      //   });
     });
   }
 
   onIncomeExpenseChange(callback: (payload: any) => void) {
-    // return this.supabase
-    //   .from(`statements:userId=eq.${this.config.currentUser.id}`)
-    //   .on('*', callback)
-    //   .subscribe();
+    console.log('init value changes');
+    return this.firestore.collection(ECollectionNames.statements, ref => ref.where('userId', '==', this.config.currentUser.id))
+      .stateChanges()
+      .pipe(map(res => res.map(doc => ({
+        data: {
+          id: doc.payload.doc.id,
+          ...doc.payload.doc.data() as any
+        },
+        type: doc.type
+      })))).subscribe(callback);
   }
 }

@@ -8,7 +8,7 @@
 </ion-header>
 <ion-content fullscreen>
   <div class="ion-text-center h3 font-lighter mt-3 bg-opacity-30 rounded-2xl mx-2 p-2"
-  [ngClass]="isExpense ? 'bg-red-500' : 'bg-green-500'">
+    [ngClass]="isExpense ? 'bg-red-500' : 'bg-green-500'">
     Create an {{isExpense ? 'Expense' : 'Income'}}
   </div>
   <form (ngSubmit)="onCreate()" [formGroup]="cashForm" class="px-2">
@@ -26,10 +26,14 @@
       </ion-item>
     </div>
     <div class="mt-2">
-      <ion-item>
-        <ion-label>Date</ion-label>
-        <ion-datetime placeholder="Select Date" position="stacked" displayFormat="DD MMM YYYY h:mm A"
-          formControlName="datetime" [value]="currentTime"></ion-datetime>
+      <ion-item id="date">
+        <ion-label>Choose date</ion-label>
+        <ion-input value="{{ currentTime | date: 'dd MMM YYYY h:mm a' }}" class="ion-text-end" readonly></ion-input>
+        <ion-popover trigger="date" size="cover">
+          <ng-template>
+            <ion-datetime prefer-wheel="true" show-default-time-label="true" show-default-buttons="true" presentation="date-time" formControlName="datetime" locale="en"></ion-datetime>
+          </ng-template>
+        </ion-popover>
       </ion-item>
       <small class="text-danger" *ngIf="f.datetime.errors?.required && f.datetime.touched">Date is required</small>
     </div>

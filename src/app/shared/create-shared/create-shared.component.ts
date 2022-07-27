@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DatePickerPlugin, DatePickerPluginInterface } from '@capacitor-community/date-picker';
 import { ModalController } from '@ionic/angular';
 import { ECashType, IIncomeExpense } from 'src/app/models/common';
 import { CashService } from 'src/app/services/cash.service';
@@ -19,6 +20,7 @@ export class CreateSharedComponent implements OnInit {
 
   public cashForm: FormGroup;
   public currentTime: string = new Date().toISOString();
+  private datePicker: DatePickerPluginInterface = DatePickerPlugin;
 
   constructor(
     public modalController: ModalController,
@@ -41,7 +43,6 @@ export class CreateSharedComponent implements OnInit {
     this.isExpense = this.type === ECashType.expense;
   }
 
-
   dismissModal() {
     this.modalController.dismiss({
       dismisse: true
@@ -51,10 +52,9 @@ export class CreateSharedComponent implements OnInit {
   onCreate() {
     if (this.cashForm.valid) {
       const body: IIncomeExpense = {
-        id: uuidv4(),
         title: this.cashForm.value.title,
         description: this.cashForm.value.description,
-        datetime: this.cashForm.value.datetime,
+        datetime: new Date(this.cashForm.value.datetime),
         amount: this.cashForm.value.amount,
         type: this.isExpense ? ECashType.expense : ECashType.income,
         synced: false,
@@ -64,11 +64,25 @@ export class CreateSharedComponent implements OnInit {
       if (this.isExpense) {
         this.cashService.addExpense(body);
         this.dismissModal();
-      } else  {
+      } else {
         this.cashService.addIncome(body);
         this.dismissModal();
       }
     }
+  }
+
+  public showDatePicker() {
+    this.datePicker.present({
+      date: new Date().toISOString(),
+      theme: 'dark',
+    }).then((result: any) => {
+      console.log(result.value);
+      // this.cashForm.controls.datetime.setValue(result.value.toISOString());
+    }, err => {
+      console.log(err);
+    }).catch((err: any) => {
+      console.log(err);
+    });
   }
 
 }

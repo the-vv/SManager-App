@@ -1,8 +1,24 @@
+import firebase from 'firebase/compat';
+import Timestamp = firebase.firestore.Timestamp;
+
+export type FTimeStamp = Timestamp;
+
 export interface IIncomeExpense {
-    id: string;
+    id?: string;
     title: string;
     description?: string;
     datetime: string | Date;
+    type: ECashType;
+    amount: number;
+    synced: boolean;
+    userId: string;
+}
+
+export interface IIncomeExpenseDB {
+    id: string;
+    title: string;
+    description?: string;
+    datetime: Timestamp | Date;
     type: ECashType;
     amount: number;
     synced: boolean;
@@ -29,4 +45,9 @@ export enum EStorageKeyNames {
 export enum ECollectionNames {
     users = 'users',
     statements = 'statements',
+}
+
+export enum EFirebaseActionTypes {
+    added = 'added',
+    modified = 'modified',
 }
