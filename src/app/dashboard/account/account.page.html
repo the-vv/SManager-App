@@ -22,7 +22,7 @@
     </ion-card-header>
   </ion-card>
 
-  <ion-card>
+  <ion-card [hidden]="true">
     <ion-card-header>
       <ion-label>App Settings</ion-label>
     </ion-card-header>
@@ -59,8 +59,9 @@
       </ion-label>
     </ion-card-header>
     <ion-card-content>
-      <ion-button color="warning" expand="block" (click)="confirmClear()">Clear History</ion-button>
+      <ion-button [hidden]="true" color="warning" expand="block" (click)="confirmClear()">Clear History</ion-button>
       <ion-button color="danger" expand="block" class="ion-margin-top" (click)="onLogout()">Logout</ion-button>
+      <ion-label class="text-sm center text-center block pt-2">Many more features are coning soon...!</ion-label>
     </ion-card-content>
   </ion-card>
 </ion-content>

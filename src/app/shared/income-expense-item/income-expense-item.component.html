@@ -1,0 +1,20 @@
+<ion-item-sliding>
+  <ion-item>
+    <ion-icon size="large" [name]="item.type === eCashType.income ? 'wallet-outline' : 'cash-outline'"></ion-icon>
+    <ion-label class="pl-1">
+      <h1 class="flex justify-between ">
+        <span class="-bold" [ngClass]="item.type === eCashType.income ? 'text-green-500' : 'text-red-600'">₹{{item.amount}}</span>
+        <span class="text-base align-middle text-gray-400">
+          {{item.datetime | date: 'dd/M/yyyy hh:mm a'}}
+        </span>
+      </h1>
+      <h3>
+        <span class="font-normal text-base">{{item.title}}</span> <span *ngIf="item.description?.length"
+          class="align-middle"> • </span> <span class="italic font-extralight">{{item.description}}</span>
+      </h3>
+    </ion-label>
+  </ion-item>
+  <ion-item-options side="end">
+    <ion-item-option>Unread</ion-item-option>
+  </ion-item-options>
+</ion-item-sliding>

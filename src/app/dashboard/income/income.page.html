@@ -30,29 +30,12 @@
     <ion-card ngClass="rounded-3xl flex-1 overflow-auto relative -mt-1">
       <ion-card-header class="sticky top-0 z-20 bg-green-900 py-1">
         <ion-card-title>This Month Statement</ion-card-title>
+        <ion-card-subtitle class="text-xs center p-0 m-0">Swipe left for options</ion-card-subtitle>
       </ion-card-header>
       <ion-card-content [classList]="'p-0 m-0 overflow-auto'">
         <ion-list [ngClass]="'overflow-auto'">
-          <ion-item-sliding *ngFor="let income of cashService.allIncomes">
-            <ion-item>
-              <ion-icon size="large" name="wallet-outline"></ion-icon>
-              <ion-label class="pl-1">
-                <h1 class="flex justify-between ">
-                  <span class="text-green-500 font-bold">₹{{income.amount}}</span>
-                  <span class="text-base align-middle text-gray-400">
-                    {{income.datetime | date: 'dd/M/yyyy hh:mm a'}}
-                  </span>
-                </h1>
-                <h3>
-                  <span class="font-normal text-base">{{income.title}}</span> <span *ngIf="income.description?.length"
-                    class="align-middle"> • </span> <span class="italic font-extralight">{{income.description}}</span>
-                </h3>
-              </ion-label>
-            </ion-item>
-            <ion-item-options side="end">
-              <ion-item-option>Unread</ion-item-option>
-            </ion-item-options>
-          </ion-item-sliding>
+          <app-income-expense-item *ngFor="let income of cashService.allIncomes" [item]="income">
+          </app-income-expense-item>
         </ion-list>
       </ion-card-content>
     </ion-card>

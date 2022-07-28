@@ -45,9 +45,30 @@ export enum EStorageKeyNames {
 export enum ECollectionNames {
     users = 'users',
     statements = 'statements',
+    basicDetals = 'basicDetals',
 }
 
 export enum EFirebaseActionTypes {
     added = 'added',
     modified = 'modified',
+}
+
+export enum EPageTypes {
+    overview = 'overview',
+    income = 'income',
+    expense = 'expense',
+    sessions = 'sessions',
+}
+
+export interface IUserSettings {
+    darkTheme: boolean;
+    rememberLastPage: boolean;
+    defaultPage: EPageTypes;
+}
+
+export interface IBasicDetails {
+    settings: IUserSettings;
+    // totalIncome: number;
+    // totalExpense: number;
+    // totalBalance: number;
 }

@@ -6,7 +6,7 @@ import { CommonService } from './common.service';
 import { ConfigService } from './config.service';
 import { StorageService } from './storage.service';
 import { FirebaseService } from './firebase.service';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +17,7 @@ export class CashService {
   allExpenses: IIncomeExpense[] = [];
   currentMonthData: IMonthWise;
   changeSubscription: Subscription;
+  onIncomeExpenseChange$: BehaviorSubject<void> = new BehaviorSubject<void>(undefined);
 
   constructor(
     private storageService: StorageService,
@@ -71,6 +72,7 @@ export class CashService {
           totalIncome: 0
         };
         data.forEach(this.updateMonthWise.bind(this));
+        this.onIncomeExpenseChange$.next();
         if (this.changeSubscription) {
           this.changeSubscription.unsubscribe();
         }
@@ -105,6 +107,7 @@ export class CashService {
       if (operation === EFirebaseActionTypes.added && !this.checkAlreadyExisting(item)) {
         this.updateMonthWise(item);
       }
+      this.onIncomeExpenseChange$.next();
     }
   }
 
