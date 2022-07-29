@@ -1,5 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { ECashType, IIncomeExpense } from 'src/app/models/common';
+import { CommonService } from 'src/app/services/common.service';
+import { FirebaseService } from 'src/app/services/firebase.service';
+import { CreateSharedComponent } from '../create-shared/create-shared.component';
 
 @Component({
   selector: 'app-income-expense-item',
@@ -10,8 +14,34 @@ export class IncomeExpenseItemComponent implements OnInit {
 
   @Input() item: IIncomeExpense;
   eCashType = ECashType;
-  constructor() { }
+  constructor(
+    private common: CommonService,
+    private firebase: FirebaseService,
+    private modalController: ModalController
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
+
+  async deleteItem() {
+    if (await this.common.showDeleteConfrmation(this.item.title)) {
+      this.firebase.deleteIncomeExpense(this.item.id).then((r) => {
+        console.log('delete success', r);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    }
+  }
+
+  async editIncomeExpense() {
+    const modal = await this.modalController.create({
+      component: CreateSharedComponent,
+      cssClass: '',
+      componentProps: {
+        editItem: this.item
+      }
+    });
+    return await modal.present();
+  }
 
 }

@@ -1,3 +1,4 @@
 ion-input[type=number]:before {
-    content: "₹" !important;
+    content: "₹ " !important;
+    margin-right: 3px;
 }

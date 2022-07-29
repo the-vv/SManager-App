@@ -42,9 +42,28 @@ export class CashService {
     this.addToCloud(income);
   }
 
+  updateItem(item: IIncomeExpense, id: string) {
+    this.updateToCloud(item, id);
+  }
+
   addToCloud(item: IIncomeExpense) {
     this.config.cloudSyncing.next(true);
     this.supabase.addIncomeExpense(item)
+      .then(res => {
+        console.log(res);
+        item.synced = true;
+        this.storageService.updateOne(item);
+        this.config.cloudSyncing.next(false);
+      })
+      .catch(err => {
+        console.log(err);
+        this.config.cloudSyncing.next(false);
+      });
+  }
+
+  updateToCloud(item: IIncomeExpense, id: string) {
+    this.config.cloudSyncing.next(true);
+    this.supabase.updateIncomeExpense(item, id)
       .then(res => {
         console.log(res);
         item.synced = true;
@@ -61,7 +80,6 @@ export class CashService {
     this.commonService.showSpinner();
     const start = startOfMonth(timestamp);
     const end = endOfMonth(timestamp);
-    console.log(start, end);
     this.supabase.getAllIncomeExpenses(start, end)
       .then((res: any) => {
         const data = res as IIncomeExpense[];
@@ -101,11 +119,41 @@ export class CashService {
       return;
     }
     const operation = payload[0].type;
+    console.log(operation);
     const item = payload[0].data as IIncomeExpenseDB;
     if (this.currentMonthData.month === new Date((item.datetime as FTimeStamp).toDate()).toLocaleDateString(undefined, { month: 'long' }) &&
       this.currentMonthData.year === new Date((item.datetime as FTimeStamp).toDate()).getFullYear()) {
       if (operation === EFirebaseActionTypes.added && !this.checkAlreadyExisting(item)) {
         this.updateMonthWise(item);
+      } else if (operation === EFirebaseActionTypes.removed) {
+        if (item.type === ECashType.income) {
+          this.allIncomes = this.allIncomes.filter(i => i.id !== item.id);
+          this.currentMonthData.totalIncome -= item.amount;
+        } else {
+          this.allExpenses = this.allExpenses.filter(i => i.id !== item.id);
+          this.currentMonthData.totalExpense -= item.amount;
+        }
+      } else if(operation === EFirebaseActionTypes.modified) {
+        item.datetime = (item.datetime as FTimeStamp).toDate();
+        if (item.type === ECashType.income) {
+          this.allIncomes = this.allIncomes.map(i => {
+            if (i.id === item.id) {
+              this.currentMonthData.totalIncome -= i.amount;
+              this.currentMonthData.totalIncome += item.amount;
+              return item as IIncomeExpense;
+            }
+            return i;
+          });
+        } else {
+          this.allExpenses = this.allExpenses.map(i => {
+            if (i.id === item.id) {
+              this.currentMonthData.totalExpense -= i.amount;
+              this.currentMonthData.totalExpense += item.amount;
+              return item as IIncomeExpense;
+            }
+            return i;
+          });
+        }
       }
       this.onIncomeExpenseChange$.next();
     }

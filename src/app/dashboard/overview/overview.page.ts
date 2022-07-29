@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Subscription } from 'rxjs';
@@ -58,7 +58,7 @@ export class OverviewPage implements OnInit {
             responsive: true,
             plugins: {
               datalabels: {
-                formatter: (val) => val + '₹',
+                formatter: (val) => `₹${val}`,
                 labels: {
                   title: {
                     font: {

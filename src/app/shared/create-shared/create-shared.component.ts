@@ -5,7 +5,6 @@ import { ModalController } from '@ionic/angular';
 import { ECashType, IIncomeExpense } from 'src/app/models/common';
 import { CashService } from 'src/app/services/cash.service';
 import { ConfigService } from 'src/app/services/config.service';
-import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-create-shared',
@@ -15,6 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class CreateSharedComponent implements OnInit {
 
   @Input() public type: ECashType;
+  @Input() public editItem: IIncomeExpense;
 
   isExpense: boolean;
 
@@ -40,7 +40,11 @@ export class CreateSharedComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.type = this.type ?? this.editItem.type;
     this.isExpense = this.type === ECashType.expense;
+    if (this.editItem) {
+      this.cashForm.patchValue(this.editItem);
+    }
   }
 
   dismissModal() {
@@ -61,11 +65,16 @@ export class CreateSharedComponent implements OnInit {
         userId: this.config.currentUser.id
       };
       console.log(body);
-      if (this.isExpense) {
-        this.cashService.addExpense(body);
-        this.dismissModal();
+      if (!this.editItem) {
+        if (this.isExpense) {
+          this.cashService.addExpense(body);
+          this.dismissModal();
+        } else {
+          this.cashService.addIncome(body);
+          this.dismissModal();
+        }
       } else {
-        this.cashService.addIncome(body);
+        this.cashService.updateItem(body, this.editItem.id);
         this.dismissModal();
       }
     }

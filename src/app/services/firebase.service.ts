@@ -42,10 +42,34 @@ export class FirebaseService {
     });
   }
 
+  deleteIncomeExpense(id: string) {
+    return new Promise((resolve, reject) => {
+      console.log('delete income expense', id);
+      this.firestore.doc(`${ECollectionNames.statements}/${id}`).delete()
+        .then(dbRes => {
+          resolve(dbRes);
+        }, err => {
+          reject(err);
+        });
+    });
+  }
+
+  updateIncomeExpense(incomeExpense: IIncomeExpense, id: string) {
+    return new Promise((resolve, reject) => {
+      this.firestore.doc(`${ECollectionNames.statements}/${id}`).update(incomeExpense)
+        .then(dbRes => {
+          resolve(dbRes);
+        }, err => {
+          reject(err);
+        });
+    });
+  }
+
   getAllIncomeExpenses(start: Date, end: Date) {
     return new Promise((resolve, reject) => {
       this.firestore.collection(ECollectionNames.statements, ref => ref.where('userId', '==', this.config.currentUser.id)
-        .where('datetime', '>=', start).where('datetime', '<=', end)).valueChanges().pipe(take(1))
+        .where('datetime', '>=', start).where('datetime', '<=', end).orderBy('datetime', 'desc'))
+        .valueChanges({ idField: 'id' }).pipe(take(1))
         .subscribe({
           next: (dbRes) => {
             resolve(dbRes);

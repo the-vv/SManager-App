@@ -3,9 +3,9 @@ import { IUser } from '../models/user';
 import { HttpService } from './http.service';
 import { Storage } from '@capacitor/storage';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 import { EStorageKeyNames } from '../models/common';
 import { ConfigService } from './config.service';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,8 @@ export class UserService {
 
   constructor(private http: HttpService,
     private router: Router,
-    private config: ConfigService) { }
+    private config: ConfigService,
+    private auth: AngularFireAuth) { }
 
   setUser(user: IUser) {
     Storage.set({
@@ -42,6 +43,7 @@ export class UserService {
     });
     this.config.currentUser = null;
     this.config.isLoggedIn = false;
+    await this.auth.signOut();
     this.config.authEvents.next(null);
     this.router.navigate(['login'], { replaceUrl: true });
   }

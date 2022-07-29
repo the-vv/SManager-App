@@ -51,6 +51,7 @@ export enum ECollectionNames {
 export enum EFirebaseActionTypes {
     added = 'added',
     modified = 'modified',
+    removed = 'removed'
 }
 
 export enum EPageTypes {
