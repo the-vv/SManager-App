@@ -1,0 +1,8 @@
+<ion-icon *ngIf="!popMode" (click)="presentPopover($event)" name="calendar-outline" slot="icon-only" color="primary" (click)="null">
+</ion-icon>
+<div *ngIf="popMode">
+  <ion-datetime [max]="maxDate" prefer-wheel="true" show-default-time-label="true" show-default-buttons="true"
+    presentation="month-year" locale="en" [(ngModel)]="selection" (ngModelChange)="onChange($event)">
+    <span slot="title">Select Active Month and Year</span>
+  </ion-datetime>
+</div>

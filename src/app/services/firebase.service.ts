@@ -44,7 +44,6 @@ export class FirebaseService {
 
   deleteIncomeExpense(id: string) {
     return new Promise((resolve, reject) => {
-      console.log('delete income expense', id);
       this.firestore.doc(`${ECollectionNames.statements}/${id}`).delete()
         .then(dbRes => {
           resolve(dbRes);

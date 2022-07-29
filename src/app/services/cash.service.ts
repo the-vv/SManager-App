@@ -49,10 +49,10 @@ export class CashService {
   addToCloud(item: IIncomeExpense) {
     this.config.cloudSyncing.next(true);
     this.supabase.addIncomeExpense(item)
-      .then(res => {
+      .then(async (res) => {
         console.log(res);
         item.synced = true;
-        this.storageService.updateOne(item);
+        await this.storageService.updateOne(item);
         this.config.cloudSyncing.next(false);
       })
       .catch(err => {
@@ -64,10 +64,10 @@ export class CashService {
   updateToCloud(item: IIncomeExpense, id: string) {
     this.config.cloudSyncing.next(true);
     this.supabase.updateIncomeExpense(item, id)
-      .then(res => {
+      .then(async (res) => {
         console.log(res);
         item.synced = true;
-        this.storageService.updateOne(item);
+        await this.storageService.updateOne(item);
         this.config.cloudSyncing.next(false);
       })
       .catch(err => {
@@ -78,6 +78,7 @@ export class CashService {
 
   setup(timestamp: Date) {
     this.commonService.showSpinner();
+    this.clearAll();
     const start = startOfMonth(timestamp);
     const end = endOfMonth(timestamp);
     this.supabase.getAllIncomeExpenses(start, end)

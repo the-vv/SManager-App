@@ -6,13 +6,15 @@ import { CreateSharedComponent } from './create-shared/create-shared.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { IncomeExpenseItemComponent } from './income-expense-item/income-expense-item.component';
+import { MonthChooseComponent } from './month-choose/month-choose.component';
 
 @NgModule({
   declarations: [
     CloudSyncComponent,
     FabComponent,
     CreateSharedComponent,
-    IncomeExpenseItemComponent
+    IncomeExpenseItemComponent,
+    MonthChooseComponent
   ],
   imports: [
     CommonModule,
@@ -23,7 +25,8 @@ import { IncomeExpenseItemComponent } from './income-expense-item/income-expense
   exports: [
     CloudSyncComponent,
     FabComponent,
-    IncomeExpenseItemComponent
+    IncomeExpenseItemComponent,
+    MonthChooseComponent
   ]
 })
 export class SharedModule { }

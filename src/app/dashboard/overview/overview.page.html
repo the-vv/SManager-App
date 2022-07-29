@@ -5,16 +5,18 @@
     </ion-buttons>
     <ion-title>Overview</ion-title>
     <ion-buttons slot="end">
+      <app-month-choose class="mr-2"></app-month-choose>
       <app-cloud-sync></app-cloud-sync>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-card class="" *ngIf="cashService.currentMonthData" [ngClass]="'rounded-3xl'">
+  <ion-card class="" *ngIf="cashService.currentMonthData; else skelton" [ngClass]="'rounded-3xl'">
     <ion-card-header class="pb-0 mb-0">
       <ion-card-title>This Month Overview</ion-card-title>
-      <ion-card-subtitle>{{cashService.currentMonthData.month}} {{cashService.currentMonthData.year}}</ion-card-subtitle>
+      <ion-card-subtitle>{{cashService.currentMonthData.month}} {{cashService.currentMonthData.year}}
+      </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <div class="text-center my-2">
@@ -58,3 +60,36 @@
 <ion-footer>
   <app-fab></app-fab>
 </ion-footer>
+
+<ng-template #skelton>
+  <ion-card class="" [ngClass]="'rounded-3xl'">
+    <ion-card-header class="pb-0 mb-0">
+      <ion-card-title>
+        <ion-skeleton-text animated style="width: 60%; height: 15px;" class="mb-2"></ion-skeleton-text>
+      </ion-card-title>
+      <ion-card-subtitle>
+        <ion-skeleton-text animated style="width: 60%" class="mb-2"></ion-skeleton-text>
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="text-center my-2">
+        <div class="grid grid-cols-2 gap-2">
+          <ion-text
+            class="text-2xl py-1 text-white font-bold font-sans bg-opacity-40 bg-green-500 rounded-lg px-1 flex ion-align-items-center justify-center">
+            <!-- <ion-icon name="wallet-outline" class="mr-1"></ion-icon> -->
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </ion-text>
+          <ion-text
+            class="text-2xl py-1 text-white font-bold font-sans bg-opacity-40 bg-red-500 rounded-lg px-1 flex ion-align-items-center justify-center">
+            <!-- <ion-icon name="cash-outline" class="mr-1"></ion-icon> -->
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </ion-text>
+        </div>
+        <ion-text
+          class="text-2xl py-1 font-bold font-sans mt-1 bg-blue-600 bg-opacity-40 text-white rounded-lg px-1 flex ion-align-items-center justify-center">
+          <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+        </ion-text>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ng-template>

@@ -2,8 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatePickerPlugin, DatePickerPluginInterface } from '@capacitor-community/date-picker';
 import { ModalController } from '@ionic/angular';
+import { startOfMonth } from 'date-fns';
 import { ECashType, IIncomeExpense } from 'src/app/models/common';
 import { CashService } from 'src/app/services/cash.service';
+import { CommonService } from 'src/app/services/common.service';
 import { ConfigService } from 'src/app/services/config.service';
 
 @Component({
@@ -19,14 +21,14 @@ export class CreateSharedComponent implements OnInit {
   isExpense: boolean;
 
   public cashForm: FormGroup;
-  public currentTime: string = new Date().toISOString();
-  private datePicker: DatePickerPluginInterface = DatePickerPlugin;
+  public currentTime: string = this.common.toLocaleIsoDateString(new Date());
 
   constructor(
     public modalController: ModalController,
     private formBuilder: FormBuilder,
     public cashService: CashService,
-    private config: ConfigService
+    private config: ConfigService,
+    private common: CommonService
   ) {
     this.cashForm = this.formBuilder.group({
       title: ['', Validators.required],
@@ -40,10 +42,17 @@ export class CreateSharedComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (startOfMonth(new Date()).toLocaleDateString(undefined, { month: 'long' }) !== this.cashService.currentMonthData.month) {
+      this.currentTime = this.common.toLocaleIsoDateString(new Date(
+        Date.parse(`${this.cashService.currentMonthData.month} 1, ${this.cashService.currentMonthData.year}`)
+      ));
+      this.cashForm.controls.datetime.setValue(this.currentTime);
+    }
     this.type = this.type ?? this.editItem.type;
     this.isExpense = this.type === ECashType.expense;
     if (this.editItem) {
       this.cashForm.patchValue(this.editItem);
+      this.cashForm.controls.datetime.setValue(this.common.toLocaleIsoDateString(this.editItem.datetime as Date));
     }
   }
 
@@ -69,29 +78,18 @@ export class CreateSharedComponent implements OnInit {
         if (this.isExpense) {
           this.cashService.addExpense(body);
           this.dismissModal();
+          this.common.showToast(`${this.type.charAt(0).toUpperCase() + this.type.slice(1)} Created Successfully`);
         } else {
           this.cashService.addIncome(body);
           this.dismissModal();
+          this.common.showToast(`${this.type.charAt(0).toUpperCase() + this.type.slice(1)} Created Successfully`);
         }
       } else {
         this.cashService.updateItem(body, this.editItem.id);
         this.dismissModal();
+        this.common.showToast(`${this.type.charAt(0).toUpperCase() + this.type.slice(1)} Updated Successfully`);
       }
     }
-  }
-
-  public showDatePicker() {
-    this.datePicker.present({
-      date: new Date().toISOString(),
-      theme: 'dark',
-    }).then((result: any) => {
-      console.log(result.value);
-      // this.cashForm.controls.datetime.setValue(result.value.toISOString());
-    }, err => {
-      console.log(err);
-    }).catch((err: any) => {
-      console.log(err);
-    });
   }
 
 }
