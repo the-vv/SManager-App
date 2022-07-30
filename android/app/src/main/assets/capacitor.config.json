@@ -9,14 +9,14 @@
 			"backgroundColor": "#000",
 			"androidSplashResourceName": "splash",
 			"androidScaleType": "CENTER_CROP",
-			"showSpinner": true,
-			"androidSpinnerStyle": "large",
+			"showSpinner": false,
+			"androidSpinnerStyle": "small",
 			"iosSpinnerStyle": "small",
 			"spinnerColor": "#999999",
 			"splashFullScreen": true,
 			"splashImmersive": true,
 			"layoutName": "launch_screen",
-			"useDialog": true
+			"useDialog": false
 		},
 		"GoogleAuth": {
 			"scopes": [
@@ -31,8 +31,5 @@
 			"theme": "dark",
 			"format": "dd/MM/yyyy"
 		}
-	},
-	"server": {
-		"url": "http://192.168.1.36:8100"
 	}
 }
