@@ -47,7 +47,7 @@ export class LoginPage implements OnInit {
         grantOfflineAccess: true,
       });
     });
-    console.log('web');
+    // console.log('web');
   }
 
   gLogin() {
@@ -68,11 +68,11 @@ export class LoginPage implements OnInit {
             this.router.navigate(['/dashboard'], { replaceUrl: true });
           });
         }).catch(err => {
-          console.log(err);
+          // console.log(err);
         });
     }).catch(err => {
       this.common.hideSpinner();
-      console.log(err);
+      // console.log(err);
       this.errorMessages = err.error?.status ? err.error.status : 'Something went wrong, Please try again later';
     });
   }

@@ -1,4 +1,5 @@
 import firebase from 'firebase/compat';
+import { environment } from 'src/environments/environment';
 import Timestamp = firebase.firestore.Timestamp;
 
 export type FTimeStamp = Timestamp;
@@ -42,11 +43,12 @@ export enum EStorageKeyNames {
     user = 'user'
 }
 
-export enum ECollectionNames {
-    users = 'users',
-    statements = 'statements',
-    basicDetals = 'basicDetals',
-}
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const ECollectionNames = {
+    users:  environment.production ? 'users' : 'users-dev',
+    statements:  environment.production ? 'statements' : 'statements-dev',
+    basicDetals:  environment.production ? 'basicDetals' : 'basicdetails-dev',
+};
 
 export enum EFirebaseActionTypes {
     added = 'added',

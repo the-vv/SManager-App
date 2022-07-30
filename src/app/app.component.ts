@@ -17,7 +17,7 @@ export class AppComponent {
     private menu: MenuController,
     private config: ConfigService) {
     this.user.getUser().then(async (u) => {
-      console.log(u);
+      // console.log(u);
       if (u) {
         await this.router.navigate(['/dashboard'], { replaceUrl: true });
         SplashScreen.hide();
@@ -34,9 +34,9 @@ export class AppComponent {
   }
 
   ionViewDidEnter() {
-    console.log('view');
+    // console.log('view');
     this.config.authEvents.subscribe(user => {
-      console.log(user);
+      // console.log(user);
       if(user) {
         this.menu.enable(true, 'main');
       } else {

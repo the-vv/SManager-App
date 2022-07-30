@@ -12,11 +12,11 @@
     <ion-card-header class="ion-justify-content-center">
       <ion-item lines="none">
         <ion-avatar slot="start">
-          <img [src]="config.currentUser.imageUrl ? config.currentUser.imageUrl : 'assets/images/avatar-alt.png'">
+          <img [src]="config.currentUser?.imageUrl ? config.currentUser.imageUrl : 'assets/images/avatar-alt.png'">
         </ion-avatar>
         <ion-label>
-          <ion-text class="h4">{{config.currentUser.name}}</ion-text>
-          <ion-text class="d-block" color="medium"><small>{{config.currentUser.email}}</small></ion-text>
+          <ion-text class="h4">{{config.currentUser?.name}}</ion-text>
+          <ion-text class="d-block" color="medium"><small>{{config.currentUser?.email}}</small></ion-text>
         </ion-label>
       </ion-item>
     </ion-card-header>

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
-import { MenuController } from '@ionic/angular';
 import { ConfigService } from 'src/app/services/config.service';
 
 @Component({

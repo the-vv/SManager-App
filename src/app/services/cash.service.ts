@@ -33,12 +33,12 @@ export class CashService {
    }
 
   addExpense(expense: IIncomeExpense) {
-    console.log(this.allExpenses);
+    // console.log(this.allExpenses);
     this.addToCloud(expense);
   }
 
   addIncome(income: IIncomeExpense) {
-    console.log(this.allIncomes);
+    // console.log(this.allIncomes);
     this.addToCloud(income);
   }
 

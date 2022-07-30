@@ -23,7 +23,7 @@ export class FirebaseService {
     return new Promise((resolve, reject) => {
       this.firestore.doc(`${ECollectionNames.users}/${user.id}`).set(user, { merge: true })
         .then(dbRes => {
-          console.log(dbRes);
+          // console.log(dbRes);
           resolve(dbRes);
         }, err => {
           reject(err);
@@ -81,7 +81,7 @@ export class FirebaseService {
   }
 
   onIncomeExpenseChange(callback: (payload: any) => void) {
-    console.log('init value changes');
+    // console.log('init value changes');
     return this.firestore.collection(ECollectionNames.statements, ref => ref.where('userId', '==', this.config.currentUser.id))
       .stateChanges()
       .pipe(map(res => res.map(doc => ({

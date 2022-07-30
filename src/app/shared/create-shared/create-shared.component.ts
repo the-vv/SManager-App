@@ -73,7 +73,7 @@ export class CreateSharedComponent implements OnInit {
         synced: false,
         userId: this.config.currentUser.id
       };
-      console.log(body);
+      // console.log(body);
       if (!this.editItem) {
         if (this.isExpense) {
           this.cashService.addExpense(body);

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { ECashType } from 'src/app/models/common';
 import { CreateSharedComponent } from '../create-shared/create-shared.component';
@@ -10,11 +11,19 @@ import { CreateSharedComponent } from '../create-shared/create-shared.component'
 })
 export class FabComponent implements OnInit {
 
+  isOverViewPage = false;
+
   constructor(
-    public modalController: ModalController
+    public modalController: ModalController,
+    private router: Router
   ) { }
 
-  ngOnInit() {}
+
+  ngOnInit() {
+    if (this.router.url.includes('overview')) {
+      this.isOverViewPage = true;
+    }
+  }
 
   async createExpense() {
     const modal = await this.modalController.create({
@@ -35,6 +44,18 @@ export class FabComponent implements OnInit {
       }
     });
     return await modal.present();
+  }
+
+  onAdd() {
+    if(this.isOverViewPage) {
+      return;
+    }
+    if (this.router.url.includes('expense')) {
+      this.createExpense();
+    }
+    if (this.router.url.includes('income')) {
+      this.createIncome();
+    }
   }
 
 }

@@ -55,7 +55,7 @@ export class CommonService {
         ]
       });
       await alert.present();
-      console.log('showDeleteConfrmation');
+      // console.log('showDeleteConfrmation');
     });
   }
 
@@ -69,9 +69,6 @@ export class CommonService {
         {
           text: 'Dismiss',
           role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
         }
       ];
     }
