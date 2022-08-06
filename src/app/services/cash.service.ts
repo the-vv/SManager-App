@@ -30,7 +30,7 @@ export class CashService {
         this.clearAll();
       }
     });
-   }
+  }
 
   addExpense(expense: IIncomeExpense) {
     // console.log(this.allExpenses);
@@ -109,9 +109,15 @@ export class CashService {
     if (newItem.type === ECashType.income) {
       this.allIncomes.push(newItem);
       this.currentMonthData.totalIncome += newItem.amount;
+      this.allIncomes.sort((a, b) => (
+        new Date(b.datetime).getTime() - new Date(a.datetime).getTime()
+      ));
     } else {
       this.allExpenses.push(newItem);
       this.currentMonthData.totalExpense += newItem.amount;
+      this.allExpenses.sort((a, b) => (
+        new Date(b.datetime).getTime() - new Date(a.datetime).getTime()
+      ));
     }
   }
 
@@ -134,7 +140,7 @@ export class CashService {
           this.allExpenses = this.allExpenses.filter(i => i.id !== item.id);
           this.currentMonthData.totalExpense -= item.amount;
         }
-      } else if(operation === EFirebaseActionTypes.modified) {
+      } else if (operation === EFirebaseActionTypes.modified) {
         item.datetime = (item.datetime as FTimeStamp).toDate();
         if (item.type === ECashType.income) {
           this.allIncomes = this.allIncomes.map(i => {
