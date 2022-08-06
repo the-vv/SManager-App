@@ -13,6 +13,7 @@ export interface IIncomeExpense {
     amount: number;
     synced: boolean;
     userId: string;
+    accountId?: string;
 }
 
 export interface IIncomeExpenseDB {
@@ -24,6 +25,7 @@ export interface IIncomeExpenseDB {
     amount: number;
     synced: boolean;
     userId: string;
+    accountId?: string;
 }
 
 export enum ECashType {
@@ -40,7 +42,8 @@ export interface IMonthWise {
 
 export enum EStorageKeyNames {
     uuidKeys = 'keys',
-    user = 'user'
+    user = 'user',
+    defaultAccount = 'defaultAccount',
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -48,7 +51,7 @@ export const ECollectionNames = {
     users: environment.production ? 'users' : 'users-dev',
     statements: environment.production ? 'statements' : 'statements-dev',
     basicDetals: environment.production ? 'basicDetals' : 'basicdetails-dev',
-    accounts: environment.production ? 'accounts' : 'accounts-dev',
+    accounts: environment.production ? 'bank-accounts' : 'bank-accounts-dev',
 };
 
 export enum EFirebaseActionTypes {
@@ -82,3 +85,4 @@ export interface IAccount {
     name: string;
     userId: string;
 }
+

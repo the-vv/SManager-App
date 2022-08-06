@@ -16,16 +16,17 @@ export class CommonService {
     public alertCtrl: AlertController
   ) { }
 
-  async showSpinner() {
+  async showSpinner(message = 'Please wait...') {
     this.isLoading = true;
     this.loader = await this.loadingController.create({
       cssClass: '',
-      message: 'Please wait...',
+      message,
     });
     await this.loader.present();
     if (!this.isLoading) {
       this.loader.dismiss();
     }
+    return;
   }
 
   async hideSpinner() {

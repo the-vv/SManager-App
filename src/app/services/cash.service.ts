@@ -6,7 +6,8 @@ import { CommonService } from './common.service';
 import { ConfigService } from './config.service';
 import { StorageService } from './storage.service';
 import { FirebaseService } from './firebase.service';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription, take } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -21,9 +22,10 @@ export class CashService {
 
   constructor(
     private storageService: StorageService,
-    private supabase: FirebaseService,
+    private firebase: FirebaseService,
     private config: ConfigService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private router: Router
   ) {
     this.config.authEvents.subscribe(user => {
       if (!user) {
@@ -48,7 +50,7 @@ export class CashService {
 
   addToCloud(item: IIncomeExpense) {
     this.config.cloudSyncing.next(true);
-    this.supabase.addIncomeExpense(item)
+    this.firebase.addIncomeExpense(item)
       .then(async (res) => {
         console.log(res);
         item.synced = true;
@@ -63,7 +65,7 @@ export class CashService {
 
   updateToCloud(item: IIncomeExpense, id: string) {
     this.config.cloudSyncing.next(true);
-    this.supabase.updateIncomeExpense(item, id)
+    this.firebase.updateIncomeExpense(item, id)
       .then(async (res) => {
         console.log(res);
         item.synced = true;
@@ -79,28 +81,58 @@ export class CashService {
   setup(timestamp: Date) {
     this.commonService.showSpinner();
     this.clearAll();
-    const start = startOfMonth(timestamp);
-    const end = endOfMonth(timestamp);
-    this.supabase.getAllIncomeExpenses(start, end)
-      .then((res: any) => {
-        const data = res as IIncomeExpense[];
-        this.currentMonthData = {
-          month: startOfMonth(timestamp).toLocaleDateString(undefined, { month: 'long' }),
-          year: startOfMonth(timestamp).getFullYear(),
-          totalExpense: 0,
-          totalIncome: 0
-        };
-        data.forEach(this.updateMonthWise.bind(this));
-        this.onIncomeExpenseChange$.next();
-        if (this.changeSubscription) {
-          this.changeSubscription.unsubscribe();
-        }
-        this.changeSubscription = this.supabase.onIncomeExpenseChange(this.onChangeItem.bind(this));
+    this.firebase.getUserAccounts().pipe(take(1)).subscribe(async (accounts) => {
+      if (!accounts?.length) {
         this.commonService.hideSpinner();
-      }).catch(err => {
-        console.log(err);
-        this.commonService.hideSpinner();
-      });
+        this.commonService.alertCtrl.create({
+          header: 'No Bank Accounts',
+          message: 'You have no bank accounts. Please add an account to continue.',
+          buttons: [
+            {
+              text: 'Cancel',
+              role: 'cancel',
+              cssClass: 'secondary',
+            }, {
+              text: 'Add',
+              handler: () => {
+                this.router.navigate(['/dashboard/account']);
+              }
+            }
+          ]
+        }).then(alert => {
+          alert.present();
+        });
+        return;
+      }
+      this.config.currentUserAccounts = accounts;
+      const defaultAccountId = await this.storageService.getDefaultAccount();
+      if (!defaultAccountId) {
+        this.storageService.setDefaultAccount(accounts[0].id);
+      }
+      this.config.currentAccountId = defaultAccountId?.length ? defaultAccountId : accounts[0].id;
+      const start = startOfMonth(timestamp);
+      const end = endOfMonth(timestamp);
+      this.firebase.getAllIncomeExpenses(start, end, this.config.currentAccountId)
+        .then((res: any) => {
+          const data = res as IIncomeExpense[];
+          this.currentMonthData = {
+            month: startOfMonth(timestamp).toLocaleDateString(undefined, { month: 'long' }),
+            year: startOfMonth(timestamp).getFullYear(),
+            totalExpense: 0,
+            totalIncome: 0
+          };
+          data.forEach(this.updateMonthWise.bind(this));
+          this.onIncomeExpenseChange$.next();
+          if (this.changeSubscription) {
+            this.changeSubscription.unsubscribe();
+          }
+          this.changeSubscription = this.firebase.onIncomeExpenseChange(this.onChangeItem.bind(this));
+          this.commonService.hideSpinner();
+        }).catch(err => {
+          console.log(err);
+          this.commonService.hideSpinner();
+        });
+    });
   }
 
   updateMonthWise(item: IIncomeExpenseDB) {

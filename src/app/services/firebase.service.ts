@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 // import { createClient, SupabaseClient, } from '@supabase/supabase-js';
 import { environment } from 'src/environments/environment';
-import { ECollectionNames, IAccount, IIncomeExpense } from '../models/common';
+import { ECollectionNames, IAccount, IIncomeExpense, IIncomeExpenseDB } from '../models/common';
 import { IUser } from '../models/user';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from './config.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { map, take, tap } from 'rxjs';
+import { filter, map, take, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -64,10 +64,14 @@ export class FirebaseService {
     });
   }
 
-  getAllIncomeExpenses(start: Date, end: Date) {
+  getAllIncomeExpenses(start: Date, end: Date, accountId: string) {
     return new Promise((resolve, reject) => {
-      this.firestore.collection(ECollectionNames.statements, ref => ref.where('userId', '==', this.config.currentUser.id)
-        .where('datetime', '>=', start).where('datetime', '<=', end).orderBy('datetime', 'desc'))
+      this.firestore.collection(ECollectionNames.statements, ref => ref
+        .where('userId', '==', this.config.currentUser.id)
+        .where('datetime', '>=', start)
+        .where('datetime', '<=', end)
+        .where('accountId', '==', accountId)
+        .orderBy('datetime', 'desc'))
         .valueChanges({ idField: 'id' }).pipe(take(1))
         .subscribe({
           next: (dbRes) => {
@@ -82,7 +86,9 @@ export class FirebaseService {
 
   onIncomeExpenseChange(callback: (payload: any) => void) {
     // console.log('init value changes');
-    return this.firestore.collection(ECollectionNames.statements, ref => ref.where('userId', '==', this.config.currentUser.id))
+    return this.firestore.collection(ECollectionNames.statements, ref => ref
+      .where('userId', '==', this.config.currentUser.id)
+      .where('accountId', '==', this.config.currentAccountId))
       .stateChanges()
       .pipe(map(res => res.map(doc => ({
         data: {
@@ -109,6 +115,20 @@ export class FirebaseService {
   getUserAccounts() {
     return this.firestore.collection<IAccount>(ECollectionNames.accounts, ref => ref.where('userId', '==', this.config.currentUser.id))
       .valueChanges({ idField: 'id' });
+  }
+
+  getAllUserIncomeExpenseItems() {
+    return this.firestore.collection<IIncomeExpenseDB>(ECollectionNames.statements,
+      ref => ref.where('userId', '==', this.config.currentUser.id))
+      .valueChanges({ idField: 'id' });
+  }
+
+  updateMultipleIncomeExpenseItems(incomeExpenseItems: IIncomeExpenseDB[]) {
+    const updateArray: Promise<any>[] = [];
+    incomeExpenseItems.forEach(incomeExpenseItem => {
+      updateArray.push(this.updateIncomeExpense(incomeExpenseItem as IIncomeExpense, incomeExpenseItem.id));
+    });
+    return Promise.all(updateArray);
   }
 
 }

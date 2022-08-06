@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { IAccount } from '../models/common';
 import { IUser } from '../models/user';
 
 @Injectable({
@@ -11,6 +12,9 @@ export class ConfigService {
   public authEvents: BehaviorSubject<IUser | null> = new BehaviorSubject(null);
   public isLoggedIn = false;
   public cloudSyncing: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public currentUserAccounts: IAccount[] = [];
+  public currentAccountId = '';
+  public preventAppClose = false;
 
   constructor() { }
 }

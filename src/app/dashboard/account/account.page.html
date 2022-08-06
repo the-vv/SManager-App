@@ -59,13 +59,22 @@
     <ion-card-header>
       <div class="flex justify-between ion-align-items-center">
         <ion-label>Your Bank Accounts</ion-label>
-        <ion-button color="primary" shape="round" size="small" (click)="addAccountsPopup()">
+        <ion-button color="primary" shape="round" size="small" [disabled]="!connectivity.isOnline"
+          (click)="addAccountsPopup()">
           <ion-icon slot="icon-only" name="add"></ion-icon>
         </ion-button>
       </div>
     </ion-card-header>
     <ion-card-content>
-
+      <ion-list>
+        <ion-item *ngFor="let account of allAccounts">
+          <ion-label>{{account.name}}</ion-label>
+          <!-- <ion-button color="primary" shape="round" size="small" [disabled]="!connectivity.isOnline"
+            (click)="editAccountPopup(account)">
+            <ion-icon slot="icon-only" name="create"></ion-icon>
+          </ion-button> -->
+        </ion-item>
+      </ion-list>
     </ion-card-content>
   </ion-card>
   <ion-card class="rounded-3xl">
