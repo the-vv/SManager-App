@@ -75,12 +75,15 @@ export class OverviewPage implements OnInit {
       const now = new Date();
       const currentDays = Array(new Date(now.getFullYear(), now.getMonth() + 1, now.getDate()).getDate()).fill(0).map((_, i) => i + 1);
       const currentIncomes = currentDays.map(day => {
-        const income = this.cashService.allIncomes.find(i => (i.datetime as Date).getDate() === day);
-        return income ? income.amount : 0;
+        const income = this.cashService.allIncomes
+          .filter(i => (i.datetime as Date).getDate() === day)
+          .reduce((acc, curr) => acc + curr.amount, 0);
+        return income ? income : 0;
       });
       const currentExpenses = currentDays.map(day => {
-        const expense = this.cashService.allExpenses.find(i => (i.datetime as Date).getDate() === day);
-        return expense ? expense.amount : 0;
+        const expense = this.cashService.allExpenses.filter(i => (i.datetime as Date).getDate() === day)
+          .reduce((acc, curr) => acc + curr.amount, 0);
+        return expense ? expense : 0;
       });
       this.chartRenders.push(
         new Chart(this.lineCanvas.nativeElement, {
