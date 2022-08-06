@@ -20,6 +20,9 @@
         </ion-label>
       </ion-item>
     </ion-card-header>
+    <ion-card-content>
+      <ion-label class="text-sm center text-center block">Many more features are coning soon...!</ion-label>
+    </ion-card-content>
   </ion-card>
 
   <ion-card [hidden]="true" class="rounded-3xl">
@@ -54,14 +57,26 @@
   </ion-card>
   <ion-card class="rounded-3xl">
     <ion-card-header>
+      <div class="flex justify-between ion-align-items-center">
+        <ion-label>Your Bank Accounts</ion-label>
+        <ion-button color="primary" shape="round" size="small" (click)="addAccountsPopup()">
+          <ion-icon slot="icon-only" name="add"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-card-header>
+    <ion-card-content>
+
+    </ion-card-content>
+  </ion-card>
+  <ion-card class="rounded-3xl">
+    <ion-card-header>
       <ion-label>
-        Account
+        Actions
       </ion-label>
     </ion-card-header>
     <ion-card-content>
       <ion-button [hidden]="true" color="warning" expand="block" (click)="confirmClear()">Clear History</ion-button>
       <ion-button color="danger" expand="block" class="ion-margin-top" (click)="onLogout()">Logout</ion-button>
-      <ion-label class="text-sm center text-center block pt-2">Many more features are coning soon...!</ion-label>
     </ion-card-content>
   </ion-card>
 </ion-content>

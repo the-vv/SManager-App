@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 // import { createClient, SupabaseClient, } from '@supabase/supabase-js';
 import { environment } from 'src/environments/environment';
-import { ECollectionNames, IIncomeExpense } from '../models/common';
+import { ECollectionNames, IAccount, IIncomeExpense } from '../models/common';
 import { IUser } from '../models/user';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from './config.service';
@@ -92,4 +92,23 @@ export class FirebaseService {
         type: doc.type
       })))).subscribe(callback);
   }
+
+  createAccount(accountName: string) {
+    return new Promise((resolve, reject) => {
+      this.firestore.collection(ECollectionNames.accounts).add({
+        name: accountName,
+        userId: this.config.currentUser.id
+      }).then(dbRes => {
+        resolve(dbRes);
+      }).catch(err => {
+        reject(err);
+      });
+    });
+  }
+
+  getUserAccounts() {
+    return this.firestore.collection<IAccount>(ECollectionNames.accounts, ref => ref.where('userId', '==', this.config.currentUser.id))
+      .valueChanges({ idField: 'id' });
+  }
+
 }
