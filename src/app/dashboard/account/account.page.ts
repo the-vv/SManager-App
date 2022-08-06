@@ -147,21 +147,21 @@ export class AccountPage implements OnInit {
   async createAccountAndMap(name: string, items: IIncomeExpenseDB[]) {
     await this.common.showSpinner('Creating Account...\nDon\'t Close The App');
     this.config.preventAppClose = true;
-    this.firebase.createAccount(name).then((accountRef: any) => {
-      this.common.hideSpinner();
-      this.common.showSpinner('Mapping Items...');
+    this.firebase.createAccount(name).then(async (accountRef: any) => {
+      await this.common.hideSpinner();
+      await this.common.showSpinner('Mapping Items...');
       items.forEach(item => {
         item.accountId = accountRef.id;
       });
       this.firebase.updateMultipleIncomeExpenseItems(items).then(() => {
         this.common.hideSpinner();
         this.config.preventAppClose = false;
-        this.common.showToast('Account created successfully');
+        this.common.showToast('Account created and mapped successfully');
         this.cashService.setup(new Date());
       }).catch(() => {
         this.config.preventAppClose = false;
         this.common.hideSpinner();
-        this.common.showToast('Account creation failed');
+        this.common.showToast('mapping failed');
       });
     }).catch(() => {
       this.config.preventAppClose = false;

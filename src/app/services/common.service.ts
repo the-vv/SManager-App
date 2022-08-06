@@ -31,7 +31,7 @@ export class CommonService {
 
   async hideSpinner() {
     this.isLoading = false;
-    this.loadingController.dismiss();
+    return this.loadingController.dismiss();
   }
 
   public showDeleteConfrmation(item: string) {

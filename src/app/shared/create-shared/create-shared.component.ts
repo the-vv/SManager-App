@@ -34,7 +34,8 @@ export class CreateSharedComponent implements OnInit {
       title: ['', Validators.required],
       description: [''],
       amount: ['', Validators.required],
-      datetime: [this.currentTime, Validators.required]
+      datetime: [this.currentTime, Validators.required],
+      accountId: [this.config.currentAccountId, Validators.required]
     });
   }
   get f() {
@@ -71,7 +72,8 @@ export class CreateSharedComponent implements OnInit {
         amount: this.cashForm.value.amount,
         type: this.isExpense ? ECashType.expense : ECashType.income,
         synced: false,
-        userId: this.config.currentUser.id
+        userId: this.config.currentUser.id,
+        accountId: this.cashForm.value.accountId
       };
       // console.log(body);
       if (!this.editItem) {
