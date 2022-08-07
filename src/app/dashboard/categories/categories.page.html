@@ -15,7 +15,10 @@
   <ion-list>
     <ion-list-header>
       <div class="flex justify-between items-center w-full pr-1">
-        <p class="text-xl">Your Categories</p>
+        <div class="text-xl">
+          <p class="p-0 m-0 -mb-2">Your Categories</p>
+          <small class="text-gray-500 text-xs">Swipe left for options</small>
+        </div>
         <ion-button color="primary" class="text-sm" shape="round" size="small" fill="solid" (click)="onAddCategory()">
           <ion-icon name="add"></ion-icon>
           <span>Add</span>
