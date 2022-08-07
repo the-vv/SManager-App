@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { SessionsPageRoutingModule } from './sessions-routing.module';
+import { SessionsPageRoutingModule } from './categories-routing.module';
 
-import { SessionsPage } from './sessions.page';
+import { CategoriesPage } from './categories.page';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
@@ -17,6 +17,6 @@ import { SharedModule } from 'src/app/shared/shared.module';
     SessionsPageRoutingModule,
     SharedModule
   ],
-  declarations: [SessionsPage]
+  declarations: [CategoriesPage]
 })
 export class SessionsPageModule {}

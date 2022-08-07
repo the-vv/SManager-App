@@ -106,7 +106,6 @@ export class CashService {
       }
       this.config.currentUserAccounts = accounts;
       let defaultAccountId = await this.storageService.getDefaultAccount();
-      console.log(defaultAccountId);
       if (!defaultAccountId || !accounts.find(a => a.id === defaultAccountId)) {
         this.storageService.setDefaultAccount(accounts[0].id);
         defaultAccountId = null;
@@ -160,7 +159,6 @@ export class CashService {
       return;
     }
     const operation = payload[0].type;
-    console.log(operation);
     const item = payload[0].data as IIncomeExpenseDB;
     if (this.currentMonthData.month === new Date((item.datetime as FTimeStamp).toDate()).toLocaleDateString(undefined, { month: 'long' }) &&
       this.currentMonthData.year === new Date((item.datetime as FTimeStamp).toDate()).getFullYear()) {

@@ -35,7 +35,6 @@ export class OverviewPage implements OnInit {
       this.firebase.getUserAccounts().subscribe((accounts) => {
         this.allAccounts = accounts;
         this.currentAccount = this.allAccounts.find(el => el.id === this.config.currentAccountId);
-        console.log(this.currentAccount);
       })
     );
     this.currentAccount = this.allAccounts.find(el => el.id === this.config.currentAccountId);

@@ -41,7 +41,6 @@ export class AccountPage implements OnInit {
       this.firebase.getUserAccounts().subscribe((accounts) => {
         this.allAccounts = accounts;
         this.config.currentUserAccounts = accounts;
-        console.log(this.allAccounts);
       })
     );
     this.currentAccount = this.config.currentAccountId;
