@@ -2,7 +2,10 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Subscription } from 'rxjs';
+import { IAccount } from 'src/app/models/common';
 import { CashService } from 'src/app/services/cash.service';
+import { ConfigService } from 'src/app/services/config.service';
+import { FirebaseService } from 'src/app/services/firebase.service';
 Chart.register(...registerables);
 
 @Component({
@@ -16,15 +19,28 @@ export class OverviewPage implements OnInit {
   @ViewChild('lineCanvas') lineCanvas: ElementRef;
   chartRenders: Chart[] = [];
   subs: Subscription = new Subscription();
+  allAccounts: IAccount[] = [];
+  currentAccount: IAccount;
 
   constructor(
-    public cashService: CashService
+    public cashService: CashService,
+    private firebase: FirebaseService,
+    private config: ConfigService
   ) { }
 
   ngOnInit() { }
 
   ionViewDidEnter() {
+    this.subs.add(
+      this.firebase.getUserAccounts().subscribe((accounts) => {
+        this.allAccounts = accounts;
+        this.currentAccount = this.allAccounts.find(el => el.id === this.config.currentAccountId);
+        console.log(this.currentAccount);
+      })
+    );
+    this.currentAccount = this.allAccounts.find(el => el.id === this.config.currentAccountId);
     this.cashService.onIncomeExpenseChange$.subscribe(() => {
+      this.currentAccount = this.allAccounts.find(el => el.id === this.config.currentAccountId);
       if (!this.cashService?.currentMonthData) {
         return;
       }

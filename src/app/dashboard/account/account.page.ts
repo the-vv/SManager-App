@@ -183,10 +183,8 @@ export class AccountPage implements OnInit {
     if(accountId === this.config.currentAccountId) {
       return;
     }
-    console.log(accountId);
     this.config.currentAccountId = accountId;
     await this.storage.setDefaultAccount(accountId);
-    console.log(await this.storage.getDefaultAccount());
     this.cashService.setup(new Date());
     this.currentAccount = accountId;
   }

@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content fullscreen>
-  <div class="ion-text-center h3 font-lighter mt-3 bg-opacity-30 rounded-2xl mx-2 p-2"
+  <div class="ion-text-center h3 font-lighter mt-2 bg-opacity-30 rounded-2xl mx-2 p-2"
     [ngClass]="isExpense ? 'bg-red-500' : 'bg-green-500'">
     {{editItem ? 'Update' : 'Create'}} an {{isExpense ? 'Expense' : 'Income'}}
   </div>
@@ -22,13 +22,14 @@
     <div class="mt-2" id="">
       <ion-item>
         <ion-label position="stacked">Description</ion-label>
-        <ion-textarea placeholder="Enter Description(optional)" formControlName="description"></ion-textarea>
+        <ion-textarea placeholder="Enter Description (optional)" formControlName="description"></ion-textarea>
       </ion-item>
     </div>
     <div class="mt-2">
       <ion-item id="date">
         <ion-label>Choose date</ion-label>
-        <ion-input value="{{ cashForm.value.datetime | date: 'dd MMM YYYY h:mm a' }}" class="ion-text-end" readonly></ion-input>
+        <ion-input value="{{ cashForm.value.datetime | date: 'dd MMM YYYY h:mm a' }}" class="ion-text-end" readonly>
+        </ion-input>
         <ion-popover trigger="date" size="cover" side="top" alignment="center" style="--offset-y: -150px">
           <ng-template>
             <ion-datetime prefer-wheel="true" show-default-time-label="true" show-default-buttons="true"
@@ -37,6 +38,15 @@
         </ion-popover>
       </ion-item>
       <small class="text-danger" *ngIf="f.datetime.errors?.required && f.datetime.touched">Date is required</small>
+    </div>
+    <div class="mt-2" id="">
+      <ion-item>
+        <ion-label position="stacked">Bank Account</ion-label>
+        <ion-select interface="popover" formControlName="accountId" placeholder="Select Bank Account">
+          <ion-select-option [value]="acc.id" *ngFor="let acc of allAccounts">{{acc.name}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <small class="text-danger" *ngIf="f.accountId.errors?.required && f.accountId.touched">Bank Account is required</small>
     </div>
     <div class="mt-2" id="">
       <ion-item>

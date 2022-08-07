@@ -3,10 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatePickerPlugin, DatePickerPluginInterface } from '@capacitor-community/date-picker';
 import { ModalController } from '@ionic/angular';
 import { startOfMonth } from 'date-fns';
-import { ECashType, IIncomeExpense } from 'src/app/models/common';
+import { ECashType, IAccount, IIncomeExpense } from 'src/app/models/common';
 import { CashService } from 'src/app/services/cash.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ConfigService } from 'src/app/services/config.service';
+import { FirebaseService } from 'src/app/services/firebase.service';
 
 @Component({
   selector: 'app-create-shared',
@@ -22,13 +23,15 @@ export class CreateSharedComponent implements OnInit {
 
   public cashForm: FormGroup;
   public currentTime: string = this.common.toLocaleIsoDateString(new Date());
+  public allAccounts: IAccount[] = [];
 
   constructor(
     public modalController: ModalController,
     private formBuilder: FormBuilder,
     public cashService: CashService,
     private config: ConfigService,
-    private common: CommonService
+    private common: CommonService,
+    private firebase: FirebaseService
   ) {
     this.cashForm = this.formBuilder.group({
       title: ['', Validators.required],
@@ -55,6 +58,9 @@ export class CreateSharedComponent implements OnInit {
       this.cashForm.patchValue(this.editItem);
       this.cashForm.controls.datetime.setValue(this.common.toLocaleIsoDateString(this.editItem.datetime as Date));
     }
+    this.firebase.getUserAccounts().subscribe((accounts) => {
+      this.allAccounts = accounts;
+    });
   }
 
   dismissModal() {
