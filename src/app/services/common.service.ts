@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { ToastOptions } from '@ionic/core';
+import { Toast } from '@capacitor/toast';
 
 @Injectable({
   providedIn: 'root'
@@ -64,21 +65,11 @@ export class CommonService {
     });
   }
 
-  async showToast(msg: string, duration: number = 3000, needDismiss: boolean = false) {
-    const options: ToastOptions = {
-      message: msg,
-      duration
-    };
-    if (needDismiss) {
-      options.buttons = [
-        {
-          text: 'Dismiss',
-          role: 'cancel',
-        }
-      ];
-    }
-    const toast = await this.toastController.create(options);
-    toast.present();
+  async showToast(msg: string, duration: number = 3000) {
+    await Toast.show({
+      text: msg,
+      duration: duration > 3000 ? 'short' : 'long',
+    });
   }
 
   toLocaleIsoDateString(date: Date) {
