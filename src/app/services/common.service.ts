@@ -30,8 +30,12 @@ export class CommonService {
   }
 
   async hideSpinner() {
-    this.isLoading = false;
-    return this.loadingController.dismiss();
+    try {
+      this.isLoading = false;
+      this.loadingController.dismiss().catch(() => { });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   public showDeleteConfrmation(item: string) {

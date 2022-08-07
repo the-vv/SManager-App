@@ -105,9 +105,11 @@ export class CashService {
         return;
       }
       this.config.currentUserAccounts = accounts;
-      const defaultAccountId = await this.storageService.getDefaultAccount();
-      if (!defaultAccountId) {
+      let defaultAccountId = await this.storageService.getDefaultAccount();
+      console.log(defaultAccountId);
+      if (!defaultAccountId || !accounts.find(a => a.id === defaultAccountId)) {
         this.storageService.setDefaultAccount(accounts[0].id);
+        defaultAccountId = null;
       }
       this.config.currentAccountId = defaultAccountId?.length ? defaultAccountId : accounts[0].id;
       const start = startOfMonth(timestamp);
@@ -202,7 +204,7 @@ export class CashService {
     this.allExpenses = [];
     this.allIncomes = [];
     this.currentMonthData = undefined;
-    this.storageService.deleteAll();
+    // this.storageService.deleteAll();
   }
 
   checkAlreadyExisting(item: IIncomeExpense | IIncomeExpenseDB) {
