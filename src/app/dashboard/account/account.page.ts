@@ -44,7 +44,6 @@ export class AccountPage implements OnInit {
       })
     );
     this.currentAccount = this.config.currentAccountId;
-    console.log(this.currentAccount);
   }
 
   ionViewDidLeave() {

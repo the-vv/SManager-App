@@ -30,7 +30,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'overview',
+        redirectTo: 'categories',
         pathMatch: 'full'
       }
     ]

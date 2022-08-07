@@ -11,14 +11,19 @@
 </ion-header>
 
 <ion-content>
-  <div class="lex items-stretch h-full flex-col">
-    <ion-label class="flex h-full ion-align-items-center justify-center mx-1">
-      <span class=" rounded-3xl border border-blue-600 p-2">
-        <label class="font-bold block text-center text-xl">Sessions are coming soon..!</label>
-        <label class="font-lighter block text-center mt-1">
-          Sessions allow you to group independent or dependent Incomes/Expenses for a specific period of time.
-        </label>
-      </span>
-    </ion-label>
-  </div>
+  <ion-list>
+    <ion-list-header>
+     <div class="flex justify-between items-center w-full pr-1">
+        <p class="text-xl">Your Categories</p>
+        <ion-button color="primary" class="text-sm" shape="round" fill="solid" (click)="null">
+          <ion-icon name="add"></ion-icon>
+          <span>Add</span>
+        </ion-button>
+     </div>
+    </ion-list-header>
+    <ion-item>
+      <ion-icon size="large" color="primary" [name]="'grid-outline'" slot="start" color="primary"></ion-icon>
+      <ion-label>Pokémon Yellow</ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>

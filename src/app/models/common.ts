@@ -52,6 +52,7 @@ export const ECollectionNames = {
     statements: environment.production ? 'statements' : 'statements-dev',
     basicDetals: environment.production ? 'basicDetals' : 'basicdetails-dev',
     accounts: environment.production ? 'bank-accounts' : 'bank-accounts-dev',
+    categories: environment.production ? 'categories' : 'categories-dev',
 };
 
 export enum EFirebaseActionTypes {
@@ -73,12 +74,6 @@ export interface IUserSettings {
     defaultPage: EPageTypes;
 }
 
-export interface IBasicDetails {
-    settings: IUserSettings;
-    // totalIncome: number;
-    // totalExpense: number;
-    // totalBalance: number;
-}
 
 export interface IAccount {
     id?: string;
@@ -86,3 +81,8 @@ export interface IAccount {
     userId: string;
 }
 
+export interface ICategory {
+    id?: string;
+    name: string;
+    userId: string;
+}
