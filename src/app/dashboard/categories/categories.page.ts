@@ -27,14 +27,12 @@ export class CategoriesPage implements OnInit {
   }
 
   ionViewDidEnter() {
-    console.log('ionViewDidEnter');
     if (this.subs) {
       this.subs.unsubscribe();
     }
     this.subs = this.firebase.getAllUserCategories().subscribe({
       next: (categories) => {
         this.allCategories = categories;
-        console.log(categories);
       },
       error: err => {
         console.log(err);
@@ -72,16 +70,79 @@ export class CategoriesPage implements OnInit {
     alert.onDidDismiss().then((value) => {
       const catName = value?.data?.values?.[0];
       if (catName && value?.role === 'create') {
+        this.config.cloudSyncing.next(true);
         this.firebase.createCategpry({
           name: catName,
           userId: this.config.currentUser.id,
         })
           .then(() => {
+            this.config.cloudSyncing.next(false);
             this.common.showToast('Category created successfully');
           }).catch(err => {
+            this.config.cloudSyncing.next(false);
             console.log(err);
             this.common.showToast('Error creating category');
           });
+      }
+    });
+  }
+
+  async onDeleteCategory(category: ICategory) {
+    if (await this.common.showDeleteConfrmation(category.name)) {
+      this.config.cloudSyncing.next(true);
+      this.firebase.deleteCategory(category.id)
+        .then(() => {
+          this.config.cloudSyncing.next(false);
+          this.common.showToast('Category deleted successfully');
+        }).catch(err => {
+          this.config.cloudSyncing.next(false);
+          console.log(err);
+          this.common.showToast('Error deleting category');
+        }
+        );
+    }
+  }
+
+  async onEditCategory(category: ICategory) {
+    const alert = await this.alertController.create({
+      header: 'Please enter your category info',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Update',
+          role: 'update',
+        }
+      ],
+      inputs: [
+        {
+          placeholder: 'Category Name',
+          label: 'Category Name',
+          value: category.name,
+          attributes: {
+            autocapitalize: true,
+          }
+        }
+      ],
+    });
+    await alert.present();
+    alert.onDidDismiss().then((value) => {
+      const catName = value?.data?.values?.[0];
+      if (catName && value?.role === 'update') {
+        this.config.cloudSyncing.next(true);
+        category.name = catName;
+        this.firebase.updateCategory(category, category.id)
+          .then(() => {
+            this.config.cloudSyncing.next(false);
+            this.common.showToast('Category updated successfully');
+          }).catch(err => {
+            this.config.cloudSyncing.next(false);
+            console.log(err);
+            this.common.showToast('Error updating category');
+          }
+          );
       }
     });
   }

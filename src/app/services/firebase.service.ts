@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
-// import { createClient, SupabaseClient, } from '@supabase/supabase-js';
-import { environment } from 'src/environments/environment';
 import { ECollectionNames, IAccount, ICategory, IIncomeExpense, IIncomeExpenseDB } from '../models/common';
 import { IUser } from '../models/user';
-import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from './config.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { filter, map, take, tap } from 'rxjs';
+import { map, take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
