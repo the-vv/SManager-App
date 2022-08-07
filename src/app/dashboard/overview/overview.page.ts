@@ -18,7 +18,7 @@ export class OverviewPage implements OnInit {
   @ViewChild('pieCanvas') pieCanvas: ElementRef;
   @ViewChild('lineCanvas') lineCanvas: ElementRef;
   chartRenders: Chart[] = [];
-  subs: Subscription = new Subscription();
+  subs: Subscription;
   allAccounts: IAccount[] = [];
   currentAccount: IAccount;
 
@@ -31,12 +31,13 @@ export class OverviewPage implements OnInit {
   ngOnInit() { }
 
   ionViewDidEnter() {
-    this.subs.add(
-      this.firebase.getUserAccounts().subscribe((accounts) => {
-        this.allAccounts = accounts;
-        this.currentAccount = this.allAccounts.find(el => el.id === this.config.currentAccountId);
-      })
-    );
+    if (this.subs) {
+      this.subs.unsubscribe();
+    }
+    this.subs = this.firebase.getUserAccounts().subscribe((accounts) => {
+      this.allAccounts = accounts;
+      this.currentAccount = this.allAccounts.find(el => el.id === this.config.currentAccountId);
+    });
     this.currentAccount = this.allAccounts.find(el => el.id === this.config.currentAccountId);
     this.cashService.onIncomeExpenseChange$.subscribe(() => {
       this.currentAccount = this.allAccounts.find(el => el.id === this.config.currentAccountId);

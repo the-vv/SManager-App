@@ -42,19 +42,15 @@
       <ion-card-title>This Month Visualization</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-item>
         <canvas #pieCanvas slot="start"></canvas>
-      </ion-item>
     </ion-card-content>
   </ion-card>
   <ion-card [ngClass]="'rounded-3xl'" class="mb-20">
     <ion-card-header>
       <ion-card-title>This Month Progress</ion-card-title>
     </ion-card-header>
-    <ion-card-content [classList]="'p-0 m-0'">
-      <ion-item [classList]="'p-0 m-0'">
+    <ion-card-content [classList]="'m-0'">
         <canvas #lineCanvas slot="start"></canvas>
-      </ion-item>
     </ion-card-content>
   </ion-card>
 </ion-content>
