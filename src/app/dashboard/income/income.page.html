@@ -35,7 +35,8 @@
       </ion-card-header>
       <ion-card-content [classList]="'p-0 m-0 overflow-auto'">
         <ion-list [ngClass]="'overflow-auto'">
-          <app-income-expense-item *ngFor="let income of cashService.allIncomes" [item]="income">
+          <app-income-expense-item *ngFor="let income of cashService.allIncomes" [item]="income"
+          [categoryName]="getCategoryName(income.categoryId)">
           </app-income-expense-item>
         </ion-list>
       </ion-card-content>

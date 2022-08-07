@@ -12,22 +12,26 @@
     {{editItem ? 'Update' : 'Create'}} an {{isExpense ? 'Expense' : 'Income'}}
   </div>
   <form (ngSubmit)="onCreate()" [formGroup]="cashForm" class="px-2">
-    <div class="mt-2" id="top-control">
+    <div class="mt-2 relative" id="top-control">
       <ion-item>
         <ion-label position="stacked">Title</ion-label>
         <ion-input placeholder="Enter Title" formControlName="title"></ion-input>
       </ion-item>
-      <small class="text-danger" *ngIf="f.title.errors?.required && f.title.touched">Title is required</small>
+      <small class="text-danger absolute" *ngIf="f.title.errors?.required && f.title.touched">Title is required</small>
     </div>
     <div class="mt-2" id="">
       <ion-item>
-        <ion-label position="stacked">Description</ion-label>
-        <ion-textarea placeholder="Enter Description (optional)" formControlName="description"></ion-textarea>
+        <ion-label position="stacked">Category</ion-label>
+        <ion-select interface="popover" formControlName="categoryId" placeholder="Select Category">
+          <ion-select-option [value]="cat.id" *ngFor="let cat of allCategories">{{cat.name}}</ion-select-option>
+          <ion-select-option value="">Uncategorized</ion-select-option>
+        </ion-select>
       </ion-item>
+      <small class="text-danger" *ngIf="f.categoryId.errors?.required && f.categoryId.touched">Category is required</small>
     </div>
     <div class="mt-2">
       <ion-item id="date">
-        <ion-label>Choose date</ion-label>
+        <ion-label>Choose Time</ion-label>
         <ion-input value="{{ cashForm.value.datetime | date: 'dd MMM YYYY h:mm a' }}" class="ion-text-end" readonly>
         </ion-input>
         <ion-popover trigger="date" size="cover" side="top" alignment="center" style="--offset-y: -150px">
@@ -38,6 +42,17 @@
         </ion-popover>
       </ion-item>
       <small class="text-danger" *ngIf="f.datetime.errors?.required && f.datetime.touched">Date is required</small>
+    </div>
+    <div class="mt-2 relative" id="">
+      <ion-item>
+        <ion-label position="stacked">Amount</ion-label>
+        <ion-input placeholder="Enter Amount" formControlName="amount" [color]="isExpense ? 'danger' : 'success'"
+          style="font-size: 1.5em;" type="number"></ion-input>
+      </ion-item>
+      <small class="text-danger absolute" *ngIf="f.amount.errors?.required && f.amount.touched">Amount is required</small>
+    </div>
+    <div class="mt-2">
+      <p class="bg-gray-800 rounded-2xl p-1 text-center font-bold">More Options</p>
     </div>
     <div class="mt-2" id="">
       <ion-item>
@@ -50,11 +65,9 @@
     </div>
     <div class="mt-2" id="">
       <ion-item>
-        <ion-label position="stacked">Amount</ion-label>
-        <ion-input placeholder="Enter Amount" formControlName="amount" [color]="isExpense ? 'danger' : 'success'"
-          style="font-size: 1.5em;" type="number"></ion-input>
+        <ion-label position="stacked">Description</ion-label>
+        <ion-textarea placeholder="Enter Description (optional)" formControlName="description"></ion-textarea>
       </ion-item>
-      <small class="text-danger" *ngIf="f.amount.errors?.required && f.amount.touched">Amount is required</small>
     </div>
   </form>
 </ion-content>

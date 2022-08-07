@@ -2,15 +2,24 @@
   <ion-item>
     <ion-icon size="large" [name]="item.type === eCashType.income ? 'wallet-outline' : 'cash-outline'"></ion-icon>
     <ion-label class="pl-1">
-      <h1 class="flex justify-between ">
-        <span class="-bold" [ngClass]="item.type === eCashType.income ? 'text-green-500' : 'text-red-600'">₹{{item.amount}}</span>
-        <span class="text-base align-middle text-gray-400">
+      <h1 class="flex justify-between items-center -mb-2 p-0">
+        <span class="-bold"
+          [ngClass]="item.type === eCashType.income ? 'text-green-500' : 'text-red-600'">₹{{item.amount}}</span>
+        <span class="text-base items-center text-gray-400">
           {{item.datetime | date: 'dd/M/yyyy hh:mm a'}}
         </span>
       </h1>
-      <h3>
-        <span class="font-normal text-base">{{item.title}}</span> <span *ngIf="item.description?.length"
-          class="align-middle"> • </span> <span class="italic font-extralight">{{item.description}}</span>
+      <h3 class="-mt-1 p-0">
+        <span class="font-normal text-base grid grid-flow-col auto-cols-auto">
+          <span class="truncate font-bold">{{item.title}}</span>
+          <span class="rounded-xl bg-gray-700 px-1 text-center" style="padding-top: 2px;padding-bottom: 2px;">
+            <ion-icon name="grid-outline" color="primary" size="small" class="mr-0.5 align-middle"></ion-icon>
+            <span class="align-middle ml-0.5 text-sm">{{categoryName}}</span>
+          </span>
+        </span>
+        <div class="items-center flex">
+          <span class="italic font-extralight truncate">{{item.description}}</span>
+        </div>
       </h3>
     </ion-label>
   </ion-item>

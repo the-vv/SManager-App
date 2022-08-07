@@ -13,6 +13,8 @@ import { CreateSharedComponent } from '../create-shared/create-shared.component'
 export class IncomeExpenseItemComponent implements OnInit {
 
   @Input() item: IIncomeExpense;
+  @Input() categoryName: string;
+
   eCashType = ECashType;
   constructor(
     private common: CommonService,
@@ -27,9 +29,9 @@ export class IncomeExpenseItemComponent implements OnInit {
       this.firebase.deleteIncomeExpense(this.item.id).then((r) => {
         this.common.showToast(`${this.item.type.charAt(0).toUpperCase() + this.item.type.slice(1)} Deleted successfully`);
       })
-      .catch(err => {
-        console.log(err);
-      });
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 

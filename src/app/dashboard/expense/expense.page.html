@@ -11,36 +11,37 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content  *ngIf="cashService.currentMonthData">
+<ion-content *ngIf="cashService.currentMonthData">
   <div class="flex items-stretch h-full flex-col">
-  <ion-card ngClass="rounded-3xl">
-    <ion-card-header [classList]="'pb-0 mb-0'">
-      <ion-card-title>This Month Overview</ion-card-title>
-      <ion-card-subtitle>{{cashService.currentMonthData.month}} {{cashService.currentMonthData.year}}
-      </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <div class="text-center my-2">
-        <ion-text
-          class="text-2xl font-bold font-sans mt-1 bg-red-500 bg-opacity-40 text-white rounded-lg p-1 flex ion-align-items-center justify-center">
-          Total Expense: ₹{{cashService.currentMonthData.totalExpense}}
-        </ion-text>
-      </div>
-    </ion-card-content>
-  </ion-card>
-  <ion-card ngClass="rounded-3xl flex-1 overflow-auto relative -mt-1">
-    <ion-card-header class="sticky top-0 z-20 bg-red-900 py-1">
-      <ion-card-title>This Month Statement</ion-card-title>
-      <ion-card-subtitle class="text-xs center p-0 m-0">Swipe left for options</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content [classList]="'p-0 m-0 overflow-auto'">
-      <ion-list [ngClass]="'overflow-auto'">
-        <app-income-expense-item *ngFor="let expense of cashService.allExpenses" [item]="expense">
-        </app-income-expense-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-</div>
+    <ion-card ngClass="rounded-3xl">
+      <ion-card-header [classList]="'pb-0 mb-0'">
+        <ion-card-title>This Month Overview</ion-card-title>
+        <ion-card-subtitle>{{cashService.currentMonthData.month}} {{cashService.currentMonthData.year}}
+        </ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="text-center my-2">
+          <ion-text
+            class="text-2xl font-bold font-sans mt-1 bg-red-500 bg-opacity-40 text-white rounded-lg p-1 flex ion-align-items-center justify-center">
+            Total Expense: ₹{{cashService.currentMonthData.totalExpense}}
+          </ion-text>
+        </div>
+      </ion-card-content>
+    </ion-card>
+    <ion-card ngClass="rounded-3xl flex-1 overflow-auto relative -mt-1">
+      <ion-card-header class="sticky top-0 z-20 bg-red-900 py-1">
+        <ion-card-title>This Month Statement</ion-card-title>
+        <ion-card-subtitle class="text-xs center p-0 m-0">Swipe left for options</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content [classList]="'p-0 m-0 overflow-auto'">
+        <ion-list [ngClass]="'overflow-auto'">
+          <app-income-expense-item *ngFor="let expense of cashService.allExpenses" [item]="expense"
+            [categoryName]="getCategoryName(expense.categoryId)">
+          </app-income-expense-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>
 <ion-footer>
   <app-fab></app-fab>

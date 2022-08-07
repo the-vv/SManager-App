@@ -14,6 +14,7 @@ export interface IIncomeExpense {
     synced: boolean;
     userId: string;
     accountId?: string;
+    categoryId?: string;
 }
 
 export interface IIncomeExpenseDB {

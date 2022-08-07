@@ -2,7 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { startOfMonth } from 'date-fns';
-import { ECashType, IAccount, IIncomeExpense } from 'src/app/models/common';
+import { take } from 'rxjs';
+import { ECashType, IAccount, ICategory, IIncomeExpense } from 'src/app/models/common';
 import { CashService } from 'src/app/services/cash.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ConfigService } from 'src/app/services/config.service';
@@ -23,6 +24,7 @@ export class CreateSharedComponent implements OnInit {
   public cashForm: FormGroup;
   public currentTime: string = this.common.toLocaleIsoDateString(new Date());
   public allAccounts: IAccount[] = [];
+  public allCategories: ICategory[] = [];
 
   constructor(
     public modalController: ModalController,
@@ -37,7 +39,8 @@ export class CreateSharedComponent implements OnInit {
       description: [''],
       amount: ['', Validators.required],
       datetime: [this.currentTime, Validators.required],
-      accountId: ['', Validators.required]
+      accountId: ['', Validators.required],
+      categoryId: [null]
     });
   }
   get f() {
@@ -57,9 +60,12 @@ export class CreateSharedComponent implements OnInit {
       this.cashForm.patchValue(this.editItem);
       this.cashForm.controls.datetime.setValue(this.common.toLocaleIsoDateString(this.editItem.datetime as Date));
     }
-    this.firebase.getUserAccounts().subscribe((accounts) => {
+    this.firebase.getUserAccounts().pipe(take(1)).subscribe((accounts) => {
       this.allAccounts = accounts;
       this.cashForm.controls.accountId.setValue(this.editItem?.accountId ?? this.config.currentAccountId);
+    });
+    this.firebase.getAllUserCategories().pipe(take(1)).subscribe((categories) => {
+      this.allCategories = categories;
     });
   }
 
@@ -79,7 +85,8 @@ export class CreateSharedComponent implements OnInit {
         type: this.isExpense ? ECashType.expense : ECashType.income,
         synced: false,
         userId: this.config.currentUser.id,
-        accountId: this.cashForm.value.accountId
+        accountId: this.cashForm.value.accountId,
+        categoryId: this.cashForm.value.categoryId
       };
       // console.log(body);
       if (!this.editItem) {
