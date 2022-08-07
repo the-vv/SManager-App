@@ -37,22 +37,22 @@ export class AccountPage implements OnInit {
   }
 
   ionViewDidEnter() {
-    this.subs.add(
-      this.firebase.getUserAccounts().subscribe({
-        next: (accounts) => {
-          this.allAccounts = accounts;
-          this.config.currentUserAccounts = accounts;
-        },
-        error: err => {
-          console.log(err);
-        }
-      })
-    );
+    if (this.subs) {
+      this.subs.unsubscribe();
+    }
+    this.subs = this.firebase.getUserAccounts().subscribe({
+      next: (accounts) => {
+        this.allAccounts = accounts;
+        this.config.currentUserAccounts = accounts;
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
     this.currentAccount = this.config.currentAccountId;
   }
 
   ionViewDidLeave() {
-    this.subs.unsubscribe();
   }
 
   async confirmClear() {
@@ -101,7 +101,7 @@ export class AccountPage implements OnInit {
     });
     await alert.present();
     alert.onDidDismiss().then((value) => {
-      const accountName = value?.data.values?.[0];
+      const accountName = value?.data?.values?.[0];
       if (accountName && value?.role === 'create') {
         this.common.showSpinner();
         if (this.config.currentUserAccounts.length === 0) {
