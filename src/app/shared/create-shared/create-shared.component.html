@@ -42,7 +42,7 @@
     <div class="mt-2" id="">
       <ion-item>
         <ion-label position="stacked">Bank Account</ion-label>
-        <ion-select interface="popover" formControlName="accountId" placeholder="Select Bank Account">
+        <ion-select interface="popover" formControlName="accountId" placeholder="Select Bank Account" [compareWith]="compareFn">
           <ion-select-option [value]="acc.id" *ngFor="let acc of allAccounts">{{acc.name}}</ion-select-option>
         </ion-select>
       </ion-item>

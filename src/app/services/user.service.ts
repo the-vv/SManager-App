@@ -41,8 +41,13 @@ export class UserService {
     await Storage.remove({
       key: EStorageKeyNames.user
     });
+    await Storage.remove({
+      key: EStorageKeyNames.defaultAccount
+    });
     this.config.currentUser = null;
     this.config.isLoggedIn = false;
+    this.config.currentAccountId = null;
+    this.config.currentUserAccounts = [];
     await this.auth.signOut();
     this.config.authEvents.next(null);
     this.router.navigate(['login'], { replaceUrl: true });

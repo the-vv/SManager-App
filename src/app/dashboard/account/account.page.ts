@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Subscription, take } from 'rxjs';
-import { EStorageKeyNames, IAccount, IIncomeExpenseDB } from 'src/app/models/common';
+import { IAccount, IIncomeExpenseDB } from 'src/app/models/common';
 import { CashService } from 'src/app/services/cash.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ConfigService } from 'src/app/services/config.service';
@@ -38,9 +38,14 @@ export class AccountPage implements OnInit {
 
   ionViewDidEnter() {
     this.subs.add(
-      this.firebase.getUserAccounts().subscribe((accounts) => {
-        this.allAccounts = accounts;
-        this.config.currentUserAccounts = accounts;
+      this.firebase.getUserAccounts().subscribe({
+        next: (accounts) => {
+          this.allAccounts = accounts;
+          this.config.currentUserAccounts = accounts;
+        },
+        error: err => {
+          console.log(err);
+        }
       })
     );
     this.currentAccount = this.config.currentAccountId;
@@ -114,29 +119,37 @@ export class AccountPage implements OnInit {
                   }, {
                     text: 'Continue',
                     handler: () => {
-                      this.common.hideSpinner();
                       this.createAccountAndMap(accountName, items);
                     }
                   }
                 ]
               });
               await confirmAlert.present();
-              confirmAlert.onWillDismiss().then(() => {
-                this.common.hideSpinner();
-              });
             } else {
-              this.firebase.createAccount(accountName).then(() => {
-                this.common.hideSpinner();
+              this.firebase.createAccount(accountName).then((accountRef: any) => {
                 this.common.showToast('Account created successfully');
-              }).catch((err) => {
+                this.cashService.setup(new Date());
                 this.common.hideSpinner();
+                this.firebase.getUserAccounts().pipe(take(1)).subscribe((accounts) => {
+                  this.allAccounts = accounts;
+                  this.config.currentUserAccounts = accounts;
+                  this.config.currentAccountId = accountRef.id;
+                  this.currentAccount = this.config.currentAccountId;
+                  this.storage.setDefaultAccount(accountRef.id);
+                });
+              }).catch((err) => {
                 console.log(err);
                 this.common.showToast('Account creation failed');
+                this.common.hideSpinner();
               });
             }
           });
         } else {
           this.firebase.createAccount(accountName).then(() => {
+            this.firebase.getUserAccounts().pipe(take(1)).subscribe((accounts) => {
+              this.allAccounts = accounts;
+              this.config.currentUserAccounts = accounts;
+            });
             this.common.hideSpinner();
             this.common.showToast('Account created successfully');
           }).catch((err) => {
@@ -153,7 +166,8 @@ export class AccountPage implements OnInit {
     await this.common.showSpinner('Creating Account...\nDon\'t Close The App');
     this.config.preventAppClose = true;
     this.firebase.createAccount(name).then(async (accountRef: any) => {
-      // await this.common.hideSpinner();
+      await this.common.hideSpinner();
+      this.currentAccount = accountRef.id;
       await this.common.showSpinner('Mapping Items...');
       items.forEach(item => {
         item.accountId = accountRef.id;
@@ -162,6 +176,12 @@ export class AccountPage implements OnInit {
         this.config.preventAppClose = false;
         this.common.showToast('Account created and mapped successfully');
         this.cashService.setup(new Date());
+        this.firebase.getUserAccounts().pipe(take(1)).subscribe((accounts) => {
+          this.allAccounts = accounts;
+          this.config.currentUserAccounts = accounts;
+          this.config.currentAccountId = accountRef.id;
+          this.currentAccount = this.config.currentAccountId;
+        });
         this.common.hideSpinner();
       }).catch((err) => {
         this.config.preventAppClose = false;
@@ -178,7 +198,7 @@ export class AccountPage implements OnInit {
   }
 
   async onChangeAccount(accountId: string) {
-    if(accountId === this.config.currentAccountId) {
+    if (accountId === this.config.currentAccountId) {
       return;
     }
     this.config.currentAccountId = accountId;

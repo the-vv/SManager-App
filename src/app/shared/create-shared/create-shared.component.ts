@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DatePickerPlugin, DatePickerPluginInterface } from '@capacitor-community/date-picker';
 import { ModalController } from '@ionic/angular';
 import { startOfMonth } from 'date-fns';
 import { ECashType, IAccount, IIncomeExpense } from 'src/app/models/common';
@@ -38,7 +37,7 @@ export class CreateSharedComponent implements OnInit {
       description: [''],
       amount: ['', Validators.required],
       datetime: [this.currentTime, Validators.required],
-      accountId: [this.config.currentAccountId, Validators.required]
+      accountId: ['', Validators.required]
     });
   }
   get f() {
@@ -46,9 +45,9 @@ export class CreateSharedComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (startOfMonth(new Date()).toLocaleDateString(undefined, { month: 'long' }) !== this.cashService.currentMonthData.month) {
+    if (startOfMonth(new Date()).toLocaleDateString(undefined, { month: 'long' }) !== this.cashService.currentMonthData?.month) {
       this.currentTime = this.common.toLocaleIsoDateString(new Date(
-        Date.parse(`${this.cashService.currentMonthData.month} 1, ${this.cashService.currentMonthData.year}`)
+        Date.parse(`${this.cashService.currentMonthData?.month} 1, ${this.cashService.currentMonthData?.year}`)
       ));
       this.cashForm.controls.datetime.setValue(this.currentTime);
     }
@@ -60,6 +59,7 @@ export class CreateSharedComponent implements OnInit {
     }
     this.firebase.getUserAccounts().subscribe((accounts) => {
       this.allAccounts = accounts;
+      this.cashForm.controls.accountId.setValue(this.editItem?.accountId ?? this.config.currentAccountId);
     });
   }
 
@@ -98,6 +98,10 @@ export class CreateSharedComponent implements OnInit {
         this.common.showToast(`${this.type.charAt(0).toUpperCase() + this.type.slice(1)} Updated Successfully`);
       }
     }
+  }
+
+  compareFn(e1: IAccount, e2: IAccount): boolean {
+    return e1 && e2 ? e1.id === e2.id : e1 === e2;
   }
 
 }
