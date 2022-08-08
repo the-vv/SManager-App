@@ -1,5 +1,6 @@
+import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { ECashType, IIncomeExpense } from 'src/app/models/common';
 import { CommonService } from 'src/app/services/common.service';
 import { FirebaseService } from 'src/app/services/firebase.service';
@@ -19,7 +20,8 @@ export class IncomeExpenseItemComponent implements OnInit {
   constructor(
     private common: CommonService,
     private firebase: FirebaseService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private alertCtrl: AlertController
   ) { }
 
   ngOnInit() { }
@@ -44,6 +46,21 @@ export class IncomeExpenseItemComponent implements OnInit {
       }
     });
     return await modal.present();
+  }
+
+  showDetails() {
+    this.alertCtrl.create({
+      header: this.item.title,
+      message: `<p class='text-${this.item.type === ECashType.expense ? 'danger' : 'success'} font-bold p-0 m-0 h5'>
+        ${this.item.type.charAt(0).toUpperCase() + this.item.type.slice(1)}: ₹ ${this.item.amount}</p>
+        <div class='mt-1 block'><strong class=''>Category: </strong> ${this.categoryName}</div>
+        <div class='mt-1 block'><strong class=''>Date:</strong>
+            ${new DatePipe('en').transform(this.item.datetime, 'dd/M/yyyy hh:mm a')}
+          </div>
+        <div class='mt-1 block'><strong class=''>Description: </strong> ${this.item.description}</div>
+      `,
+      buttons: [{ text: 'Close' }]
+    }).then(alert => alert.present());
   }
 
 }

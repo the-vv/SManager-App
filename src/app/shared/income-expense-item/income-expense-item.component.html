@@ -1,5 +1,5 @@
 <ion-item-sliding>
-  <ion-item>
+  <ion-item button (click)="showDetails()">
     <ion-icon size="large" [name]="item.type === eCashType.income ? 'wallet-outline' : 'cash-outline'"></ion-icon>
     <ion-label class="pl-1">
       <h1 class="flex justify-between items-center -mb-2 p-0">
