@@ -8,6 +8,8 @@ import { CommonService } from 'src/app/services/common.service';
 import { ConfigService } from 'src/app/services/config.service';
 import { FirebaseService } from 'src/app/services/firebase.service';
 Chart.register(...registerables);
+import ColorGenerator from 'random-color-array-generator/ColorGenerator.min.js';
+
 
 @Component({
   selector: 'app-overview',
@@ -20,7 +22,6 @@ export class OverviewPage implements OnInit {
   @ViewChild('lineCanvas') lineCanvas: ElementRef;
   chartRenders: Chart[] = [];
   subs: Subscription;
-  subs1: Subscription;
   allAccounts: IAccount[] = [];
   currentAccount: IAccount;
   allCategories: ICategory[] = [];
@@ -48,11 +49,6 @@ export class OverviewPage implements OnInit {
       if (!this.cashService?.currentMonthData) {
         return;
       }
-      if (this.chartRenders.length > 0) {
-        this.chartRenders.forEach(el => {
-          el.destroy();
-        });
-      }
       const groupedExpenses = this.groupBy(this.cashService.allExpenses, 'categoryId');
       for (const key in groupedExpenses) {
         if (groupedExpenses.hasOwnProperty(key)) {
@@ -71,27 +67,25 @@ export class OverviewPage implements OnInit {
               });
             }
           }
+          const colorGenerator = new ColorGenerator(expenses.length);
+          if (this.chartRenders.length > 0) {
+            this.chartRenders.forEach(el => {
+              el.destroy();
+            });
+          }
           this.chartRenders.push(
             new Chart(this.pieCanvas.nativeElement, {
               plugins: [ChartDataLabels],
               type: 'pie',
               data: {
-                labels: expenses.map(el => el.name),
+                labels: expenses.map(el => `${el.name}`),
                 datasets: [
                   {
                     label: 'Overview',
                     data: expenses.map(el => el.value),
-                    backgroundColor: [
-                      'rgba(0, 0, 255, 0.5)',
-                      'rgba(255, 0, 0, 0.5)',
-                      'rgba(0, 255, 0.5)'
-                    ],
-                    hoverBackgroundColor: [
-                      'rgba(0, 255, 0, 0.7)',
-                      'rgba(255, 0, 0, 0.7)',
-                      'rgba(0, 255, 0.5)'
-                    ],
-                  }
+                    backgroundColor: colorGenerator.generateRGB(),
+                    hoverBackgroundColor: colorGenerator.generateRGB(),
+                  },
                 ]
               },
               options: {
@@ -102,9 +96,13 @@ export class OverviewPage implements OnInit {
                     labels: {
                       title: {
                         font: {
-                          weight: 'bold',
+                          weight: 'bolder',
+                          size: 16,
+                          family: 'monospace'
                         },
-                        color: 'white'
+                        color: 'black',
+                        borderColor: 'black',
+                        textShadowBlur: 2
                       }
                     }
                   }
@@ -148,7 +146,7 @@ export class OverviewPage implements OnInit {
                 ]
               },
               options: {
-                responsive: true,
+                responsive: true
               }
             })
           );
