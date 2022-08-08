@@ -25,6 +25,7 @@ export class OverviewPage implements OnInit {
   allAccounts: IAccount[] = [];
   currentAccount: IAccount;
   allCategories: ICategory[] = [];
+  showPieChart = false;
 
   constructor(
     public cashService: CashService,
@@ -73,43 +74,48 @@ export class OverviewPage implements OnInit {
               el.destroy();
             });
           }
-          this.chartRenders.push(
-            new Chart(this.pieCanvas.nativeElement, {
-              plugins: [ChartDataLabels],
-              type: 'pie',
-              data: {
-                labels: expenses.map(el => `${el.name}`),
-                datasets: [
-                  {
-                    label: 'Overview',
-                    data: expenses.map(el => el.value),
-                    backgroundColor: colorGenerator.generateRGB(),
-                    hoverBackgroundColor: colorGenerator.generateRGB(),
-                  },
-                ]
-              },
-              options: {
-                responsive: true,
-                plugins: {
-                  datalabels: {
-                    formatter: (val) => `₹${val}`,
-                    labels: {
-                      title: {
-                        font: {
-                          weight: 'bolder',
-                          size: 16,
-                          family: 'monospace'
-                        },
-                        color: 'black',
-                        borderColor: 'black',
-                        textShadowBlur: 2
+          if (expenses.length > 0) {
+            this.showPieChart = true;
+            this.chartRenders.push(
+              new Chart(this.pieCanvas.nativeElement, {
+                plugins: [ChartDataLabels],
+                type: 'pie',
+                data: {
+                  labels: expenses.map(el => `${el.name}`),
+                  datasets: [
+                    {
+                      label: 'Overview',
+                      data: expenses.map(el => el.value),
+                      backgroundColor: colorGenerator.generateRGB(),
+                      hoverBackgroundColor: colorGenerator.generateRGB(),
+                    },
+                  ]
+                },
+                options: {
+                  responsive: true,
+                  plugins: {
+                    datalabels: {
+                      formatter: (val) => `₹${val}`,
+                      labels: {
+                        title: {
+                          font: {
+                            weight: 'bolder',
+                            size: 16,
+                            family: 'monospace'
+                          },
+                          color: 'black',
+                          borderColor: 'black',
+                          textShadowBlur: 2
+                        }
                       }
                     }
                   }
                 }
-              }
-            })
-          );
+              })
+            );
+          } else {
+            this.showPieChart = false;
+          }
           const now = new Date();
           const currentDays = Array(new Date(now.getFullYear(), now.getMonth() + 1, now.getDate()).getDate()).fill(0).map((_, i) => i + 1);
           const currentIncomes = currentDays.map(day => {
