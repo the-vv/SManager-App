@@ -95,17 +95,20 @@ export class OverviewPage implements OnInit {
                   responsive: true,
                   plugins: {
                     datalabels: {
-                      formatter: (val) => `₹${val}`,
+                      formatter: (value, context) => (`${context.chart.data.labels[context.dataIndex]}\n₹ ${value}`),
+                      align: 'start',
+                      anchor: 'end',
+                      padding: 5,
                       labels: {
                         title: {
                           font: {
-                            weight: 'bolder',
-                            size: 16,
-                            family: 'monospace'
+                            weight: 'bold',
+                            size: 12,
                           },
-                          color: 'black',
-                          borderColor: 'black',
-                          textShadowBlur: 2
+                          color: 'white',
+                          textStrokeColor: 'black',
+                          textStrokeWidth: 0.9,
+                          textAlign: 'center',
                         }
                       }
                     }

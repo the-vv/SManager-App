@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { ToastOptions } from '@ionic/core';
-import { Toast } from '@capacitor/toast';
 
 @Injectable({
   providedIn: 'root'
@@ -66,10 +65,12 @@ export class CommonService {
   }
 
   async showToast(msg: string, duration: number = 3000) {
-    await Toast.show({
-      text: msg,
-      duration: duration > 3000 ? 'short' : 'long',
+    const toast = await this.toastController.create({
+      message: msg,
+      duration,
+      position: 'top',
     });
+    toast.present();
   }
 
   toLocaleIsoDateString(date: Date) {
