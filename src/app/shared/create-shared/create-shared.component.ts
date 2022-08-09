@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { IonInput, ModalController } from '@ionic/angular';
 import { startOfMonth } from 'date-fns';
 import { take } from 'rxjs';
 import { ECashType, IAccount, ICategory, IIncomeExpense } from 'src/app/models/common';
@@ -14,10 +14,12 @@ import { FirebaseService } from 'src/app/services/firebase.service';
   templateUrl: './create-shared.component.html',
   styleUrls: ['./create-shared.component.scss'],
 })
-export class CreateSharedComponent implements OnInit {
+export class CreateSharedComponent implements OnInit, AfterViewInit {
 
   @Input() public type: ECashType;
   @Input() public editItem: IIncomeExpense;
+
+  @ViewChild('titleInput') titleInput: IonInput;
 
   isExpense: boolean;
 
@@ -47,6 +49,14 @@ export class CreateSharedComponent implements OnInit {
     return this.cashForm.controls;
   }
 
+  ngAfterViewInit(): void {
+    if (!this.editItem) {
+      setTimeout(() => {
+        this.titleInput.setFocus();
+      }, 400);
+    }
+  }
+
   ngOnInit() {
     if (startOfMonth(new Date()).toLocaleDateString(undefined, { month: 'long' }) !== this.cashService.currentMonthData?.month) {
       this.currentTime = this.common.toLocaleIsoDateString(new Date(
@@ -65,7 +75,7 @@ export class CreateSharedComponent implements OnInit {
       this.cashForm.controls.accountId.setValue(this.editItem?.accountId ?? this.config.currentAccountId);
     });
     this.firebase.getAllUserCategories().pipe(take(1)).subscribe((categories) => {
-      this.allCategories = categories;
+      this.allCategories = categories?.sort((a, b) => a.name.localeCompare(b.name));
     });
   }
 

@@ -211,4 +211,48 @@ export class AccountPage implements OnInit {
     this.user.logout();
   }
 
+  async onEditAccount(account: IAccount) {
+    const alert = await this.alertController.create({
+      header: 'Please enter your account info',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Update',
+          role: 'update',
+        }
+      ],
+      inputs: [
+        {
+          placeholder: 'Account Name',
+          label: 'Account Name',
+          value: account.name,
+          attributes: {
+            autocapitalize: true,
+          }
+        }
+      ],
+    });
+    await alert.present();
+    alert.onDidDismiss().then((value) => {
+      const catName = value?.data?.values?.[0];
+      if (catName && value?.role === 'update') {
+        this.config.cloudSyncing.next(true);
+        account.name = catName;
+        // this.firebase.updateCategory(category, category.id)
+        //   .then(() => {
+        //     this.config.cloudSyncing.next(false);
+        //     this.common.showToast('Category updated successfully');
+        //   }).catch(err => {
+        //     this.config.cloudSyncing.next(false);
+        //     console.log(err);
+        //     this.common.showToast('Error updating category');
+        //   }
+        //   );
+      }
+    });
+  }
+
 }

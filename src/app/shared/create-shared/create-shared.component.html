@@ -1,6 +1,6 @@
 <ion-header translucent>
   <ion-toolbar>
-    <ion-title>Create</ion-title>
+    <ion-title>{{editItem ? 'Update' : 'Create'}}</ion-title>
     <ion-buttons slot="end">
       <ion-icon (click)="dismissModal()" name="close-outline" slot="icon-only"></ion-icon>
     </ion-buttons>
@@ -15,24 +15,24 @@
     <div class="mt-2 relative" id="top-control">
       <ion-item>
         <ion-label position="stacked">Title</ion-label>
-        <ion-input placeholder="Enter Title" formControlName="title"></ion-input>
+        <ion-input placeholder="Enter Title" #titleInput formControlName="title" autocapitalize></ion-input>
       </ion-item>
       <small class="text-danger absolute" *ngIf="f.title.errors?.required && f.title.touched">Title is required</small>
     </div>
     <div class="mt-2" id="">
       <ion-item>
         <ion-label position="stacked">Category</ion-label>
-        <ion-select interface="popover" formControlName="categoryId" placeholder="Select Category">
-          <ion-select-option [value]="cat.id" *ngFor="let cat of allCategories">{{cat.name}}</ion-select-option>
+        <ion-select interface="alert" formControlName="categoryId" placeholder="Select Category">
           <ion-select-option value="">Uncategorized</ion-select-option>
+          <ion-select-option [value]="cat.id" *ngFor="let cat of allCategories">{{cat.name}}</ion-select-option>
         </ion-select>
       </ion-item>
       <small class="text-danger" *ngIf="f.categoryId.errors?.required && f.categoryId.touched">Category is required</small>
     </div>
     <div class="mt-2">
       <ion-item id="date">
-        <ion-label>Choose Time</ion-label>
-        <ion-input value="{{ cashForm.value.datetime | date: 'dd MMM YYYY h:mm a' }}" class="ion-text-end" readonly>
+        <ion-label position="stacked">Choose Time</ion-label>
+        <ion-input value="{{ cashForm.value.datetime | date: 'dd MMM YYYY h:mm a' }}" class="ion-text-start" readonly>
         </ion-input>
         <ion-popover trigger="date" size="cover" side="top" alignment="center" style="--offset-y: -150px">
           <ng-template>
@@ -66,13 +66,13 @@
     <div class="mt-2" id="">
       <ion-item>
         <ion-label position="stacked">Description</ion-label>
-        <ion-textarea placeholder="Enter Description (optional)" formControlName="description"></ion-textarea>
+        <ion-textarea placeholder="Enter Description (optional)" formControlName="description" autocapitalize></ion-textarea>
       </ion-item>
     </div>
   </form>
 </ion-content>
 <ion-footer>
-  <ion-button shape="round" expand="block" size="large" (click)="onCreate()" [disabled]="!cashForm.valid">
+  <ion-button shape="round" expand="block" (click)="onCreate()" [disabled]="!cashForm.valid">
     {{editItem ? 'Update' : 'Create'}}
   </ion-button>
 </ion-footer>
