@@ -44,6 +44,9 @@ export class UserService {
     await Storage.remove({
       key: EStorageKeyNames.defaultAccount
     });
+    await Storage.remove({
+      key: EStorageKeyNames.lastPage
+    });
     this.config.currentUser = null;
     this.config.isLoggedIn = false;
     this.config.currentAccountId = null;

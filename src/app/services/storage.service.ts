@@ -48,6 +48,28 @@ export class StorageService {
     });
   }
 
+  public setLastPage(item: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.storage.set(EStorageKeyNames.lastPage, item)
+        .then(res => {
+          resolve();
+        }).catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  public getLastPage(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.storage.get(EStorageKeyNames.lastPage)
+        .then(res => {
+          resolve(res);
+        }).catch(err => {
+          reject(err);
+        });
+    });
+  }
+
   public addOne(item: IIncomeExpense): Promise<any> {
     return new Promise((resolve, reject) => {
       this.storage?.set(item.id, JSON.stringify(item))

@@ -11,6 +11,7 @@ import { IUser } from '../models/user';
 import { environment } from 'src/environments/environment';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { GoogleAuthProvider } from 'firebase/auth';
+import { StorageService } from '../services/storage.service';
 
 @Component({
   selector: 'app-login',
@@ -28,9 +29,9 @@ export class LoginPage implements OnInit {
     private common: CommonService,
     private platform: Platform,
     private routerOutlet: IonRouterOutlet,
-    private cashService: CashService,
-    private supabase: FirebaseService,
-    public auth: AngularFireAuth
+    private firebase: FirebaseService,
+    public auth: AngularFireAuth,
+    private storage: StorageService
   ) {
     this.platform.backButton.subscribeWithPriority(10, () => {
       if (!this.routerOutlet.canGoBack()) {
@@ -62,10 +63,22 @@ export class LoginPage implements OnInit {
             imageUrl: user.user.photoURL,
             id: user.user.uid,
           };
-          this.supabase.saveUser(customUser).then((userRes: IUser) => {
-            this.user.setUser(customUser);
+          this.firebase.saveUser(customUser).then(async (userRes: IUser) => {
+            this.user.setUser(userRes);
+            console.log(userRes);
             this.common.hideSpinner();
-            this.router.navigate(['/dashboard'], { replaceUrl: true });
+            let routeToGo = '/dashboard/';
+            if (userRes.settings?.rememberLastPage) {
+              const lastPage = await this.storage.getLastPage();
+              if (lastPage?.length) {
+                routeToGo += lastPage;
+              } else if (userRes.settings?.defaultPage?.length) {
+                routeToGo += userRes.settings?.defaultPage;
+              }
+            } else if (userRes.settings?.defaultPage?.length) {
+              routeToGo += userRes.settings?.defaultPage;
+            }
+            await this.router.navigate([routeToGo], { replaceUrl: true });
           });
         }).catch(err => {
           // console.log(err);

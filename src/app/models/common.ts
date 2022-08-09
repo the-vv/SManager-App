@@ -46,6 +46,7 @@ export enum EStorageKeyNames {
     uuidKeys = 'keys',
     user = 'user',
     defaultAccount = 'defaultAccount',
+    lastPage = 'lastPage',
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

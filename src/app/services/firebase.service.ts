@@ -20,8 +20,15 @@ export class FirebaseService {
     return new Promise((resolve, reject) => {
       this.firestore.doc(`${ECollectionNames.users}/${user.id}`).set(user, { merge: true })
         .then(dbRes => {
-          // console.log(dbRes);
-          resolve(dbRes);
+          this.firestore.doc(`${ECollectionNames.users}/${user.id}`).valueChanges().pipe(take(1))
+            .subscribe({
+              next: res => {
+                resolve(res);
+              },
+              error: err => {
+                reject(err);
+              }
+            });
         }, err => {
           reject(err);
         });
