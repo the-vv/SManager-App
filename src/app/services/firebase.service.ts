@@ -168,11 +168,32 @@ export class FirebaseService {
 
   deleteCategory(id: string) {
     return new Promise((resolve, reject) => {
-      this.firestore.doc(`${ECollectionNames.categories}/${id}`).delete()
-        .then(dbRes => {
-          resolve(dbRes);
-        }).catch(err => {
-          reject(err);
+      this.firestore.collection<IIncomeExpenseDB>(ECollectionNames.statements, ref => ref
+        .where('categoryId', '==', id)
+        .where('userId', '==', this.config.currentUser.id))
+        .valueChanges({ idField: 'id' }).pipe(take(1)).subscribe({
+          next: res => {
+            const updateArray: Promise<any>[] = [];
+            res.forEach(doc => {
+              doc.categoryId = '';
+              updateArray.push(this.firestore.doc(`${ECollectionNames.statements}/${doc.id}`).update(doc));
+            });
+            Promise.all(updateArray).then(() => {
+              this.firestore.doc(`${ECollectionNames.categories}/${id}`).delete()
+                .then(dbRes => {
+                  resolve(dbRes);
+                }).catch(err => {
+                  reject(err);
+                });
+            }).catch(err => {
+              console.log(err);
+              reject(err);
+            });
+          },
+          error: err => {
+            console.log(err);
+            reject(err);
+          }
         });
     });
   }
@@ -183,7 +204,7 @@ export class FirebaseService {
       this.firestore.collection(ECollectionNames.statements, ref => ref
         .where('accountId', '==', id)
         .where('userId', '==', this.config.currentUser.id))
-        .valueChanges({idField: 'id'}).pipe(take(1)).subscribe({
+        .valueChanges({ idField: 'id' }).pipe(take(1)).subscribe({
           next: res => {
             const deleteArray: Promise<any>[] = [];
             res.forEach(doc => {

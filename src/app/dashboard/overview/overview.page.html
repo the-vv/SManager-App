@@ -39,7 +39,12 @@
   </ion-card>
   <ion-card [ngClass]="'rounded-3xl'">
     <ion-card-header>
-      <ion-card-title>This Month Expenses Overview</ion-card-title>
+      <ion-card-title>
+        <p class="p-0 m-0">
+          This Month Expenses Overview 
+        </p>       
+        <small class="text-gray-500 text-xs -mt-2 align-top">Tap on a label to hide it</small>
+      </ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <div class="text-center mt-8 text-lg" *ngIf="!showPieChart">Create an Expense to view</div>

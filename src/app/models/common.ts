@@ -27,6 +27,7 @@ export interface IIncomeExpenseDB {
     synced: boolean;
     userId: string;
     accountId?: string;
+    categoryId?: string;
 }
 
 export enum ECashType {

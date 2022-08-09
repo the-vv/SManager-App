@@ -62,12 +62,23 @@ export class OverviewPage implements OnInit {
           const expenses = [];
           for (const key in groupedExpenses) {
             if (groupedExpenses.hasOwnProperty(key)) {
-              expenses.push({
-                name: this.allCategories.find(el => el.id === key)?.name ?? 'Uncategorized',
-                value: groupedExpenses[key]
-              });
+              const catItem = this.allCategories.find(el => el.id === key)?.name;
+              if (catItem) {
+                expenses.push({
+                  name: catItem,
+                  value: groupedExpenses[key]
+                });
+              } else if (expenses.find(el => el.name === 'Uncategorized')) {
+                expenses.find(el => el.name === 'Uncategorized').value += groupedExpenses[key];
+              } else {
+                expenses.push({
+                  name: 'Uncategorized',
+                  value: groupedExpenses[key]
+                });
+              }
             }
           }
+          console.log(expenses);
           const colorGenerator = new ColorGenerator(expenses.length);
           if (this.chartRenders.length > 0) {
             this.chartRenders.forEach(el => {

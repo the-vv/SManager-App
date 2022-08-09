@@ -76,6 +76,9 @@ export class CreateSharedComponent implements OnInit, AfterViewInit {
     });
     this.firebase.getAllUserCategories().pipe(take(1)).subscribe((categories) => {
       this.allCategories = categories?.sort((a, b) => a.name.localeCompare(b.name));
+      if(this.editItem && !this.allCategories.find(c => c.id === this.editItem.categoryId)) {
+        this.cashForm.controls.categoryId.setValue('');
+      }
     });
   }
 
