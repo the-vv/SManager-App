@@ -109,6 +109,17 @@ export class FirebaseService {
     });
   }
 
+  updateAccount(account: IAccount) {
+    return new Promise((resolve, reject) => {
+      this.firestore.doc(`${ECollectionNames.accounts}/${account.id}`).update(account)
+        .then(dbRes => {
+          resolve(dbRes);
+        }).catch(err => {
+          reject(err);
+        });
+    });
+  }
+
   getUserAccounts() {
     return this.firestore.collection<IAccount>(ECollectionNames.accounts, ref => ref.where('userId', '==', this.config.currentUser.id))
       .valueChanges({ idField: 'id' });
@@ -162,6 +173,38 @@ export class FirebaseService {
           resolve(dbRes);
         }).catch(err => {
           reject(err);
+        });
+    });
+  }
+
+  deleteAccount(id: string) {
+    return new Promise((resolve, reject) => {
+      // delete all incomeExpenseItems mapped with this accountId
+      this.firestore.collection(ECollectionNames.statements, ref => ref
+        .where('accountId', '==', id)
+        .where('userId', '==', this.config.currentUser.id))
+        .valueChanges({idField: 'id'}).pipe(take(1)).subscribe({
+          next: res => {
+            const deleteArray: Promise<any>[] = [];
+            res.forEach(doc => {
+              deleteArray.push(this.firestore.doc(`${ECollectionNames.statements}/${doc.id}`).delete());
+            });
+            Promise.all(deleteArray).then(() => {
+              this.firestore.doc(`${ECollectionNames.accounts}/${id}`).delete()
+                .then(dbRes => {
+                  resolve(dbRes);
+                }).catch(err => {
+                  reject(err);
+                });
+            }).catch(err => {
+              console.log(err);
+              reject(err);
+            });
+          },
+          error: err => {
+            console.log(err);
+            reject(err);
+          }
         });
     });
   }

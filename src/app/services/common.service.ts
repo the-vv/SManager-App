@@ -68,7 +68,7 @@ export class CommonService {
     const toast = await this.toastController.create({
       message: msg,
       duration,
-      position: 'top',
+      position: 'bottom',
     });
     toast.present();
   }

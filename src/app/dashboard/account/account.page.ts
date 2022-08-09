@@ -237,22 +237,62 @@ export class AccountPage implements OnInit {
     });
     await alert.present();
     alert.onDidDismiss().then((value) => {
-      const catName = value?.data?.values?.[0];
-      if (catName && value?.role === 'update') {
+      const accName = value?.data?.values?.[0];
+      if (accName && value?.role === 'update') {
         this.config.cloudSyncing.next(true);
-        account.name = catName;
-        // this.firebase.updateCategory(category, category.id)
-        //   .then(() => {
-        //     this.config.cloudSyncing.next(false);
-        //     this.common.showToast('Category updated successfully');
-        //   }).catch(err => {
-        //     this.config.cloudSyncing.next(false);
-        //     console.log(err);
-        //     this.common.showToast('Error updating category');
-        //   }
-        //   );
+        account.name = accName;
+        this.firebase.updateAccount(account)
+          .then(() => {
+            this.config.cloudSyncing.next(false);
+            this.common.showToast('Accocunt updated successfully');
+          }).catch(err => {
+            this.config.cloudSyncing.next(false);
+            console.log(err);
+            this.common.showToast('Error updating accocunt');
+          });
       }
     });
+  }
+
+  async onDeleteAccount(account: IAccount) {
+    if(this.allAccounts.length === 1) {
+      this.common.showToast('You must have at least one account');
+      return;
+    }
+    const alert = await this.alertController.create({
+      header: 'Delete Account',
+      message: 'Are you sure you want to delete this account?<br>All your incomes and expenses of this account will be deleted!',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Delete',
+          handler: () => {
+            this.common.showSpinner('Deleting Account...');
+            this.firebase.deleteAccount(account.id)
+              .then(async () => {
+                if(this.config.currentAccountId === account.id) {
+                  this.config.currentAccountId = this.allAccounts[0].id;
+                  await this.storage.setDefaultAccount(this.config.currentAccountId);
+                  this.currentAccount = this.config.currentAccountId;
+                  this.cashService.setup(new Date());
+                }
+                this.common.hideSpinner();
+                this.config.cloudSyncing.next(false);
+                this.common.showToast('Account deleted successfully');
+              }).catch(err => {
+                this.common.hideSpinner();
+                this.config.cloudSyncing.next(false);
+                console.log(err);
+                this.common.showToast('Error deleting account');
+              });
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
 }
