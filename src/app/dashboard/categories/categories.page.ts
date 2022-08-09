@@ -89,13 +89,13 @@ export class CategoriesPage implements OnInit {
 
   async onDeleteCategory(category: ICategory) {
     if (await this.common.showDeleteConfrmation(category.name)) {
-      this.config.cloudSyncing.next(true);
+      this.common.showSpinner();
       this.firebase.deleteCategory(category.id)
         .then(() => {
-          this.config.cloudSyncing.next(false);
+          this.common.hideSpinner();
           this.common.showToast('Category deleted successfully');
         }).catch(err => {
-          this.config.cloudSyncing.next(false);
+          this.common.hideSpinner();
           console.log(err);
           this.common.showToast('Error deleting category');
         }

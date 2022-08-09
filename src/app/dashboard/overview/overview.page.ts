@@ -59,44 +59,43 @@ export class OverviewPage implements OnInit {
       this.firebase.getAllUserCategories().pipe(take(1)).subscribe({
         next: (categories) => {
           this.allCategories = categories;
-          const expenses = [];
+          const categoryGroupedExpeses = [];
           for (const key in groupedExpenses) {
             if (groupedExpenses.hasOwnProperty(key)) {
               const catItem = this.allCategories.find(el => el.id === key)?.name;
               if (catItem) {
-                expenses.push({
+                categoryGroupedExpeses.push({
                   name: catItem,
                   value: groupedExpenses[key]
                 });
-              } else if (expenses.find(el => el.name === 'Uncategorized')) {
-                expenses.find(el => el.name === 'Uncategorized').value += groupedExpenses[key];
+              } else if (categoryGroupedExpeses.find(el => el.name === 'Uncategorized')) {
+                categoryGroupedExpeses.find(el => el.name === 'Uncategorized').value += groupedExpenses[key];
               } else {
-                expenses.push({
+                categoryGroupedExpeses.push({
                   name: 'Uncategorized',
                   value: groupedExpenses[key]
                 });
               }
             }
           }
-          console.log(expenses);
-          const colorGenerator = new ColorGenerator(expenses.length);
+          const colorGenerator = new ColorGenerator(categoryGroupedExpeses.length);
           if (this.chartRenders.length > 0) {
             this.chartRenders.forEach(el => {
               el.destroy();
             });
           }
-          if (expenses.length > 0) {
+          if (categoryGroupedExpeses.length > 0) {
             this.showPieChart = true;
             this.chartRenders.push(
               new Chart(this.pieCanvas.nativeElement, {
                 plugins: [ChartDataLabels],
                 type: 'pie',
                 data: {
-                  labels: expenses.map(el => `${el.name}`),
+                  labels: categoryGroupedExpeses.map(el => `${el.name}`),
                   datasets: [
                     {
                       label: 'Overview',
-                      data: expenses.map(el => el.value),
+                      data: categoryGroupedExpeses.map(el => el.value),
                       backgroundColor: colorGenerator.generateRGB(),
                       hoverBackgroundColor: colorGenerator.generateRGB(),
                     },
