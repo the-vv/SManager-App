@@ -26,34 +26,35 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card [hidden]="true" class="rounded-3xl">
-    <ion-card-header>
-      <ion-label>App Settings</ion-label>
+  <ion-card class="rounded-3xl">
+    <ion-card-header class="flex justify-between ion-align-items-center">
+      <ion-label>
+        App Settings
+      </ion-label>
+      <ion-button color="primary" class="text-sm" shape="round" size="small" fill="solid" (click)="onSubmitSettings()">
+        <span *ngIf="!savingSettings">Save</span>
+        <ion-spinner *ngIf="savingSettings" name="dots"></ion-spinner>
+      </ion-button>
     </ion-card-header>
     <ion-card-content>
-      <ion-list>
-        <ion-item>
-          <ion-label>Dark Theme</ion-label>
-          <ion-toggle></ion-toggle>
-        </ion-item>
-        <ion-item>
-          <ion-label>Remember last Page</ion-label>
-          <ion-toggle></ion-toggle>
-        </ion-item>
-        <ion-item>
-          <ion-label>Default Page</ion-label>
-          <ion-select placeholder="Select One" interface="action-sheet">
-            <ion-select-option value="Overview">Overview</ion-select-option>
-            <ion-select-option value="Income">Income</ion-select-option>
-            <ion-select-option value="Expense">Expense</ion-select-option>
-            <ion-select-option value="Sessions">Sessions</ion-select-option>
-          </ion-select>
-        </ion-item>
-        <ion-item>
-          <ion-label>Add sessions to income/expense</ion-label>
-          <ion-toggle></ion-toggle>
-        </ion-item>
-      </ion-list>
+      <form [formGroup]="settingsForm">
+        <ion-list>
+          <ion-item>
+            <ion-label>Carry over each month balances</ion-label>
+            <ion-toggle formControlName="addLastMonthBalance"></ion-toggle>
+          </ion-item>
+          <ion-item>
+            <ion-label>Remember last Page</ion-label>
+            <ion-toggle formControlName="rememberLastPage"></ion-toggle>
+          </ion-item>
+          <ion-item>
+            <ion-label>Default Page</ion-label>
+            <ion-select placeholder="Select One" interface="action-sheet" formControlName="defaultPage">
+              <ion-select-option [value]="page" *ngFor="let page of allPages">{{page | titlecase}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
+      </form>
     </ion-card-content>
   </ion-card>
   <ion-card class="rounded-3xl">

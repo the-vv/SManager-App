@@ -16,9 +16,8 @@ export class AppComponent {
     private router: Router,
     private menu: MenuController,
     private config: ConfigService) {
-    this.user.getUser().then(async (u) => {
-      // console.log(u);
-      if (u) {
+    this.user.getUser().then(async (userData) => {
+      if (userData) {
         await this.router.navigate(['/dashboard'], { replaceUrl: true });
         SplashScreen.hide();
       }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Subscription, take } from 'rxjs';
-import { IAccount, IIncomeExpenseDB } from 'src/app/models/common';
+import { EPageTypes, IAccount, IIncomeExpenseDB } from 'src/app/models/common';
 import { CashService } from 'src/app/services/cash.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ConfigService } from 'src/app/services/config.service';
@@ -9,6 +9,8 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 import { UserService } from 'src/app/services/user.service';
 import { ConnectivityService } from 'src/app/services/connectivity.service';
 import { StorageService } from 'src/app/services/storage.service';
+import { FormControl, FormGroup } from '@angular/forms';
+import { IUser } from 'src/app/models/user';
 
 
 @Component({
@@ -20,6 +22,13 @@ export class AccountPage implements OnInit {
 
   public allAccounts: IAccount[] = [];
   public currentAccount: string;
+  public settingsForm: FormGroup = new FormGroup({
+    addLastMonthBalance: new FormControl(false),
+    defaultPage: new FormControl(EPageTypes.overview),
+    rememberLastPage: new FormControl(false),
+  });
+  public allPages = Object.values(EPageTypes);
+  public savingSettings = false;
   private subs: Subscription = new Subscription();
 
   constructor(
@@ -37,6 +46,9 @@ export class AccountPage implements OnInit {
   }
 
   ionViewDidEnter() {
+    if (this.config.currentUser.settings) {
+      this.settingsForm.patchValue(this.config.currentUser.settings);
+    }
     if (this.subs) {
       this.subs.unsubscribe();
     }
@@ -255,7 +267,7 @@ export class AccountPage implements OnInit {
   }
 
   async onDeleteAccount(account: IAccount) {
-    if(this.allAccounts.length === 1) {
+    if (this.allAccounts.length === 1) {
       this.common.showToast('You must have at least one account');
       return;
     }
@@ -273,7 +285,7 @@ export class AccountPage implements OnInit {
             this.common.showSpinner('Deleting Account...');
             this.firebase.deleteAccount(account.id)
               .then(async () => {
-                if(this.config.currentAccountId === account.id) {
+                if (this.config.currentAccountId === account.id) {
                   this.config.currentAccountId = this.allAccounts[0].id;
                   await this.storage.setDefaultAccount(this.config.currentAccountId);
                   this.currentAccount = this.config.currentAccountId;
@@ -293,6 +305,24 @@ export class AccountPage implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  onSubmitSettings() {
+    this.savingSettings = true;
+    this.firebase.updateUserSettings(this.settingsForm.value)
+      .then(() => {
+        this.savingSettings = false;
+        const newUser: IUser = {
+          ...this.config.currentUser,
+          settings: this.settingsForm.value
+        };
+        this.user.setUser(newUser);
+        this.common.showToast('Settings updated successfully');
+      }).catch(err => {
+        this.savingSettings = false;
+        console.log(err);
+        this.common.showToast('Error updating settings');
+      });
   }
 
 }

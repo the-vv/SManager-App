@@ -67,13 +67,12 @@ export enum EPageTypes {
     overview = 'overview',
     income = 'income',
     expense = 'expense',
-    sessions = 'sessions',
 }
 
 export interface IUserSettings {
-    darkTheme: boolean;
     rememberLastPage: boolean;
     defaultPage: EPageTypes;
+    addLastMonthBalance: boolean;
 }
 
 
