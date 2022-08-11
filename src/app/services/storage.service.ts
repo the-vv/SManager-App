@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { BehaviorSubject } from 'rxjs';
-import { EStorageKeyNames, IIncomeExpense } from '../models/common';
+import { EStorageKeyNames } from '../models/common';
 
 @Injectable({
   providedIn: 'root'
@@ -70,64 +70,20 @@ export class StorageService {
     });
   }
 
-  public addOne(item: IIncomeExpense): Promise<any> {
+  public setLastUsedTime(item: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.storage?.set(item.id, JSON.stringify(item))
+      this.storage.set(EStorageKeyNames.lastUsedTime, item)
         .then(res => {
-          resolve(res);
-        })
-        .catch(err => {
+          resolve();
+        }).catch(err => {
           reject(err);
         });
     });
   }
 
-  public getOne(id: string): Promise<IIncomeExpense> {
+  public getLastUsedTime(): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.storage?.get(id)
-        .then(res => {
-          resolve(res);
-        })
-        .catch(err => {
-          reject(err);
-        });
-    });
-  }
-
-  getIds(): Promise<string[]> {
-    return new Promise((resolve, reject) => {
-      this.storage?.keys()
-        .then(res => {
-          resolve(res);
-        })
-        .catch(err => {
-          reject(err);
-        });
-    });
-  }
-
-  getAll(): Promise<IIncomeExpense[]> {
-    return new Promise((resolve, reject) => {
-      const allIncomeExpenses: IIncomeExpense[] = [];
-      try {
-        this.storage?.forEach((value, key, index) => {
-          // console.log(value);
-          allIncomeExpenses.push(JSON.parse(value));
-        }).then(res => {
-          resolve(allIncomeExpenses);
-        }).catch(e => {
-          reject(allIncomeExpenses);
-        });
-      } catch (e) {
-        console.error('parsing error\n', e);
-        reject(allIncomeExpenses);
-      }
-    });
-  }
-
-  deleteOne(id: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.storage?.remove(id)
+      this.storage.get(EStorageKeyNames.lastUsedTime)
         .then(res => {
           resolve(res);
         }).catch(err => {
@@ -136,7 +92,7 @@ export class StorageService {
     });
   }
 
-  deleteAll(): Promise<void> {
+  public deleteAll(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.storage?.clear()
         .then(res => {
@@ -148,30 +104,7 @@ export class StorageService {
     });
   }
 
-  updateOne(item: IIncomeExpense): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.storage?.set(item.id, JSON.stringify(item))
-        .then(res => {
-          resolve();
-        })
-        .catch(err => {
-          reject();
-        });
-    });
-  }
 
-  updateMany(items: IIncomeExpense[]): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const promises = [];
-      items.forEach(item => {
-        promises.push(this.storage?.set(item.id, JSON.stringify(item)));
-      });
-      Promise.all(promises).then(res => {
-        resolve();
-      }).catch(err => {
-        reject();
-      });
-    });
-  }
+
 
 }

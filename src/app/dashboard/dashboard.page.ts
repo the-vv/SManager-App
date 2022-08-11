@@ -29,6 +29,9 @@ export class DashboardPage implements OnInit {
         App.exitApp();
       }
     });
+    App.addListener('appStateChange', ({ isActive }) => {
+      console.log('App state changed. Is active?', isActive);
+    });
   }
 
   ionViewDidEnter() {

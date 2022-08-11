@@ -38,15 +38,10 @@ export class UserService {
     return this.config.currentUser;
   }
   async logout() {
-    await Storage.remove({
-      key: EStorageKeyNames.user
-    });
-    await Storage.remove({
-      key: EStorageKeyNames.defaultAccount
-    });
-    await Storage.remove({
-      key: EStorageKeyNames.lastPage
-    });
+    Storage.remove({ key: EStorageKeyNames.user });
+    Storage.remove({ key: EStorageKeyNames.defaultAccount });
+    Storage.remove({ key: EStorageKeyNames.lastPage });
+    Storage.remove({ key: EStorageKeyNames.lastUsedTime });
     this.config.currentUser = null;
     this.config.isLoggedIn = false;
     this.config.currentAccountId = null;

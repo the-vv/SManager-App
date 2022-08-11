@@ -54,7 +54,6 @@ export class CashService {
       .then(async (res) => {
         console.log(res);
         item.synced = true;
-        await this.storageService.updateOne(item);
         this.config.cloudSyncing.next(false);
       })
       .catch(err => {
@@ -68,7 +67,6 @@ export class CashService {
     this.firebase.updateIncomeExpense(item, id)
       .then(async (res) => {
         item.synced = true;
-        await this.storageService.updateOne(item);
         this.config.cloudSyncing.next(false);
       })
       .catch(err => {

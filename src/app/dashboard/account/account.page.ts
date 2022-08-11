@@ -220,7 +220,23 @@ export class AccountPage implements OnInit {
   }
 
   onLogout() {
-    this.user.logout();
+    // show confirmation dialog
+    this.alertController.create({
+      header: 'Confirm!',
+      message: 'Are you sure want to logout?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Logout',
+          handler: () => {
+            this.user.logout();
+          },
+        }
+      ]
+    }).then(alert => alert.present());
   }
 
   async onEditAccount(account: IAccount) {
