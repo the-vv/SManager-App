@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Subscription, take } from 'rxjs';
-import { EPageTypes, IAccount, IIncomeExpenseDB } from 'src/app/models/common';
+import { EPageTypes, IAccount, IAutomation, IIncomeExpenseDB } from 'src/app/models/common';
 import { CashService } from 'src/app/services/cash.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ConfigService } from 'src/app/services/config.service';
@@ -30,6 +30,7 @@ export class AccountPage implements OnInit {
   });
   public allPages = Object.values(EPageTypes);
   public savingSettings = false;
+  public allAutomations: IAutomation[] = [];
   private subs: Subscription = new Subscription();
 
   constructor(

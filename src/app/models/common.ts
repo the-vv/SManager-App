@@ -98,4 +98,5 @@ export interface IAutomation {
     accountId: string;
     categoryId: string;
     datetime: string | Date;
+    active: boolean;
 }
