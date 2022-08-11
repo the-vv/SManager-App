@@ -11,7 +11,7 @@ export interface IIncomeExpense {
     datetime: string | Date;
     type: ECashType;
     amount: number;
-    synced: boolean;
+    synced?: boolean;
     userId: string;
     accountId?: string;
     categoryId?: string;
@@ -88,4 +88,15 @@ export interface ICategory {
     id?: string;
     name: string;
     userId: string;
+}
+
+export interface IAutomation {
+    id?: string;
+    name: string;
+    userId: string;
+    recurring: boolean;
+    amount: number;
+    accountId: string;
+    categoryId: string;
+    datetime: string | Date;
 }

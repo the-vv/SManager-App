@@ -104,6 +104,28 @@ export class StorageService {
     });
   }
 
+  public setUser(item: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.storage.set(EStorageKeyNames.user, item)
+        .then(res => {
+          resolve();
+        }).catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  public getUser(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.storage.get(EStorageKeyNames.user)
+        .then(res => {
+          resolve(res);
+        }).catch(err => {
+          reject(err);
+        });
+    });
+  }
+
 
 
 

@@ -6,6 +6,7 @@ import { CashService } from '../services/cash.service';
 import { ConfigService } from '../services/config.service';
 import { StorageService } from '../services/storage.service';
 import { SplashScreen } from '@capacitor/splash-screen';
+import { CommonService } from '../services/common.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,17 +21,23 @@ export class DashboardPage implements OnInit {
     private routerOutlet: IonRouterOutlet,
     private config: ConfigService,
     private storage: StorageService,
-    private router: Router
+    private router: Router,
+    private common: CommonService
   ) {
-    this.cashService.setup(new Date());
+    this.cashService.setup(new Date(), true);
     this.platform.backButton.subscribeWithPriority(11, async () => {
       if (!this.routerOutlet.canGoBack() && !this.config.preventAppClose) {
         await this.storage.setLastPage(this.router.url.slice(this.router.url.lastIndexOf('/') + 1));
+        await this.storage.setLastUsedTime(this.common.toLocaleIsoDateString(new Date()));
         App.exitApp();
       }
     });
     App.addListener('appStateChange', ({ isActive }) => {
-      console.log('App state changed. Is active?', isActive);
+      if (!isActive) {
+        this.storage.setLastUsedTime(this.common.toLocaleIsoDateString(new Date()));
+      } else {
+        this.cashService.chechAutomations();
+      }
     });
   }
 

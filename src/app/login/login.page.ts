@@ -63,6 +63,9 @@ export class LoginPage implements OnInit {
             imageUrl: user.user.photoURL,
             id: user.user.uid,
           };
+          if (user.additionalUserInfo.isNewUser) {
+            customUser.settings.addLastMonthBalance = true;
+          }
           this.firebase.saveUser(customUser).then(async (userRes: IUser) => {
             this.user.setUser(userRes);
             console.log(userRes);

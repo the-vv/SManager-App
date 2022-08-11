@@ -35,6 +35,20 @@ export class FirebaseService {
     });
   }
 
+  addMultipleIncomeExpenseItems(incomeExpenseItems: IIncomeExpense[]) {
+    return new Promise((resolve, reject) => {
+      const addArray: Promise<any>[] = [];
+      incomeExpenseItems.forEach(item => {
+        addArray.push(this.firestore.collection(ECollectionNames.statements).add(item));
+      });
+      Promise.all(addArray).then(res => {
+        resolve(res);
+      }).catch(err => {
+        reject(err);
+      });
+    });
+  }
+
   addIncomeExpense(incomeExpense: IIncomeExpense) {
     return new Promise((resolve, reject) => {
       this.firestore.collection(ECollectionNames.statements).add(incomeExpense)
@@ -69,27 +83,16 @@ export class FirebaseService {
   }
 
   getAllIncomeExpenses(start: Date, end: Date, accountId: string) {
-    return new Promise((resolve, reject) => {
-      this.firestore.collection(ECollectionNames.statements, ref => ref
-        .where('userId', '==', this.config.currentUser.id)
-        .where('datetime', '>=', start)
-        .where('datetime', '<=', end)
-        .where('accountId', '==', accountId)
-        .orderBy('datetime', 'desc'))
-        .valueChanges({ idField: 'id' }).pipe(take(1))
-        .subscribe({
-          next: (dbRes) => {
-            resolve(dbRes);
-          },
-          error: (err) => {
-            reject(err);
-          }
-        });
-    });
+    return this.firestore.collection(ECollectionNames.statements, ref => ref
+      .where('userId', '==', this.config.currentUser.id)
+      .where('datetime', '>=', start)
+      .where('datetime', '<=', end)
+      .where('accountId', '==', accountId)
+      .orderBy('datetime', 'desc'))
+      .valueChanges({ idField: 'id' });
   }
 
   onIncomeExpenseChange(callback: (payload: any) => void) {
-    // console.log('init value changes');
     return this.firestore.collection(ECollectionNames.statements, ref => ref
       .where('userId', '==', this.config.currentUser.id)
       .where('accountId', '==', this.config.currentAccountId))

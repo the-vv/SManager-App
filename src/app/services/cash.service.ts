@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 // import { RealtimeSubscription } from '@supabase/supabase-js';
-import { endOfMonth, startOfMonth } from 'date-fns';
-import { ECashType, EFirebaseActionTypes, FTimeStamp, IIncomeExpense, IIncomeExpenseDB, IMonthWise } from '../models/common';
+import { differenceInMonths, endOfMonth, lastDayOfMonth, startOfMonth, subMonths } from 'date-fns';
+import { ECashType, EFirebaseActionTypes, FTimeStamp, IAccount, IIncomeExpense, IIncomeExpenseDB, IMonthWise } from '../models/common';
 import { CommonService } from './common.service';
 import { ConfigService } from './config.service';
 import { StorageService } from './storage.service';
 import { FirebaseService } from './firebase.service';
-import { BehaviorSubject, Subscription, take } from 'rxjs';
+import { BehaviorSubject, Subscription, take, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -18,7 +18,7 @@ export class CashService {
   allExpenses: IIncomeExpense[] = [];
   currentMonthData: IMonthWise;
   changeSubscription: Subscription;
-  onIncomeExpenseChange$: BehaviorSubject<void> = new BehaviorSubject<void>(undefined);
+  onIncomeExpenseChange$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(
     private storageService: StorageService,
@@ -75,7 +75,7 @@ export class CashService {
       });
   }
 
-  setup(timestamp: Date) {
+  setup(timestamp: Date, checkAutomation: boolean = false) {
     this.commonService.showSpinner();
     this.clearAll();
     this.firebase.getUserAccounts().pipe(take(1)).subscribe(async (accounts) => {
@@ -111,24 +111,30 @@ export class CashService {
       const start = startOfMonth(timestamp);
       const end = endOfMonth(timestamp);
       this.firebase.getAllIncomeExpenses(start, end, this.config.currentAccountId)
-        .then((res: any) => {
-          const data = res as IIncomeExpense[];
-          this.currentMonthData = {
-            month: startOfMonth(timestamp).toLocaleDateString(undefined, { month: 'long' }),
-            year: startOfMonth(timestamp).getFullYear(),
-            totalExpense: 0,
-            totalIncome: 0
-          };
-          data.forEach(this.updateMonthWise.bind(this));
-          this.onIncomeExpenseChange$.next();
-          if (this.changeSubscription) {
-            this.changeSubscription.unsubscribe();
+        .pipe(take(1)).subscribe({
+          next: (res: any) => {
+            const data = res as IIncomeExpense[];
+            this.currentMonthData = {
+              month: startOfMonth(timestamp).toLocaleDateString(undefined, { month: 'long' }),
+              year: startOfMonth(timestamp).getFullYear(),
+              totalExpense: 0,
+              totalIncome: 0
+            };
+            data.forEach(this.updateMonthWise.bind(this));
+            this.onIncomeExpenseChange$.next(true);
+            if (this.changeSubscription) {
+              this.changeSubscription.unsubscribe();
+            }
+            this.changeSubscription = this.firebase.onIncomeExpenseChange(this.onChangeItem.bind(this));
+            this.commonService.hideSpinner();
+            if (checkAutomation) {
+              this.chechAutomations();
+            }
+          },
+          error: err => {
+            console.log(err);
+            this.commonService.hideSpinner();
           }
-          this.changeSubscription = this.firebase.onIncomeExpenseChange(this.onChangeItem.bind(this));
-          this.commonService.hideSpinner();
-        }).catch(err => {
-          console.log(err);
-          this.commonService.hideSpinner();
         });
     });
   }
@@ -191,7 +197,7 @@ export class CashService {
           });
         }
       }
-      this.onIncomeExpenseChange$.next();
+      this.onIncomeExpenseChange$.next(true);
     }
   }
 
@@ -208,6 +214,83 @@ export class CashService {
     } else {
       return this.allExpenses.find(i => i.id === item.id);
     }
+  }
+
+  async chechAutomations() {
+    if (this.config.currentUser?.settings?.addLastMonthBalance) {
+      const lastUsedTime = await this.storageService.getLastUsedTime();
+      console.log(lastUsedTime);
+      if (lastUsedTime && startOfMonth(new Date()) > new Date(lastUsedTime)) {
+        this.firebase.getUserAccounts().pipe(take(1)).subscribe({
+          next: (accounts: IAccount[]) => {
+            const itemsToAdd: IIncomeExpense[] = [];
+            const allAccountLastMonthBalance: Promise<{ accountId: string; amount: number }>[] = [];
+            accounts.forEach(async (account) => {
+              allAccountLastMonthBalance.push(this.getLastMonthBalance(account.id));
+            });
+            Promise.all(allAccountLastMonthBalance).then((res) => {
+              res.forEach(item => {
+                if (item.amount > 0) {
+                  itemsToAdd.push({
+                    amount: item.amount,
+                    categoryId: '',
+                    datetime: startOfMonth(new Date()),
+                    description: 'Automated carry forward of last month balance',
+                    type: ECashType.income,
+                    accountId: item.accountId,
+                    title: 'Last Month Balance',
+                    userId: this.config.currentUser.id,
+                  });
+                }
+              });
+              if (itemsToAdd.length > 0) {
+                this.firebase.addMultipleIncomeExpenseItems(itemsToAdd)
+                  .then(() => {
+                    this.commonService.showToast('Successfully added last month balance');
+                    this.storageService.setLastUsedTime(this.commonService.toLocaleIsoDateString(new Date()));
+                  }).catch(err => {
+                    console.log(err);
+                    this.commonService.showToast('Error while carry forwarding last month balance');
+                  });
+              }
+            }).catch(err => {
+              console.log(err);
+              this.commonService.showToast('Error while carry forwarding last month balance');
+            });
+          },
+          error: err => {
+            console.log(err);
+            this.commonService.showToast('Error while carry forwarding last month balance');
+          }
+        });
+      }
+    }
+  }
+
+  getLastMonthBalance(accountId: string) {
+    return new Promise<{ accountId: string; amount: number }>((resolve, reject) => {
+      const lastMonth = subMonths(new Date(), 1);
+      const start = startOfMonth(lastMonth);
+      const end = endOfMonth(lastMonth);
+      return this.firebase.getAllIncomeExpenses(start, end, accountId)
+        .pipe(take(1)).subscribe({
+          next: (res: any) => {
+            const data = res as IIncomeExpense[];
+            let total = 0;
+            data.forEach(item => {
+              if (item.type === ECashType.income) {
+                total += item.amount;
+              } else {
+                total -= item.amount;
+              }
+            });
+            resolve({ accountId, amount: total });
+          },
+          error: err => {
+            reject(err);
+          }
+        });
+    });
   }
 
 }

@@ -19,32 +19,36 @@ export class AppComponent {
     private config: ConfigService,
     private storage: StorageService
   ) {
-    this.user.getUser().then(async (userData) => {
-      if (userData) {
-        let routeToGo = '/dashboard/';
-        if (userData.settings?.rememberLastPage) {
-          const lastPage = await this.storage.getLastPage();
-          if (lastPage?.length) {
-            routeToGo += lastPage;
-          } else if (userData.settings?.defaultPage?.length) {
-            routeToGo += userData.settings?.defaultPage;
+    this.storage.storageEvents.subscribe((ready) => {
+      if (ready) {
+        this.user.getUser().then(async (userData) => {
+          if (userData) {
+            let routeToGo = '/dashboard/';
+            if (userData.settings?.rememberLastPage) {
+              const lastPage = await this.storage.getLastPage();
+              if (lastPage?.length) {
+                routeToGo += lastPage;
+              } else if (userData.settings?.defaultPage?.length) {
+                routeToGo += userData.settings?.defaultPage;
+              }
+            } else if (userData.settings?.defaultPage?.length) {
+              routeToGo += userData.settings?.defaultPage;
+            }
+            await this.router.navigate([routeToGo], { replaceUrl: true });
           }
-        } else if (userData.settings?.defaultPage?.length) {
-          routeToGo += userData.settings?.defaultPage;
-        }
-        await this.router.navigate([routeToGo], { replaceUrl: true });
+          else {
+            console.log('no user');
+            await this.router.navigate(['/home'], { replaceUrl: true });
+            SplashScreen.hide();
+          }
+        })
+          .catch(async (err) => {
+            console.log(err);
+            await this.router.navigate(['/home'], { replaceUrl: true });
+            SplashScreen.hide();
+          });
       }
-      else {
-        console.log('no user');
-        await this.router.navigate(['/home'], { replaceUrl: true });
-        SplashScreen.hide();
-      }
-    })
-      .catch(async (err) => {
-        console.log(err);
-        await this.router.navigate(['/home'], { replaceUrl: true });
-        SplashScreen.hide();
-      });
+    });
   }
 
   ionViewDidEnter() {
