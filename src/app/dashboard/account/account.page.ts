@@ -11,6 +11,7 @@ import { ConnectivityService } from 'src/app/services/connectivity.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { IUser } from 'src/app/models/user';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -39,7 +40,8 @@ export class AccountPage implements OnInit {
     private firebase: FirebaseService,
     private common: CommonService,
     public connectivity: ConnectivityService,
-    private storage: StorageService
+    private storage: StorageService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -62,6 +64,7 @@ export class AccountPage implements OnInit {
       }
     });
     this.currentAccount = this.config.currentAccountId;
+    this.storage.setLastPage(this.router.url.slice(this.router.url.lastIndexOf('/') + 1));
   }
 
   ionViewDidLeave() {

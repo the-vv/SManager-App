@@ -94,7 +94,6 @@ export interface IAutomation {
     id?: string;
     name: string;
     userId: string;
-    recurring: boolean;
     amount: number;
     accountId: string;
     categoryId: string;

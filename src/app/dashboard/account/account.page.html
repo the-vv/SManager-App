@@ -27,7 +27,7 @@
   </ion-card>
 
   <ion-card class="rounded-3xl">
-    <ion-card-header class="flex justify-between ion-align-items-center">
+    <ion-card-header class="flex justify-between ion-align-items-center pb-0">
       <ion-label>
         App Settings
       </ion-label>
@@ -63,7 +63,37 @@
     </ion-card-content>
   </ion-card>
   <ion-card class="rounded-3xl">
-    <ion-card-header>
+    <ion-card-header class="pb-0">
+      <div class="flex justify-between ion-align-items-center">
+        <div class="text-xl">
+          <p class="p-0 m-0 -mb-2">Your Automations</p>
+          <small class="text-gray-500 text-xs">Swipe left for options</small>
+        </div>
+        <ion-button color="primary" shape="round" size="small" [disabled]="!connectivity.isOnline"
+          (click)="addAccountsPopup()">
+          <ion-icon slot="icon-only" name="add"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item-sliding *ngFor="let account of allAccounts">
+          <ion-item button (click)="onChangeAccount(account.id)">
+            <ion-icon size="large" [name]="'card-outline'" slot="start" color="primary"></ion-icon>
+            <ion-label>{{account.name}}</ion-label>
+            <ion-icon *ngIf="account.id === config.currentAccountId" size="small" color="success" [name]="'checkmark-circle'"
+              slot="end"></ion-icon>
+          </ion-item>
+          <ion-item-options side="end">
+            <ion-item-option color="danger" (click)="onDeleteAccount(account)">Delete</ion-item-option>
+            <ion-item-option color="warning" (click)="onEditAccount(account)">Edit</ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+  <ion-card class="rounded-3xl">
+    <ion-card-header class="pb-0">
       <div class="flex justify-between ion-align-items-center">
         <div class="text-xl">
           <p class="p-0 m-0 -mb-2">Your Bank Accounts</p>

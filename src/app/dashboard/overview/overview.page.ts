@@ -9,6 +9,8 @@ import { ConfigService } from 'src/app/services/config.service';
 import { FirebaseService } from 'src/app/services/firebase.service';
 Chart.register(...registerables);
 import ColorGenerator from 'random-color-array-generator/ColorGenerator.min.js';
+import { Router } from '@angular/router';
+import { StorageService } from 'src/app/services/storage.service';
 
 
 @Component({
@@ -31,7 +33,9 @@ export class OverviewPage implements OnInit {
     public cashService: CashService,
     private firebase: FirebaseService,
     private config: ConfigService,
-    private common: CommonService
+    private common: CommonService,
+    private router: Router,
+    private storage: StorageService
   ) { }
 
   ngOnInit() { }
@@ -175,6 +179,7 @@ export class OverviewPage implements OnInit {
         }
       });
     });
+    this.storage.setLastPage(this.router.url.slice(this.router.url.lastIndexOf('/') + 1));
   }
   ionViewDidLeave() {
     this.chartRenders.forEach(el => {

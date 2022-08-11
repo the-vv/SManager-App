@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { ICategory } from 'src/app/models/common';
 import { CommonService } from 'src/app/services/common.service';
 import { ConfigService } from 'src/app/services/config.service';
 import { FirebaseService } from 'src/app/services/firebase.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-categories',
@@ -20,7 +22,9 @@ export class CategoriesPage implements OnInit {
     private alertController: AlertController,
     private firebase: FirebaseService,
     private common: CommonService,
-    private config: ConfigService
+    private config: ConfigService,
+    private storage: StorageService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -38,6 +42,7 @@ export class CategoriesPage implements OnInit {
         console.log(err);
       }
     });
+    this.storage.setLastPage(this.router.url.slice(this.router.url.lastIndexOf('/') + 1));
   }
 
   ionViewDidLeave() {
