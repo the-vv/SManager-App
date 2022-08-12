@@ -12,6 +12,7 @@ import { environment } from 'src/environments/environment';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { GoogleAuthProvider } from 'firebase/auth';
 import { StorageService } from '../services/storage.service';
+import { FTimeStamp } from '../models/common';
 
 @Component({
   selector: 'app-login',
@@ -64,9 +65,13 @@ export class LoginPage implements OnInit {
             id: user.user.uid,
           };
           if (user.additionalUserInfo.isNewUser) {
+            customUser.settings.lastUsedTime = new Date();
             customUser.settings.addLastMonthBalance = true;
           }
           this.firebase.saveUser(customUser).then(async (userRes: IUser) => {
+            if (userRes.settings?.lastUsedTime) {
+              userRes.settings.lastUsedTime = (userRes.settings?.lastUsedTime as FTimeStamp).toDate();
+            }
             this.user.setUser(userRes);
             console.log(userRes);
             this.common.hideSpinner();

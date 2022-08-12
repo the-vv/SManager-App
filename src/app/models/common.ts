@@ -72,9 +72,10 @@ export enum EPageTypes {
 }
 
 export interface IUserSettings {
-    rememberLastPage: boolean;
-    defaultPage: EPageTypes;
-    addLastMonthBalance: boolean;
+    rememberLastPage?: boolean;
+    defaultPage?: EPageTypes;
+    addLastMonthBalance?: boolean;
+    lastUsedTime?: Date | FTimeStamp;
 }
 
 
@@ -100,4 +101,5 @@ export interface IAutomation {
     categoryId: string;
     datetime: string | Date;
     active: boolean;
+    lastExecuted: string | Date;
 }

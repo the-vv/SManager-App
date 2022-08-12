@@ -251,4 +251,8 @@ export class FirebaseService {
     });
   }
 
+  getCurrentUser() {
+    return this.firestore.doc<IUser>(`${ECollectionNames.users}/${this.config.currentUser.id}`).valueChanges();
+  }
+
 }

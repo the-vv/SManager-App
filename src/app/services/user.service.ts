@@ -6,6 +6,8 @@ import { EStorageKeyNames } from '../models/common';
 import { ConfigService } from './config.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { StorageService } from './storage.service';
+import { CommonService } from './common.service';
+import { FirebaseService } from './firebase.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +18,10 @@ export class UserService {
     private router: Router,
     private config: ConfigService,
     private auth: AngularFireAuth,
-    private storage: StorageService
-    ) { }
+    private storage: StorageService,
+    private common: CommonService,
+    private firebase: FirebaseService,
+  ) { }
 
   setUser(user: IUser) {
     this.storage.setUser(JSON.stringify(user));
@@ -43,6 +47,20 @@ export class UserService {
     await this.auth.signOut();
     this.config.authEvents.next(null);
     this.router.navigate(['login'], { replaceUrl: true });
+  }
+
+  updateLastUsedTime() {
+    const newSettings = {
+      ...this.config.currentUser.settings,
+      lastUsedTime: new Date()
+    };
+    this.firebase.updateUserSettings(newSettings).then(() => {
+      this.storage.setLastUsedTime(this.common.toLocaleIsoDateString(new Date()));
+      this.config.currentUser.settings = newSettings;
+      this.setUser(this.config.currentUser);
+    }).catch(err => {
+      console.log(err);
+    });
   }
 
 }

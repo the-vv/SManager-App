@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 // import { RealtimeSubscription } from '@supabase/supabase-js';
-import { differenceInMonths, endOfMonth, lastDayOfMonth, startOfMonth, subMonths } from 'date-fns';
+import { endOfMonth, startOfMonth, subMonths } from 'date-fns';
 import { ECashType, EFirebaseActionTypes, FTimeStamp, IAccount, IIncomeExpense, IIncomeExpenseDB, IMonthWise } from '../models/common';
 import { CommonService } from './common.service';
 import { ConfigService } from './config.service';
 import { StorageService } from './storage.service';
 import { FirebaseService } from './firebase.service';
-import { BehaviorSubject, Subscription, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Subscription, take } from 'rxjs';
 import { Router } from '@angular/router';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,10 +26,11 @@ export class CashService {
     private firebase: FirebaseService,
     private config: ConfigService,
     private commonService: CommonService,
-    private router: Router
+    private router: Router,
+    private user: UserService
   ) {
-    this.config.authEvents.subscribe(user => {
-      if (!user) {
+    this.config.authEvents.subscribe(userRes => {
+      if (!userRes) {
         this.clearAll();
       }
     });
@@ -217,10 +219,17 @@ export class CashService {
   }
 
   async chechAutomations() {
-    if (this.config.currentUser?.settings?.addLastMonthBalance) {
-      const lastUsedTime = await this.storageService.getLastUsedTime();
+    const updatedUser = await firstValueFrom(this.firebase.getCurrentUser());
+    if (updatedUser) {
+      updatedUser.settings.lastUsedTime = (updatedUser.settings?.lastUsedTime as FTimeStamp).toDate();
+      this.user.setUser(updatedUser);
+    } else {
+      return;
+    }
+    if (updatedUser?.settings?.addLastMonthBalance) {
+      const lastUsedTime = new Date(updatedUser?.settings?.lastUsedTime as Date);
       console.log(lastUsedTime);
-      if (lastUsedTime && startOfMonth(new Date()) > new Date(lastUsedTime)) {
+      if (lastUsedTime && !isNaN(+lastUsedTime) && startOfMonth(new Date()) > new Date(lastUsedTime)) {
         this.firebase.getUserAccounts().pipe(take(1)).subscribe({
           next: (accounts: IAccount[]) => {
             const itemsToAdd: IIncomeExpense[] = [];
@@ -264,6 +273,7 @@ export class CashService {
           }
         });
       }
+      this.user.updateLastUsedTime();
     }
   }
 
