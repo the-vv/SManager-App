@@ -329,12 +329,12 @@ export class AccountPage implements OnInit {
 
   onSubmitSettings() {
     this.savingSettings = true;
-    this.firebase.updateUserSettings(this.settingsForm.value)
+    this.firebase.updateUserSettings(this.settingsForm.getRawValue())
       .then(() => {
         this.savingSettings = false;
         const newUser: IUser = {
           ...this.config.currentUser,
-          settings: this.settingsForm.value
+          settings: this.settingsForm.getRawValue()
         };
         this.user.setUser(newUser);
         this.common.showToast('Settings updated successfully');

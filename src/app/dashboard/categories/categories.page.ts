@@ -98,6 +98,7 @@ export class CategoriesPage implements OnInit {
       const catName = value?.data?.values?.[0];
       if (catName && value?.role === 'create') {
         this.config.cloudSyncing.next(true);
+        const oldCategoriesLength = this.allCategories.length;
         this.firebase.createCategpry({
           name: catName,
           userId: this.config.currentUser.id,
@@ -106,6 +107,21 @@ export class CategoriesPage implements OnInit {
           .then(() => {
             this.config.cloudSyncing.next(false);
             this.common.showToast('Category created successfully');
+            if (oldCategoriesLength === 0) {
+              this.alertController.create({
+                header: 'Change category color',
+                message: 'You can change category color by tapping on the color picker',
+                buttons: [
+                  {
+                    text: 'OK',
+                    role: 'cancel'
+                  }
+                ]
+              }).then(message => {
+                message.present();
+              });
+            }
+            // show a meesage
           }).catch(err => {
             this.config.cloudSyncing.next(false);
             console.log(err);
