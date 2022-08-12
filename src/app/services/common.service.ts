@@ -64,10 +64,15 @@ export class CommonService {
     });
   }
 
-  async showToast(msg: string, duration: number = 3000) {
+
+  async showToast(msg: string, duration: number = 3000, showDismiss: boolean = true) {
     const toast = await this.toastController.create({
       message: msg,
       duration,
+      buttons: showDismiss ? [{
+        text: 'Dismiss',
+        role: 'cancel'
+      }] : [],
       position: 'bottom',
     });
     toast.present();
