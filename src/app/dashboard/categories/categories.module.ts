@@ -19,4 +19,4 @@ import { SharedModule } from 'src/app/shared/shared.module';
   ],
   declarations: [CategoriesPage]
 })
-export class SessionsPageModule {}
+export class SessionsPageModule { }

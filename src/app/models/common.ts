@@ -88,6 +88,7 @@ export interface ICategory {
     id?: string;
     name: string;
     userId: string;
+    color: string;
 }
 
 export interface IAutomation {

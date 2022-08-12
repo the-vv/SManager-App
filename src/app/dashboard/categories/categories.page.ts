@@ -8,6 +8,9 @@ import { ConfigService } from 'src/app/services/config.service';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { StorageService } from 'src/app/services/storage.service';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
+declare const Coloris: any;
+
 @Component({
   selector: 'app-categories',
   templateUrl: './categories.page.html',
@@ -43,6 +46,25 @@ export class CategoriesPage implements OnInit {
       }
     });
     this.storage.setLastPage(this.router.url.slice(this.router.url.lastIndexOf('/') + 1));
+    Coloris({
+      el: '.coloris-picker',
+      theme: 'dark'
+    });
+  }
+
+  onColorChange(color: string, category: ICategory) {
+    category.color = color;
+    this.common.showSpinner();
+    this.firebase.updateCategory(category, category.id)
+      .then(() => {
+        this.common.showToast('Category color updated successfully');
+      }).catch(err => {
+        console.log(err);
+        this.common.showToast('Error updating category color');
+      })
+      .finally(() => {
+        this.common.hideSpinner();
+      });
   }
 
   ionViewDidLeave() {
@@ -79,6 +101,7 @@ export class CategoriesPage implements OnInit {
         this.firebase.createCategpry({
           name: catName,
           userId: this.config.currentUser.id,
+          color: this.getRandomColor()
         })
           .then(() => {
             this.config.cloudSyncing.next(false);
@@ -151,5 +174,16 @@ export class CategoriesPage implements OnInit {
       }
     });
   }
+
+  getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
+
 
 }

@@ -66,18 +66,20 @@ export class OverviewPage implements OnInit {
           const categoryGroupedExpeses = [];
           for (const key in groupedExpenses) {
             if (groupedExpenses.hasOwnProperty(key)) {
-              const catItem = this.allCategories.find(el => el.id === key)?.name;
+              const catItem = this.allCategories.find(el => el.id === key);
               if (catItem) {
                 categoryGroupedExpeses.push({
-                  name: catItem,
-                  value: groupedExpenses[key]
+                  name: catItem.name,
+                  value: groupedExpenses[key],
+                  color: catItem.color
                 });
               } else if (categoryGroupedExpeses.find(el => el.name === 'Uncategorized')) {
                 categoryGroupedExpeses.find(el => el.name === 'Uncategorized').value += groupedExpenses[key];
               } else {
                 categoryGroupedExpeses.push({
                   name: 'Uncategorized',
-                  value: groupedExpenses[key]
+                  value: groupedExpenses[key],
+                  color: this.getRandomColor()
                 });
               }
             }
@@ -100,7 +102,7 @@ export class OverviewPage implements OnInit {
                     {
                       label: 'Overview',
                       data: categoryGroupedExpeses.map(el => el.value),
-                      backgroundColor: colorGenerator.generateRGB(),
+                      backgroundColor: categoryGroupedExpeses.map(el => `${el.color}`),
                       hoverBackgroundColor: colorGenerator.generateRGB(),
                     },
                   ]
@@ -192,6 +194,17 @@ export class OverviewPage implements OnInit {
       (rv[x[key]] = rv[x[key]] || []).push(x);
       return rv;
     }, {});
-  };
+  }
+
+
+  getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
 
 }

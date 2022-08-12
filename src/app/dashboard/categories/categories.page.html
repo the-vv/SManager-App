@@ -31,6 +31,11 @@
         <ion-label>
           {{cat.name}}
         </ion-label>
+        <span slot="end" class="color-area w-7 h-7 rounded-full overflow-hidden">
+          <input type="text" class="w-full h-full rounded-full coloris-picker"
+            style="border: 1.5px solid rgba(255, 255, 255, 0.499)" [value]="cat.color" [style.background]="cat.color"
+            [style.color]="cat.color" #colorPicker (change)="onColorChange(colorPicker.value, cat)">
+        </span>
       </ion-item>
       <ion-item-options side="end">
         <ion-item-option color="danger" (click)="onDeleteCategory(cat)">Delete</ion-item-option>

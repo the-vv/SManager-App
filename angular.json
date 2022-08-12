@@ -31,8 +31,14 @@
                 "output": "./svg"
               }
             ],
-            "styles": ["src/theme/variables.scss", "src/global.scss"],
-            "scripts": [],
+            "styles": [
+              "src/theme/variables.scss",
+              "src/global.scss",
+              "src/assets/color-picker-plugin/coloris.min.css"
+            ],
+            "scripts": [
+              "src/assets/color-picker-plugin/coloris.min.js"
+            ],
             "aot": false,
             "vendorChunk": true,
             "extractLicenses": false,
