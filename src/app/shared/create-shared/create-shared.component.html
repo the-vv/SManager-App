@@ -27,7 +27,8 @@
           <ion-select-option [value]="cat.id" *ngFor="let cat of allCategories">{{cat.name}}</ion-select-option>
         </ion-select>
       </ion-item>
-      <small class="text-danger" *ngIf="f.categoryId.errors?.required && f.categoryId.touched">Category is required</small>
+      <small class="text-danger" *ngIf="f.categoryId.errors?.required && f.categoryId.touched">Category is
+        required</small>
     </div>
     <div class="mt-2">
       <ion-item id="date">
@@ -49,24 +50,45 @@
         <ion-input placeholder="Enter Amount" formControlName="amount" [color]="isExpense ? 'danger' : 'success'"
           style="font-size: 1.5em;" type="number"></ion-input>
       </ion-item>
-      <small class="text-danger absolute" *ngIf="f.amount.errors?.required && f.amount.touched">Amount is required</small>
+      <small class="text-danger absolute" *ngIf="f.amount.errors?.required && f.amount.touched">Amount is
+        required</small>
     </div>
     <div class="mt-2">
       <p class="bg-gray-800 rounded-2xl p-1 text-center font-bold">More Options</p>
     </div>
+    <div class="mt-2 relative" id="" *ngIf="!isAutomation">
+      <ion-item>
+        <ion-label>Create Repeating Automation</ion-label>
+        <ion-toggle formControlName="automation"></ion-toggle>
+      </ion-item>
+    </div>
+    <div class="mt-2 relative" id="" *ngIf="f.automation.value">
+      <ion-item>
+        <ion-label position="stacked">Automation Frequency</ion-label>
+        <ion-select placeholder="Select One" interface="popover" formControlName="frequency">
+          <ion-select-option [value]="freq" *ngFor="let freq of frequencyValues">{{freq | titlecase}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      <small class="text-danger absolute" *ngIf="f.frequency.errors?.required && f.frequency.touched">Frequency is
+        required</small>
+    </div>
     <div class="mt-2" id="">
       <ion-item>
         <ion-label position="stacked">Bank Account</ion-label>
-        <ion-select interface="popover" formControlName="accountId" placeholder="Select Bank Account" [compareWith]="compareFn">
+        <ion-select interface="popover" formControlName="accountId" placeholder="Select Bank Account"
+          [compareWith]="compareFn">
           <ion-select-option [value]="acc.id" *ngFor="let acc of allAccounts">{{acc.name}}</ion-select-option>
         </ion-select>
       </ion-item>
-      <small class="text-danger" *ngIf="f.accountId.errors?.required && f.accountId.touched">Bank Account is required</small>
+      <small class="text-danger" *ngIf="f.accountId.errors?.required && f.accountId.touched">Bank Account is
+        required</small>
     </div>
     <div class="mt-2" id="">
       <ion-item>
         <ion-label position="stacked">Description</ion-label>
-        <ion-textarea placeholder="Enter Description (optional)" formControlName="description" autocapitalize></ion-textarea>
+        <ion-textarea placeholder="Enter Description (optional)" formControlName="description" autocapitalize>
+        </ion-textarea>
       </ion-item>
     </div>
   </form>

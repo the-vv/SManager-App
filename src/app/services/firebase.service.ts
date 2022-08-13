@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ECollectionNames, IAccount, ICategory, IIncomeExpense, IIncomeExpenseDB, IUserSettings } from '../models/common';
+import { ECollectionNames, IAccount, IAutomation, ICategory, IIncomeExpense, IIncomeExpenseDB, IUserSettings } from '../models/common';
 import { IUser } from '../models/user';
 import { ConfigService } from './config.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -254,5 +254,56 @@ export class FirebaseService {
   getCurrentUser() {
     return this.firestore.doc<IUser>(`${ECollectionNames.users}/${this.config.currentUser.id}`).valueChanges();
   }
+
+  createAutomation(automation: IAutomation) {
+    return new Promise((resolve, reject) => {
+      this.firestore.collection(ECollectionNames.automations).add(automation)
+        .then(dbRes => {
+          resolve(dbRes);
+        }).catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  getAllUserAutomations() {
+    return this.firestore.collection<IAutomation>(ECollectionNames.automations, ref => ref
+      .where('userId', '==', this.config.currentUser.id))
+      .valueChanges({ idField: 'id' });
+  }
+
+  updateAutomation(automation: IAutomation, id: string) {
+    return new Promise((resolve, reject) => {
+      this.firestore.doc(`${ECollectionNames.automations}/${id}`).update(automation)
+        .then(dbRes => {
+          resolve(dbRes);
+        }).catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  deleteAutomation(id: string) {
+    return new Promise((resolve, reject) => {
+      this.firestore.doc(`${ECollectionNames.automations}/${id}`).delete()
+        .then(dbRes => {
+          resolve(dbRes);
+        }).catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  updateAutomationStatus(id: string, active: boolean) {
+    return new Promise((resolve, reject) => {
+      this.firestore.doc(`${ECollectionNames.automations}/${id}`).update({ active })
+        .then(dbRes => {
+          resolve(dbRes);
+        }).catch(err => {
+          reject(err);
+        });
+    });
+  }
+
 
 }

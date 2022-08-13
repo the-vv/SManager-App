@@ -101,7 +101,7 @@
           <small class="text-gray-500 text-xs">Swipe left for options</small>
         </div>
         <ion-button color="primary" shape="round" size="small" [disabled]="!connectivity.isOnline"
-          (click)="addAccountsPopup()">
+          (click)="createAutomation()">
           <ion-icon slot="icon-only" name="add"></ion-icon>
         </ion-button>
       </div>
@@ -109,13 +109,27 @@
     <ion-card-content>
       <ion-list>
         <ion-item-sliding *ngFor="let automation of allAutomations">
-          <ion-item button (click)="onChangeAccount(automation.id)">
+          <ion-item button (click)="showaAutomationDetails(automation)">
             <ion-icon size="large" [name]="'repeat'" slot="start" color="primary"></ion-icon>
-            <ion-label>{{automation.name}}</ion-label>
+            <div class="w-full">
+              <span class="font-normal text-base grid grid-flow-col auto-cols-auto">
+                <span class="truncate">{{automation.title}}</span>
+                <span class="text-right flex items-start justify-end">
+                  <span class="rounded-xl bg-opacity-30" style="padding: 0 4px 0 4px"
+                    [ngClass]="automation.type === 'expense' ? 'bg-red-500' : 'bg-green-500'">
+                    <span class="align-middle ml-0.5 text-sm font-extralight">{{automation.type | titlecase}}</span>
+                  </span>
+                </span>
+              </span>
+              <div class="items-center flex">
+                <span class="italic font-extralight truncate">{{automation.description}}</span>
+              </div>              
+            </div>            
+            <ion-toggle [checked]="automation.active" slot="end" (ionChange)="updateautomationStatus(automation)"></ion-toggle>
           </ion-item>
           <ion-item-options side="end">
-            <ion-item-option color="danger" (click)="onDeleteAccount(automation)">Delete</ion-item-option>
-            <ion-item-option color="warning" (click)="onEditAccount(automation)">Edit</ion-item-option>
+            <ion-item-option color="danger" (click)="onDeleteAutomation(automation)">Delete</ion-item-option>
+            <ion-item-option color="warning" (click)="onDeleteAutomation(automation)">Edit</ion-item-option>
           </ion-item-options>
         </ion-item-sliding>
       </ion-list>

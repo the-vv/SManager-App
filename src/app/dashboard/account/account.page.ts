@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
-import { Subscription, take } from 'rxjs';
-import { EPageTypes, IAccount, IAutomation, IIncomeExpenseDB } from 'src/app/models/common';
+import { ActionSheetController, AlertController, ModalController } from '@ionic/angular';
+import { firstValueFrom, Subscription, take } from 'rxjs';
+import { ECashType, EPageTypes, FTimeStamp, IAccount, IAutomation, ICategory, IIncomeExpenseDB } from 'src/app/models/common';
 import { CashService } from 'src/app/services/cash.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ConfigService } from 'src/app/services/config.service';
@@ -12,6 +12,8 @@ import { StorageService } from 'src/app/services/storage.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { IUser } from 'src/app/models/user';
 import { Router } from '@angular/router';
+import { CreateSharedComponent } from 'src/app/shared/create-shared/create-shared.component';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -32,6 +34,7 @@ export class AccountPage implements OnInit {
   public savingSettings = false;
   public allAutomations: IAutomation[] = [];
   private subs: Subscription = new Subscription();
+  private allCategories: ICategory[] = [];
 
   constructor(
     public config: ConfigService,
@@ -42,7 +45,10 @@ export class AccountPage implements OnInit {
     private common: CommonService,
     public connectivity: ConnectivityService,
     private storage: StorageService,
-    private router: Router
+    private router: Router,
+    private modalController: ModalController,
+    private actionSheetController: ActionSheetController,
+    private alertCtrl: AlertController
   ) { }
 
   ngOnInit() {
@@ -66,6 +72,11 @@ export class AccountPage implements OnInit {
     });
     this.currentAccount = this.config.currentAccountId;
     this.storage.setLastPage(this.router.url.slice(this.router.url.lastIndexOf('/') + 1));
+    this.getUserAutomations();
+    this.firebase.getAllUserCategories().pipe(take(1))
+      .subscribe((categories) => {
+        this.allCategories = categories;
+      });
   }
 
   ionViewDidLeave() {
@@ -344,5 +355,106 @@ export class AccountPage implements OnInit {
         this.common.showToast('Error updating settings');
       });
   }
+
+  async createAutomation() {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Choose an item',
+      buttons: [{
+        text: 'Income',
+        icon: 'wallet-outline',
+        handler: () => {
+          this.createAutomationItem(ECashType.income);
+        }
+      }, {
+        text: 'Expense',
+        icon: 'cash-outline',
+        handler: () => {
+          this.createAutomationItem(ECashType.income);
+        }
+      }, {
+        text: 'Cancel',
+        icon: 'close',
+        role: 'cancel'
+      }]
+    });
+    await actionSheet.present();
+  }
+
+  async createAutomationItem(type: ECashType) {
+    const modal = await this.modalController.create({
+      component: CreateSharedComponent,
+      componentProps: {
+        type,
+        isAutomation: true
+      }
+    });
+    modal.onDidDismiss().then((data) => {
+      this.getUserAutomations();
+    });
+    return await modal.present();
+  }
+
+  getUserAutomations() {
+    firstValueFrom(this.firebase.getAllUserAutomations())
+      .then(automations => {
+        this.allAutomations = automations;
+      }).catch(err => {
+        console.log(err);
+      });
+  }
+
+  async onDeleteAutomation(automation: IAutomation) {
+    if (!(await this.common.showDeleteConfrmation(automation.title, 'Automation'))) {
+      return;
+    }
+    this.common.showSpinner('Deleting Automation...');
+    this.firebase.deleteAutomation(automation.id)
+      .then(() => {
+        this.common.hideSpinner();
+        this.config.cloudSyncing.next(false);
+        this.common.showToast('Automation deleted successfully');
+      }).catch(err => {
+        this.common.hideSpinner();
+        this.config.cloudSyncing.next(false);
+        console.log(err);
+        this.common.showToast('Error deleting automation');
+      }).finally(() => {
+        this.getUserAutomations();
+      });
+  }
+
+  async updateautomationStatus(automation: IAutomation) {
+    this.firebase.updateAutomationStatus(automation.id, !automation.active)
+      .then(() => {
+        this.config.cloudSyncing.next(false);
+        this.getUserAutomations();
+        this.common.showToast(`Automation ${automation.active ? 'disabled' : 'enabled'} successfully`);
+      }).catch(err => {
+        this.config.cloudSyncing.next(false);
+        console.log(err);
+        this.getUserAutomations();
+        this.common.showToast('Error updating automation');
+      });
+  }
+
+  showaAutomationDetails(item: IAutomation) {
+    const categoryName = this.allCategories.find(c => c.id === item.categoryId)?.name || 'Uncategorized';
+    const accountName = this.allAccounts.find(a => a.id === item.accountId)?.name;
+    const currentDateTime = (item.datetime as FTimeStamp).toDate();
+    this.alertCtrl.create({
+      header: `Automation: ${item.title}`,
+      message: `<p class='text-${item.type === ECashType.expense ? 'danger' : 'success'} font-bold p-0 m-0 h5'>
+        ${item.type.charAt(0).toUpperCase() + item.type.slice(1)}: ₹ ${item.amount}</p>
+        <div class='mt-0.5 block'><strong class=''>Category: </strong> ${categoryName}</div>
+        <div class='mt-0.5 block'><strong class=''>Date:</strong>
+            ${new DatePipe('en').transform(currentDateTime, 'dd/M/yyyy hh:mm a')}
+          </div>
+        <div class='mt-0.5 block'><strong class=''>Account:</strong> ${accountName}</div>
+        <div class='mt-0.5 block'><strong class=''>Description: </strong> ${item.description}</div>
+      `,
+      buttons: [{ text: 'Close' }]
+    }).then(alert => alert.present());
+  }
+
 
 }

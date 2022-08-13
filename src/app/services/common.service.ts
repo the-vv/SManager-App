@@ -38,12 +38,12 @@ export class CommonService {
     }
   }
 
-  public showDeleteConfrmation(item: string) {
+  public showDeleteConfrmation(item: string, itemType?: string) {
     return new Promise<boolean>(async (resolve) => {
       const alert = await this.alertCtrl.create({
         cssClass: 'my-custom-class',
         header: 'Confirm!',
-        message: `Are you sure want to delete '${item}'?`,
+        message: `Are you sure want to delete${itemType ? ' ' + itemType : ''} '${item}'?`,
         buttons: [
           {
             text: 'Cancel',
@@ -53,6 +53,7 @@ export class CommonService {
             }
           }, {
             text: 'Delete',
+            role: 'destructive',
             handler: () => {
               resolve(true);
             }
@@ -65,7 +66,7 @@ export class CommonService {
   }
 
 
-  async showToast(msg: string, duration: number = 3000, showDismiss: boolean = true) {
+  async showToast(msg: string, duration: number = 2500, showDismiss: boolean = true) {
     const toast = await this.toastController.create({
       message: msg,
       duration,

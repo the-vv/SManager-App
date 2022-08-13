@@ -57,6 +57,7 @@ export const ECollectionNames = {
     basicDetals: environment.production ? 'basicDetals' : 'basicdetails-dev',
     accounts: environment.production ? 'bank-accounts' : 'bank-accounts-dev',
     categories: environment.production ? 'categories' : 'categories-dev',
+    automations: environment.production ? 'automations' : 'automations-dev',
 };
 
 export enum EFirebaseActionTypes {
@@ -94,12 +95,22 @@ export interface ICategory {
 
 export interface IAutomation {
     id?: string;
-    name: string;
+    title: string;
+    description?: string;
     userId: string;
     amount: number;
     accountId: string;
     categoryId: string;
-    datetime: string | Date;
+    datetime: string | Date | Timestamp;
     active: boolean;
-    lastExecuted: string | Date;
+    lastExecuted: Date | Timestamp;
+    frequency: number;
+    type: ECashType;
+}
+
+export enum EAutomationFrequency {
+    daily = 'daily',
+    weekly = 'weekly',
+    monthly = 'monthly',
+    yearly = 'yearly'
 }

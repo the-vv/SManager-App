@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonInput, ModalController } from '@ionic/angular';
 import { startOfMonth } from 'date-fns';
 import { take } from 'rxjs';
-import { ECashType, IAccount, ICategory, IIncomeExpense } from 'src/app/models/common';
+import { EAutomationFrequency, ECashType, IAccount, IAutomation, ICategory, IIncomeExpense } from 'src/app/models/common';
 import { CashService } from 'src/app/services/cash.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ConfigService } from 'src/app/services/config.service';
@@ -18,10 +18,12 @@ export class CreateSharedComponent implements OnInit, AfterViewInit {
 
   @Input() public type: ECashType;
   @Input() public editItem: IIncomeExpense;
+  @Input() public isAutomation = false;
 
   @ViewChild('titleInput') titleInput: IonInput;
 
   isExpense: boolean;
+  frequencyValues = Object.values(EAutomationFrequency);
 
   public cashForm: FormGroup;
   public currentTime: string = this.common.toLocaleIsoDateString(new Date());
@@ -42,7 +44,9 @@ export class CreateSharedComponent implements OnInit, AfterViewInit {
       amount: ['', Validators.required],
       datetime: [this.currentTime, Validators.required],
       accountId: ['', Validators.required],
-      categoryId: [null]
+      categoryId: [null],
+      frequency: [EAutomationFrequency.monthly],
+      automation: false
     });
   }
   get f() {
@@ -76,10 +80,13 @@ export class CreateSharedComponent implements OnInit, AfterViewInit {
     });
     this.firebase.getAllUserCategories().pipe(take(1)).subscribe((categories) => {
       this.allCategories = categories?.sort((a, b) => a.name.localeCompare(b.name));
-      if(this.editItem && !this.allCategories.find(c => c.id === this.editItem.categoryId)) {
+      if (this.editItem && !this.allCategories.find(c => c.id === this.editItem.categoryId)) {
         this.cashForm.controls.categoryId.setValue('');
       }
     });
+    if (this.isAutomation) {
+      this.cashForm.controls.automation.setValue(true);
+    }
   }
 
   dismissModal() {
@@ -90,6 +97,10 @@ export class CreateSharedComponent implements OnInit, AfterViewInit {
 
   onCreate() {
     if (this.cashForm.valid) {
+      if (this.cashForm.value.automation && this.isAutomation) {
+        this.createAutomation(this.cashForm.value);
+        return;
+      }
       const body: IIncomeExpense = {
         title: this.cashForm.value.title,
         description: this.cashForm.value.description,
@@ -106,10 +117,18 @@ export class CreateSharedComponent implements OnInit, AfterViewInit {
         if (this.isExpense) {
           this.cashService.addExpense(body);
           this.dismissModal();
+          if (this.cashForm.value.automation) {
+            this.createAutomation(this.cashForm.value);
+            return;
+          }
           this.common.showToast(`${this.type.charAt(0).toUpperCase() + this.type.slice(1)} Created Successfully`);
         } else {
           this.cashService.addIncome(body);
           this.dismissModal();
+          if (this.cashForm.value.automation) {
+            this.createAutomation(this.cashForm.value);
+            return;
+          }
           this.common.showToast(`${this.type.charAt(0).toUpperCase() + this.type.slice(1)} Created Successfully`);
         }
       } else {
@@ -124,4 +143,34 @@ export class CreateSharedComponent implements OnInit, AfterViewInit {
     return e1 && e2 ? e1.id === e2.id : e1 === e2;
   }
 
+  createAutomation(formValue: any) {
+    const body: IAutomation = {
+      title: formValue.title,
+      description: formValue.description,
+      datetime: new Date(formValue.datetime),
+      amount: formValue.amount,
+      type: this.isExpense ? ECashType.expense : ECashType.income,
+      accountId: formValue.accountId,
+      categoryId: formValue.categoryId,
+      frequency: formValue.frequency,
+      userId: this.config.currentUser.id,
+      active: true,
+      lastExecuted: this.isAutomation ? new Date(formValue.datetime) : null
+    };
+    this.firebase.createAutomation(body)
+      .then(() => {
+        if (this.isAutomation) {
+          this.common.showToast(`Automation Created Successfully`);
+          return;
+        }
+        this.common.showToast(`${this.type.charAt(0).toUpperCase() + this.type.slice(1)} and Automation Created Successfully`);
+      }).catch(err => {
+        console.log(err);
+      }).finally(() => {
+        this.dismissModal();
+      });
+  }
+
 }
+
+
