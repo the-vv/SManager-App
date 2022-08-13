@@ -14,6 +14,11 @@
 <ion-content>
   <ion-card class="rounded-3xl">
     <ion-card-header class="pb-0">
+      <ion-label>
+        Your Profile
+      </ion-label>
+    </ion-card-header>
+    <ion-card-content>
       <ion-item lines="none">
         <ion-avatar slot="start">
           <img [src]="config.currentUser?.imageUrl ? config.currentUser.imageUrl : 'assets/images/avatar-alt.png'"
@@ -24,9 +29,8 @@
           <ion-text class="d-block truncate" color="medium"><small>{{config.currentUser?.email}}</small></ion-text>
         </ion-label>
       </ion-item>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-label class="text-sm center text-center block font-extralight italic">Many more features are coming soon...!</ion-label>
+      <ion-label class="text-sm center text-center block font-extralight italic">Many more features are coming soon...!
+      </ion-label>
     </ion-card-content>
   </ion-card>
 
