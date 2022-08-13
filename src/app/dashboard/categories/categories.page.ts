@@ -48,7 +48,8 @@ export class CategoriesPage implements OnInit {
     this.storage.setLastPage(this.router.url.slice(this.router.url.lastIndexOf('/') + 1));
     Coloris({
       el: '.coloris-picker',
-      theme: 'dark'
+      theme: 'dark',
+      focusInput: false
     });
   }
 
@@ -96,6 +97,11 @@ export class CategoriesPage implements OnInit {
     await alert.present();
     alert.onDidDismiss().then((value) => {
       const catName = value?.data?.values?.[0];
+      // check if category name is already exists
+      if (this.allCategories.findIndex(c => c.name === catName) > -1) {
+        this.common.showToast('Category name already exists');
+        return;
+      }
       if (catName && value?.role === 'create') {
         this.config.cloudSyncing.next(true);
         const oldCategoriesLength = this.allCategories.length;

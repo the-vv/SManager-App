@@ -192,3 +192,7 @@ $val in $valueforhn {
 .text-white {
     color: #fff;
 }
+
+.category-header {
+    background: var(--ion-item-background, var(--ion-background-color, #fff)) !important;
+}

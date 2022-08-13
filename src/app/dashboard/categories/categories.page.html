@@ -12,9 +12,9 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-list-header>
-      <div class="flex justify-between items-center w-full pr-1">
+  <ion-list class="pt-0">
+    <ion-list-header class="sticky top-0 z-10 category-header py-1">
+      <div class="flex justify-between items-center w-full pr-1 category-header h-full">
         <div class="text-xl">
           <p class="p-0 m-0 -mb-2">Your Categories</p>
           <small class="text-gray-500 text-xs">Swipe left for options</small>
@@ -31,10 +31,10 @@
         <ion-label>
           {{cat.name}}
         </ion-label>
-        <span slot="end" class="color-area w-7 h-7 rounded-full overflow-hidden">
-          <input type="text" class="w-full h-full rounded-full coloris-picker"
+        <span slot="end" class="color-area w-7 h-7 rounded-full overflow-hidden" [style.background]="cat.color">
+          <input type="text" class="w-full h-full rounded-full coloris-picker select-none"
             style="border: 1.5px solid rgba(255, 255, 255, 0.499)" [value]="cat.color" [style.background]="cat.color"
-            [style.color]="cat.color" #colorPicker (change)="onColorChange(colorPicker.value, cat)">
+            [style.color]="cat.color" #colorPicker (change)="onColorChange(colorPicker.value, cat)" disabled>
         </span>
       </ion-item>
       <ion-item-options side="end">

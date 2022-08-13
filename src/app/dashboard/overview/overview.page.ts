@@ -123,7 +123,7 @@ export class OverviewPage implements OnInit {
                           },
                           color: 'white',
                           textStrokeColor: 'black',
-                          textStrokeWidth: 0.9,
+                          textStrokeWidth: 1,
                           textAlign: 'center',
                         }
                       }
