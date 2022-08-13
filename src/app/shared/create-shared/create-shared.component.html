@@ -9,7 +9,7 @@
 <ion-content fullscreen>
   <div class="ion-text-center h3 font-lighter mt-2 bg-opacity-30 rounded-2xl mx-2 p-2"
     [ngClass]="isExpense ? 'bg-red-500' : 'bg-green-500'">
-    {{editItem ? 'Update' : 'Create'}} an {{isExpense ? 'Expense' : 'Income'}}
+    {{(editItem || automationItem) ? 'Update' : 'Create'}} an Automation {{isExpense ? 'Expense' : 'Income'}}
   </div>
   <form (ngSubmit)="onCreate()" [formGroup]="cashForm" class="px-2">
     <div class="mt-2 relative" id="top-control">
@@ -95,6 +95,6 @@
 </ion-content>
 <ion-footer>
   <ion-button shape="round" expand="block" (click)="onCreate()" [disabled]="!cashForm.valid">
-    {{editItem ? 'Update' : 'Create'}}
+    {{(editItem || automationItem) ? 'Update' : 'Create'}}
   </ion-button>
 </ion-footer>

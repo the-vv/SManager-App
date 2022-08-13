@@ -423,7 +423,7 @@ export class AccountPage implements OnInit {
       });
   }
 
-  async updateautomationStatus(automation: IAutomation) {
+  async updateAutomationStatus(automation: IAutomation) {
     this.firebase.updateAutomationStatus(automation.id, !automation.active)
       .then(() => {
         this.config.cloudSyncing.next(false);
@@ -437,18 +437,27 @@ export class AccountPage implements OnInit {
       });
   }
 
-  showaAutomationDetails(item: IAutomation) {
+  showAutomationDetails(item: IAutomation) {
     const categoryName = this.allCategories.find(c => c.id === item.categoryId)?.name || 'Uncategorized';
     const accountName = this.allAccounts.find(a => a.id === item.accountId)?.name;
     const currentDateTime = (item.datetime as FTimeStamp).toDate();
+    const lastDateTime = (item.lastExecuted as FTimeStamp)?.toDate();
     this.alertCtrl.create({
       header: `Automation: ${item.title}`,
       message: `<p class='text-${item.type === ECashType.expense ? 'danger' : 'success'} font-bold p-0 m-0 h5'>
         ${item.type.charAt(0).toUpperCase() + item.type.slice(1)}: ₹ ${item.amount}</p>
-        <div class='mt-0.5 block'><strong class=''>Category: </strong> ${categoryName}</div>
+        <div class='mt-0.5 block'><strong class=''>Category: </strong> ${categoryName}</div>        
+        <div class='mt-0.5 block'><strong class=''>Frequency: </strong>
+          ${item.frequency.charAt(0).toUpperCase() + item.frequency.slice(1)}
+        </div>        
+        ${lastDateTime ? `
+        <div class='mt-0.5 block'><strong class=''>Last Executed: </strong>         
+          ${new DatePipe('en').transform(lastDateTime, 'dd/M/yyyy hh:mm a')}
+        </div>
+        ` : ''}
         <div class='mt-0.5 block'><strong class=''>Date:</strong>
-            ${new DatePipe('en').transform(currentDateTime, 'dd/M/yyyy hh:mm a')}
-          </div>
+              ${new DatePipe('en').transform(currentDateTime, 'dd/M/yyyy hh:mm a')}
+        </div>
         <div class='mt-0.5 block'><strong class=''>Account:</strong> ${accountName}</div>
         <div class='mt-0.5 block'><strong class=''>Description: </strong> ${item.description}</div>
       `,
@@ -456,5 +465,19 @@ export class AccountPage implements OnInit {
     }).then(alert => alert.present());
   }
 
+  async editAutomation(item: IAutomation) {
+    const modal = await this.modalController.create({
+      component: CreateSharedComponent,
+      componentProps: {
+        type: item.type,
+        isAutomation: true,
+        automationItem: item
+      }
+    });
+    modal.onDidDismiss().then((data) => {
+      this.getUserAutomations();
+    });
+    return await modal.present();
+  }
 
 }

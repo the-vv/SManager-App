@@ -104,7 +104,7 @@ export interface IAutomation {
     datetime: string | Date | Timestamp;
     active: boolean;
     lastExecuted: Date | Timestamp;
-    frequency: number;
+    frequency: EAutomationFrequency;
     type: ECashType;
 }
 

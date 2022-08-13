@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonInput, ModalController } from '@ionic/angular';
 import { startOfMonth } from 'date-fns';
 import { take } from 'rxjs';
-import { EAutomationFrequency, ECashType, IAccount, IAutomation, ICategory, IIncomeExpense } from 'src/app/models/common';
+import { EAutomationFrequency, ECashType, FTimeStamp, IAccount, IAutomation, ICategory, IIncomeExpense } from 'src/app/models/common';
 import { CashService } from 'src/app/services/cash.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ConfigService } from 'src/app/services/config.service';
@@ -19,6 +19,7 @@ export class CreateSharedComponent implements OnInit, AfterViewInit {
   @Input() public type: ECashType;
   @Input() public editItem: IIncomeExpense;
   @Input() public isAutomation = false;
+  @Input() public automationItem: IAutomation;
 
   @ViewChild('titleInput') titleInput: IonInput;
 
@@ -87,6 +88,11 @@ export class CreateSharedComponent implements OnInit, AfterViewInit {
     if (this.isAutomation) {
       this.cashForm.controls.automation.setValue(true);
     }
+    if (this.automationItem) {
+      this.cashForm.patchValue(this.automationItem);
+      const currentDateTime = (this.cashForm.controls.datetime.value as FTimeStamp).toDate();
+      this.cashForm.controls.datetime.setValue(currentDateTime);
+    }
   }
 
   dismissModal() {
@@ -144,31 +150,52 @@ export class CreateSharedComponent implements OnInit, AfterViewInit {
   }
 
   createAutomation(formValue: any) {
-    const body: IAutomation = {
-      title: formValue.title,
-      description: formValue.description,
-      datetime: new Date(formValue.datetime),
-      amount: formValue.amount,
-      type: this.isExpense ? ECashType.expense : ECashType.income,
-      accountId: formValue.accountId,
-      categoryId: formValue.categoryId,
-      frequency: formValue.frequency,
-      userId: this.config.currentUser.id,
-      active: true,
-      lastExecuted: this.isAutomation ? new Date(formValue.datetime) : null
-    };
-    this.firebase.createAutomation(body)
-      .then(() => {
-        if (this.isAutomation) {
-          this.common.showToast(`Automation Created Successfully`);
-          return;
-        }
-        this.common.showToast(`${this.type.charAt(0).toUpperCase() + this.type.slice(1)} and Automation Created Successfully`);
-      }).catch(err => {
-        console.log(err);
-      }).finally(() => {
-        this.dismissModal();
-      });
+    if (!this.automationItem) {
+      const body: IAutomation = {
+        title: formValue.title,
+        description: formValue.description,
+        datetime: new Date(formValue.datetime),
+        amount: formValue.amount,
+        type: this.isExpense ? ECashType.expense : ECashType.income,
+        accountId: formValue.accountId,
+        categoryId: formValue.categoryId,
+        frequency: formValue.frequency,
+        userId: this.config.currentUser.id,
+        active: true,
+        lastExecuted: this.isAutomation ? new Date(formValue.datetime) : null
+      };
+      this.firebase.createAutomation(body)
+        .then(() => {
+          if (this.isAutomation) {
+            this.common.showToast(`Automation Created Successfully`);
+            return;
+          }
+          this.common.showToast(`${this.type.charAt(0).toUpperCase() + this.type.slice(1)} and Automation Created Successfully`);
+        }).catch(err => {
+          console.log(err);
+        }).finally(() => {
+          this.dismissModal();
+        });
+    } else {
+      const updateBody: any = {
+        title: formValue.title,
+        description: formValue.description,
+        datetime: new Date(formValue.datetime),
+        amount: formValue.amount,
+        accountId: formValue.accountId,
+        categoryId: formValue.categoryId,
+        frequency: formValue.frequency,
+      };
+      this.firebase.updateAutomation(updateBody, this.automationItem.id)
+        .then(() => {
+          this.common.showToast(`Automation Updated Successfully`);
+        }).catch(err => {
+          this.common.showToast(`Error in updating automation`);
+          console.log(err);
+        }).finally(() => {
+          this.dismissModal();
+        });
+    }
   }
 
 }
