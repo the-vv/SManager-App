@@ -77,7 +77,11 @@ export class CreateSharedComponent implements OnInit, AfterViewInit {
     }
     this.firebase.getUserAccounts().pipe(take(1)).subscribe((accounts) => {
       this.allAccounts = accounts;
-      this.cashForm.controls.accountId.setValue(this.editItem?.accountId ?? this.config.currentAccountId);
+      if (this.automationItem) {
+        this.cashForm.controls.accountId.setValue(this.automationItem.accountId);
+      } else {
+        this.cashForm.controls.accountId.setValue(this.editItem?.accountId ?? this.config.currentAccountId);
+      }
     });
     this.firebase.getAllUserCategories().pipe(take(1)).subscribe((categories) => {
       this.allCategories = categories?.sort((a, b) => a.name.localeCompare(b.name));
@@ -92,6 +96,7 @@ export class CreateSharedComponent implements OnInit, AfterViewInit {
       this.cashForm.patchValue(this.automationItem);
       const currentDateTime = (this.cashForm.controls.datetime.value as FTimeStamp).toDate();
       this.cashForm.controls.datetime.setValue(currentDateTime);
+      this.cashForm.controls.accountId.setValue(''); // for change triggering
     }
   }
 

@@ -4,25 +4,29 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Account</ion-title>
+    <ion-buttons slot="end">
+      <app-month-choose class="mr-2"></app-month-choose>
+      <app-cloud-sync></app-cloud-sync>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-card class="rounded-3xl">
-    <ion-card-header class="ion-justify-content-center">
+    <ion-card-header class="pb-0">
       <ion-item lines="none">
         <ion-avatar slot="start">
           <img [src]="config.currentUser?.imageUrl ? config.currentUser.imageUrl : 'assets/images/avatar-alt.png'"
             referrerpolicy="no-referrer">
         </ion-avatar>
-        <ion-label>
+        <ion-label class="">
           <ion-text class="h4">{{config.currentUser?.name}}</ion-text>
-          <ion-text class="d-block" color="medium"><small>{{config.currentUser?.email}}</small></ion-text>
+          <ion-text class="d-block truncate" color="medium"><small>{{config.currentUser?.email}}</small></ion-text>
         </ion-label>
       </ion-item>
     </ion-card-header>
     <ion-card-content>
-      <ion-label class="text-sm center text-center block">Many more features are coming soon...!</ion-label>
+      <ion-label class="text-sm center text-center block font-extralight italic">Many more features are coming soon...!</ion-label>
     </ion-card-content>
   </ion-card>
 
@@ -123,9 +127,10 @@
               </span>
               <div class="items-center flex">
                 <span class="italic font-extralight truncate">{{automation.description}}</span>
-              </div>              
-            </div>            
-            <ion-toggle [checked]="automation.active" slot="end" (ionChange)="updateAutomationStatus(automation)"></ion-toggle>
+              </div>
+            </div>
+            <ion-toggle [checked]="automation.active" slot="end" (click)="$event.stopPropagation()"
+              (ionChange)="updateAutomationStatus(automation)"></ion-toggle>
           </ion-item>
           <ion-item-options side="end">
             <ion-item-option color="danger" (click)="onDeleteAutomation(automation)">Delete</ion-item-option>

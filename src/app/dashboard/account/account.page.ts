@@ -369,7 +369,7 @@ export class AccountPage implements OnInit {
         text: 'Expense',
         icon: 'cash-outline',
         handler: () => {
-          this.createAutomationItem(ECashType.income);
+          this.createAutomationItem(ECashType.expense);
         }
       }, {
         text: 'Cancel',
