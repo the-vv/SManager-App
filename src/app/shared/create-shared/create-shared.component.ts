@@ -107,8 +107,10 @@ export class CreateSharedComponent implements OnInit, AfterViewInit, OnDestroy {
       this.cashForm.get('datetime').valueChanges.subscribe((value) => {
         if (this.automationItem) {
           if (new Date(value) < (this.automationItem.datetime as FTimeStamp).toDate()) {
-            // show an alert
-            this.common.showToast('Warning: Changing Automation date may cause already created automations to repeat again', 0);
+            this.common.showToast(`Warning: Changing Automation date may cause already created 
+                ${this.type.charAt(0).toUpperCase() + this.type.slice(1)}
+                to repeat again according to the new date.`
+              , 0);
           }
         }
       })

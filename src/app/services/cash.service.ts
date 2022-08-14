@@ -338,8 +338,26 @@ export class CashService {
           }
         }
       });
-      console.log(allItemsToAdd);
-      console.log(...automationsToUpdate.entries());
+      if (allItemsToAdd.length > 0) {
+        this.firebase.addMultipleIncomeExpenseItems(allItemsToAdd)
+          .then(() => {
+            this.commonService.showToast('Successfully added automation items');
+            this.storageService.setLastUsedTime(this.commonService.toLocaleIsoDateString(new Date()));
+          }).catch(err => {
+            console.log(err);
+            this.commonService.showToast('Error while adding automation items');
+          });
+      }
+      if (automationsToUpdate.size > 0) {
+        this.firebase.updateMultipleAutomationsExecutedTime(automationsToUpdate)
+          .then(() => {
+            this.commonService.showToast('Successfully updated automation items');
+            this.storageService.setLastUsedTime(this.commonService.toLocaleIsoDateString(new Date()));
+          }).catch(err => {
+            console.log(err);
+            this.commonService.showToast('Error while updating automation items');
+          });
+      }
     }
   }
 
