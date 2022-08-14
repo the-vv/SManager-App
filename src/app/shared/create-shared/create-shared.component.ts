@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonInput, ModalController } from '@ionic/angular';
 import { startOfMonth } from 'date-fns';
-import { take } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 import { EAutomationFrequency, ECashType, FTimeStamp, IAccount, IAutomation, ICategory, IIncomeExpense } from 'src/app/models/common';
 import { CashService } from 'src/app/services/cash.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -14,7 +14,7 @@ import { FirebaseService } from 'src/app/services/firebase.service';
   templateUrl: './create-shared.component.html',
   styleUrls: ['./create-shared.component.scss'],
 })
-export class CreateSharedComponent implements OnInit, AfterViewInit {
+export class CreateSharedComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() public type: ECashType;
   @Input() public editItem: IIncomeExpense;
@@ -30,6 +30,7 @@ export class CreateSharedComponent implements OnInit, AfterViewInit {
   public currentTime: string = this.common.toLocaleIsoDateString(new Date());
   public allAccounts: IAccount[] = [];
   public allCategories: ICategory[] = [];
+  private subs: Subscription = new Subscription();
 
   constructor(
     public modalController: ModalController,
@@ -60,6 +61,10 @@ export class CreateSharedComponent implements OnInit, AfterViewInit {
         this.titleInput.setFocus();
       }, 400);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 
   ngOnInit() {
@@ -94,10 +99,20 @@ export class CreateSharedComponent implements OnInit, AfterViewInit {
     }
     if (this.automationItem) {
       this.cashForm.patchValue(this.automationItem);
-      const currentDateTime = (this.cashForm.controls.datetime.value as FTimeStamp).toDate();
+      const currentDateTime = this.common.toLocaleIsoDateString((this.cashForm.controls.datetime.value as FTimeStamp).toDate());
       this.cashForm.controls.datetime.setValue(currentDateTime);
       this.cashForm.controls.accountId.setValue(''); // for change triggering
     }
+    this.subs.add(
+      this.cashForm.get('datetime').valueChanges.subscribe((value) => {
+        if (this.automationItem) {
+          if (new Date(value) < (this.automationItem.datetime as FTimeStamp).toDate()) {
+            // show an alert
+            this.common.showToast('Warning: Changing Automation date may cause already created automations to repeat again', 0);
+          }
+        }
+      })
+    );
   }
 
   dismissModal() {
@@ -167,7 +182,7 @@ export class CreateSharedComponent implements OnInit, AfterViewInit {
         frequency: formValue.frequency,
         userId: this.config.currentUser.id,
         active: true,
-        lastExecuted: this.isAutomation ? new Date(formValue.datetime) : null
+        lastExecuted: this.isAutomation ? null : new Date(formValue.datetime)
       };
       this.firebase.createAutomation(body)
         .then(() => {

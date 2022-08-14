@@ -305,5 +305,18 @@ export class FirebaseService {
     });
   }
 
+  updateMultipleAutomationsExecutedTime(items: Map<string, Date>) {
+    return new Promise<void>((resolve, reject) => {
+      const updateArray: Promise<any>[] = [];
+      items.forEach((value, key) => {
+        updateArray.push(this.firestore.doc(`${ECollectionNames.automations}/${key}`).update({ lastExecuted: value }));
+      } );
+      Promise.all(updateArray).then(() => {
+        resolve();
+      }).catch(err => {
+        reject(err);
+      });
+    });
+  }
 
 }

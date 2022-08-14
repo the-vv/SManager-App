@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
-// import { RealtimeSubscription } from '@supabase/supabase-js';
-import { endOfMonth, startOfMonth, subMonths } from 'date-fns';
-import { ECashType, EFirebaseActionTypes, FTimeStamp, IAccount, IIncomeExpense, IIncomeExpenseDB, IMonthWise } from '../models/common';
+import {
+  addDays, addMonths, addWeeks, addYears, differenceInDays, differenceInMonths,
+  differenceInWeeks, differenceInYears, endOfMonth, startOfMonth, subMonths
+} from 'date-fns';
+import {
+  EAutomationFrequency, ECashType, EFirebaseActionTypes, FTimeStamp,
+  IAccount, IAutomation, IIncomeExpense, IIncomeExpenseDB, IMonthWise
+} from '../models/common';
 import { CommonService } from './common.service';
 import { ConfigService } from './config.service';
 import { StorageService } from './storage.service';
@@ -220,11 +225,9 @@ export class CashService {
 
   async chechAutomations() {
     const updatedUser = await firstValueFrom(this.firebase.getCurrentUser());
-    if (updatedUser) {
+    if (updatedUser?.settings?.lastUsedTime) {
       updatedUser.settings.lastUsedTime = (updatedUser.settings?.lastUsedTime as FTimeStamp).toDate();
       this.user.setUser(updatedUser);
-    } else {
-      return;
     }
     if (updatedUser?.settings?.addLastMonthBalance) {
       const lastUsedTime = new Date(updatedUser?.settings?.lastUsedTime as Date);
@@ -275,6 +278,69 @@ export class CashService {
       }
       this.user.updateLastUsedTime();
     }
+    const alluserAutomations = await firstValueFrom(this.firebase.getAllUserAutomations());
+    if (alluserAutomations?.length) {
+      const allItemsToAdd: IIncomeExpense[] = [];
+      const automationsToUpdate = new Map<string, Date>();
+      alluserAutomations.forEach(async (automation) => {
+        if (!automation.active) {
+          return;
+        }
+        if (automation.lastExecuted === null) {
+          const datetime = (automation.datetime as FTimeStamp).toDate();
+          if (datetime && new Date() > new Date(datetime)) {
+            allItemsToAdd.push({
+              amount: automation.amount,
+              categoryId: automation.categoryId ?? '',
+              datetime,
+              description: automation.description,
+              type: automation.type,
+              accountId: automation.accountId,
+              title: automation.title,
+              userId: this.config.currentUser.id,
+            });
+            automationsToUpdate.set(automation.id, datetime);
+            const countToExecute = this.checkIfExecuteAutomationByFrequency(automation.datetime as FTimeStamp, automation.frequency);
+            // here starting from 0 because we have to create item at datetime
+            for (let i = 1; i <= countToExecute; i++) {
+              const datetimeChange = this.getFrequencyRepeatCorrespondingDate(automation, i, automation.datetime as FTimeStamp);
+              allItemsToAdd.push({
+                amount: automation.amount,
+                categoryId: automation.categoryId ?? '',
+                datetime: datetimeChange,
+                description: automation.description,
+                type: automation.type,
+                accountId: automation.accountId,
+                title: automation.title,
+                userId: this.config.currentUser.id,
+              });
+              automationsToUpdate.set(automation.id, datetimeChange);
+            }
+          }
+        } else {
+          const countToExecute = this.checkIfExecuteAutomationByFrequency(automation.lastExecuted as FTimeStamp, automation.frequency);
+          if (countToExecute > 0) {
+            // here starting from 0 because we have to create item on next ocurance of datetime
+            for (let i = 1; i <= countToExecute; i++) {
+              const datetime = this.getFrequencyRepeatCorrespondingDate(automation, i);
+              allItemsToAdd.push({
+                amount: automation.amount,
+                categoryId: automation.categoryId ?? '',
+                datetime,
+                description: automation.description,
+                type: automation.type,
+                accountId: automation.accountId,
+                title: automation.title,
+                userId: this.config.currentUser.id,
+              });
+              automationsToUpdate.set(automation.id, datetime);
+            }
+          }
+        }
+      });
+      console.log(allItemsToAdd);
+      console.log(...automationsToUpdate.entries());
+    }
   }
 
   getLastMonthBalance(accountId: string) {
@@ -301,6 +367,46 @@ export class CashService {
           }
         });
     });
+  }
+
+  getFrequencyRepeatCorrespondingDate(automation: IAutomation, count: number, dateToCheck?: FTimeStamp) {
+    const itemDate = dateToCheck?.toDate() ?? (automation.lastExecuted as FTimeStamp).toDate();
+    switch (automation.frequency) {
+      case EAutomationFrequency.daily: {
+        return addDays(itemDate, count);
+      }
+      case EAutomationFrequency.weekly: {
+        return addWeeks(itemDate, count);
+      }
+      case EAutomationFrequency.monthly: {
+        return addMonths(itemDate, count);
+      }
+      case EAutomationFrequency.yearly: {
+        return addYears(itemDate, count);
+      }
+    }
+  }
+
+  checkIfExecuteAutomationByFrequency(timeToCheck: FTimeStamp, frequency: EAutomationFrequency): number {
+    const lastExecuted = timeToCheck.toDate();
+    switch (frequency) {
+      case EAutomationFrequency.daily: {
+        const diffrence = differenceInDays(new Date(), lastExecuted);
+        return diffrence;
+      }
+      case EAutomationFrequency.weekly: {
+        const diffrence = differenceInWeeks(new Date(), lastExecuted);
+        return diffrence;
+      }
+      case EAutomationFrequency.monthly: {
+        const diffrence = differenceInMonths(new Date(), lastExecuted);
+        return diffrence;
+      }
+      case EAutomationFrequency.yearly: {
+        const diffrence = differenceInYears(new Date(), lastExecuted);
+        return diffrence;
+      }
+    }
   }
 
 }
