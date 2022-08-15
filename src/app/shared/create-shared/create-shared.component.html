@@ -25,7 +25,7 @@
         <ion-label position="stacked">Category</ion-label>
         <ion-select interface="alert" formControlName="categoryId" placeholder="Select Category">
           <ion-select-option value="">Uncategorized</ion-select-option>
-          <ion-select-option [value]="cat.id" *ngFor="let cat of allCategories">{{cat.name}}</ion-select-option>
+          <ion-select-option #categoryItems [value]="cat.id" *ngFor="let cat of allCategories">{{cat.name}}</ion-select-option>
         </ion-select>
       </ion-item>
       <small class="text-danger" *ngIf="f.categoryId.errors?.required && f.categoryId.touched">Category is
@@ -79,7 +79,7 @@
         <ion-label position="stacked">Bank Account</ion-label>
         <ion-select interface="popover" formControlName="accountId" placeholder="Select Bank Account"
           [compareWith]="compareFn">
-          <ion-select-option [value]="acc.id" *ngFor="let acc of allAccounts">{{acc.name}}</ion-select-option>
+          <ion-select-option #accountItems [value]="acc.id" *ngFor="let acc of allAccounts">{{acc.name}}</ion-select-option>
         </ion-select>
       </ion-item>
       <small class="text-danger" *ngIf="f.accountId.errors?.required && f.accountId.touched">Bank Account is

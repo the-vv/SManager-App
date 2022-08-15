@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonInput, ModalController } from '@ionic/angular';
 import { startOfMonth } from 'date-fns';
@@ -14,12 +14,15 @@ import { FirebaseService } from 'src/app/services/firebase.service';
   templateUrl: './create-shared.component.html',
   styleUrls: ['./create-shared.component.scss'],
 })
-export class CreateSharedComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CreateSharedComponent implements OnInit, AfterViewInit, OnDestroy, AfterViewChecked {
 
   @Input() public type: ECashType;
   @Input() public editItem: IIncomeExpense;
   @Input() public isAutomation = false;
   @Input() public automationItem: IAutomation;
+
+  @ViewChildren('categoryItems') categoryLoop: QueryList<any>;
+  @ViewChildren('accountItems') accountLoop: QueryList<any>;
 
   @ViewChild('titleInput') titleInput: IonInput;
 
@@ -38,7 +41,8 @@ export class CreateSharedComponent implements OnInit, AfterViewInit, OnDestroy {
     public cashService: CashService,
     private config: ConfigService,
     private common: CommonService,
-    private firebase: FirebaseService
+    private firebase: FirebaseService,
+    private cdr: ChangeDetectorRef
   ) {
     this.cashForm = this.formBuilder.group({
       title: ['', Validators.required],
@@ -55,8 +59,11 @@ export class CreateSharedComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.cashForm.controls;
   }
 
+  ngAfterViewChecked(): void {
+    // this.cdr.detectChanges();
+  }
   ngAfterViewInit(): void {
-    if (!this.editItem) {
+    if (!this.editItem && !this.automationItem) {
       setTimeout(() => {
         this.titleInput.setFocus();
       }, 400);
@@ -76,32 +83,46 @@ export class CreateSharedComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.type = this.type ?? this.editItem.type;
     this.isExpense = this.type === ECashType.expense;
-    if (this.editItem) {
-      this.cashForm.patchValue(this.editItem);
-      this.cashForm.controls.datetime.setValue(this.common.toLocaleIsoDateString(this.editItem.datetime as Date));
-    }
     this.firebase.getUserAccounts().pipe(take(1)).subscribe((accounts) => {
       this.allAccounts = accounts;
-      if (this.automationItem) {
-        this.cashForm.controls.accountId.setValue(this.automationItem.accountId);
-      } else {
-        this.cashForm.controls.accountId.setValue(this.editItem?.accountId ?? this.config.currentAccountId);
-      }
+      this.accountLoop.changes.pipe(take(1)).subscribe(() => {
+        if (this.automationItem) {
+          this.cashForm.controls.accountId.setValue(this.automationItem.accountId);
+        } else {
+          this.cashForm.controls.accountId.setValue(this.editItem?.accountId ?? this.config.currentAccountId);
+        }
+      });
     });
     this.firebase.getAllUserCategories().pipe(take(1)).subscribe((categories) => {
       this.allCategories = categories?.sort((a, b) => a.name.localeCompare(b.name));
-      if (this.editItem && !this.allCategories.find(c => c.id === this.editItem.categoryId)) {
-        this.cashForm.controls.categoryId.setValue('');
-      }
+      this.categoryLoop.changes.pipe(take(1)).subscribe(() => {
+        if (this.editItem && !this.allCategories.find(c => c.id === this.editItem.categoryId)) {
+          this.cashForm.controls.categoryId.setValue('');
+        } else if (this.editItem) {
+          this.cashForm.controls.categoryId.setValue(this.editItem?.categoryId ?? '');
+        }
+        if (this.automationItem && !this.allCategories.find(c => c.id === this.automationItem.categoryId)) {
+          this.cashForm.controls.categoryId.setValue('');
+        } else if (this.automationItem) {
+          this.cashForm.controls.categoryId.setValue(this.automationItem.categoryId);
+        }
+      });
     });
     if (this.isAutomation) {
       this.cashForm.controls.automation.setValue(true);
+    }
+    if (this.editItem) {
+      this.cashForm.patchValue(this.editItem);
+      this.cashForm.controls.datetime.setValue(this.common.toLocaleIsoDateString(this.editItem.datetime as Date));
+      this.cashForm.controls.accountId.setValue(''); // for change triggering
+      this.cashForm.controls.categoryId.setValue(''); // for change triggering
     }
     if (this.automationItem) {
       this.cashForm.patchValue(this.automationItem);
       const currentDateTime = this.common.toLocaleIsoDateString((this.cashForm.controls.datetime.value as FTimeStamp).toDate());
       this.cashForm.controls.datetime.setValue(currentDateTime);
       this.cashForm.controls.accountId.setValue(''); // for change triggering
+      this.cashForm.controls.categoryId.setValue(''); // for change triggering
     }
     this.subs.add(
       this.cashForm.get('datetime').valueChanges.subscribe((value) => {
@@ -208,6 +229,14 @@ export class CreateSharedComponent implements OnInit, AfterViewInit, OnDestroy {
         categoryId: formValue.categoryId,
         frequency: formValue.frequency,
       };
+      if (new Date(formValue.datetime) !== (this.automationItem.datetime as FTimeStamp).toDate()) {
+        if (new Date(formValue.datetime) < (this.automationItem.datetime as FTimeStamp).toDate()) {
+          updateBody.lastExecuted = new Date(formValue.datetime);
+        }
+        if (new Date(formValue.datetime) > (this.automationItem.datetime as FTimeStamp).toDate()) {
+          updateBody.lastExecuted = null;
+        }
+      }
       this.firebase.updateAutomation(updateBody, this.automationItem.id)
         .then(() => {
           this.common.showToast(`Automation Updated Successfully`);
