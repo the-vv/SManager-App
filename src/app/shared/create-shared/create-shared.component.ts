@@ -60,7 +60,7 @@ export class CreateSharedComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   ngAfterViewChecked(): void {
-    // this.cdr.detectChanges();
+    this.cdr.detectChanges();
   }
   ngAfterViewInit(): void {
     if (!this.editItem && !this.automationItem) {
@@ -188,10 +188,6 @@ export class CreateSharedComponent implements OnInit, AfterViewInit, OnDestroy, 
     }
   }
 
-  compareFn(e1: IAccount, e2: IAccount): boolean {
-    return e1 && e2 ? e1.id === e2.id : e1 === e2;
-  }
-
   createAutomation(formValue: any) {
     if (!this.automationItem) {
       const body: IAutomation = {
@@ -243,9 +239,8 @@ export class CreateSharedComponent implements OnInit, AfterViewInit, OnDestroy, 
         }).catch(err => {
           this.common.showToast(`Error in updating automation`);
           console.log(err);
-        }).finally(() => {
-          this.dismissModal();
         });
+      this.dismissModal();
     }
   }
 
