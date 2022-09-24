@@ -149,7 +149,7 @@ export class FirebaseService {
     return Promise.all(updateArray);
   }
 
-  createCategpry(category: ICategory) {
+  createCategory(category: ICategory) {
     return new Promise((resolve, reject) => {
       this.firestore.collection(ECollectionNames.categories).add(category)
         .then(dbRes => {

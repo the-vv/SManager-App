@@ -1,4 +1,7 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import {
+  AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy,
+  OnInit, QueryList, ViewChild, ViewChildren
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonInput, ModalController } from '@ionic/angular';
 import { startOfMonth } from 'date-fns';

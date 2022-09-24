@@ -404,7 +404,7 @@ export class AccountPage implements OnInit {
   }
 
   async onDeleteAutomation(automation: IAutomation) {
-    if (!(await this.common.showDeleteConfrmation(automation.title, 'Automation'))) {
+    if (!(await this.common.showDeleteConfirmation(automation.title, 'Automation'))) {
       return;
     }
     this.common.showSpinner('Deleting Automation...');

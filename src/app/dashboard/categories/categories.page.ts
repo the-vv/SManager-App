@@ -105,7 +105,7 @@ export class CategoriesPage implements OnInit {
       if (catName && value?.role === 'create') {
         this.config.cloudSyncing.next(true);
         const oldCategoriesLength = this.allCategories.length;
-        this.firebase.createCategpry({
+        this.firebase.createCategory({
           name: catName,
           userId: this.config.currentUser.id,
           color: this.getRandomColor()
@@ -138,7 +138,7 @@ export class CategoriesPage implements OnInit {
   }
 
   async onDeleteCategory(category: ICategory) {
-    if (await this.common.showDeleteConfrmation(category.name)) {
+    if (await this.common.showDeleteConfirmation(category.name)) {
       this.common.showSpinner();
       this.firebase.deleteCategory(category.id)
         .then(() => {

@@ -135,7 +135,7 @@ export class CashService {
             this.changeSubscription = this.firebase.onIncomeExpenseChange(this.onChangeItem.bind(this));
             this.commonService.hideSpinner();
             if (checkAutomation) {
-              this.chechAutomations();
+              this.checkAutomations();
             }
           },
           error: err => {
@@ -223,7 +223,7 @@ export class CashService {
     }
   }
 
-  async chechAutomations() {
+  async checkAutomations() {
     const updatedUser = await firstValueFrom(this.firebase.getCurrentUser());
     if (updatedUser?.settings?.lastUsedTime) {
       updatedUser.settings.lastUsedTime = (updatedUser.settings?.lastUsedTime as FTimeStamp).toDate();
@@ -278,11 +278,11 @@ export class CashService {
       }
       this.user.updateLastUsedTime();
     }
-    const alluserAutomations = await firstValueFrom(this.firebase.getAllUserAutomations());
-    if (alluserAutomations?.length) {
+    const allUserAutomations = await firstValueFrom(this.firebase.getAllUserAutomations());
+    if (allUserAutomations?.length) {
       const allItemsToAdd: IIncomeExpense[] = [];
       const automationsToUpdate = new Map<string, Date>();
-      alluserAutomations.forEach(async (automation) => {
+      allUserAutomations.forEach(async (automation) => {
         if (!automation.active) {
           return;
         }
@@ -320,7 +320,7 @@ export class CashService {
         } else {
           const countToExecute = this.checkIfExecuteAutomationByFrequency(automation.lastExecuted as FTimeStamp, automation.frequency);
           if (countToExecute > 0) {
-            // here starting from 0 because we have to create item on next ocurance of datetime
+            // here starting from 1 because we have to create item on next ocurance of datetime
             for (let i = 1; i <= countToExecute; i++) {
               const datetime = this.getFrequencyRepeatCorrespondingDate(automation, i);
               allItemsToAdd.push({
@@ -409,20 +409,20 @@ export class CashService {
     const lastExecuted = timeToCheck.toDate();
     switch (frequency) {
       case EAutomationFrequency.daily: {
-        const diffrence = differenceInDays(new Date(), lastExecuted);
-        return diffrence;
+        const difference = differenceInDays(new Date(), lastExecuted);
+        return difference;
       }
       case EAutomationFrequency.weekly: {
-        const diffrence = differenceInWeeks(new Date(), lastExecuted);
-        return diffrence;
+        const difference = differenceInWeeks(new Date(), lastExecuted);
+        return difference;
       }
       case EAutomationFrequency.monthly: {
-        const diffrence = differenceInMonths(new Date(), lastExecuted);
-        return diffrence;
+        const difference = differenceInMonths(new Date(), lastExecuted);
+        return difference;
       }
       case EAutomationFrequency.yearly: {
-        const diffrence = differenceInYears(new Date(), lastExecuted);
-        return diffrence;
+        const difference = differenceInYears(new Date(), lastExecuted);
+        return difference;
       }
     }
   }

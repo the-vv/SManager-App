@@ -32,7 +32,7 @@ export class IncomeExpenseItemComponent implements OnInit {
   }
 
   async deleteItem() {
-    if (await this.common.showDeleteConfrmation(this.item.title)) {
+    if (await this.common.showDeleteConfirmation(this.item.title)) {
       this.firebase.deleteIncomeExpense(this.item.id).then((r) => {
         this.common.showToast(`${this.item.type.charAt(0).toUpperCase() + this.item.type.slice(1)} Deleted successfully`);
       })

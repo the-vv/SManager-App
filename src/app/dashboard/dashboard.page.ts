@@ -36,7 +36,7 @@ export class DashboardPage implements OnInit {
       if (!isActive) {
         this.storage.setLastUsedTime(this.common.toLocaleIsoDateString(new Date()));
       } else {
-        this.cashService.chechAutomations();
+        this.cashService.checkAutomations();
       }
     });
   }

@@ -38,10 +38,9 @@ export class CommonService {
     }
   }
 
-  public showDeleteConfrmation(item: string, itemType?: string) {
+  public showDeleteConfirmation(item: string, itemType?: string) {
     return new Promise<boolean>(async (resolve) => {
       const alert = await this.alertCtrl.create({
-        cssClass: 'my-custom-class',
         header: 'Confirm!',
         message: `Are you sure want to delete${itemType ? ' ' + itemType : ''} '${item}'?`,
         buttons: [
@@ -61,7 +60,7 @@ export class CommonService {
         ]
       });
       await alert.present();
-      // console.log('showDeleteConfrmation');
+      // console.log('showDeleteConfirmation');
     });
   }
 

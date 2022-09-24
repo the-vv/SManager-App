@@ -1,4 +1,4 @@
-<ion-icon *ngIf="!popMode" (click)="presentPopover($event)" name="calendar-outline" slot="icon-only" color="primary" (click)="null">
+<ion-icon *ngIf="!popMode" (click)="presentPopover($event)" name="calendar-outline" slot="icon-only" color="primary">
 </ion-icon>
 <div *ngIf="popMode">
   <ion-datetime [max]="maxDate" prefer-wheel="true" show-default-time-label="true" show-default-buttons="true"

@@ -63,20 +63,20 @@ export class OverviewPage implements OnInit {
       this.firebase.getAllUserCategories().pipe(take(1)).subscribe({
         next: (categories) => {
           this.allCategories = categories;
-          const categoryGroupedExpeses = [];
+          const categoryGroupedExpenses = [];
           for (const key in groupedExpenses) {
             if (groupedExpenses.hasOwnProperty(key)) {
               const catItem = this.allCategories.find(el => el.id === key);
               if (catItem) {
-                categoryGroupedExpeses.push({
+                categoryGroupedExpenses.push({
                   name: catItem.name,
                   value: groupedExpenses[key],
                   color: catItem.color
                 });
-              } else if (categoryGroupedExpeses.find(el => el.name === 'Uncategorized')) {
-                categoryGroupedExpeses.find(el => el.name === 'Uncategorized').value += groupedExpenses[key];
+              } else if (categoryGroupedExpenses.find(el => el.name === 'Uncategorized')) {
+                categoryGroupedExpenses.find(el => el.name === 'Uncategorized').value += groupedExpenses[key];
               } else {
-                categoryGroupedExpeses.push({
+                categoryGroupedExpenses.push({
                   name: 'Uncategorized',
                   value: groupedExpenses[key],
                   color: this.getRandomColor()
@@ -84,25 +84,25 @@ export class OverviewPage implements OnInit {
               }
             }
           }
-          const colorGenerator = new ColorGenerator(categoryGroupedExpeses.length);
+          const colorGenerator = new ColorGenerator(categoryGroupedExpenses.length);
           if (this.chartRenders.length > 0) {
             this.chartRenders.forEach(el => {
               el.destroy();
             });
           }
-          if (categoryGroupedExpeses.length > 0) {
+          if (categoryGroupedExpenses.length > 0) {
             this.showPieChart = true;
             this.chartRenders.push(
               new Chart(this.pieCanvas.nativeElement, {
                 plugins: [ChartDataLabels],
                 type: 'pie',
                 data: {
-                  labels: categoryGroupedExpeses.map(el => `${el.name}`),
+                  labels: categoryGroupedExpenses.map(el => `${el.name}`),
                   datasets: [
                     {
                       label: 'Overview',
-                      data: categoryGroupedExpeses.map(el => el.value),
-                      backgroundColor: categoryGroupedExpeses.map(el => `${el.color}`),
+                      data: categoryGroupedExpenses.map(el => el.value),
+                      backgroundColor: categoryGroupedExpenses.map(el => `${el.color}`),
                       hoverBackgroundColor: colorGenerator.generateRGB(),
                     },
                   ]

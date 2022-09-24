@@ -5,7 +5,6 @@ import { CommonService } from '../services/common.service';
 import { IonRouterOutlet, Platform } from '@ionic/angular';
 import { App } from '@capacitor/app';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
-import { CashService } from '../services/cash.service';
 import { FirebaseService } from '../services/firebase.service';
 import { IUser } from '../models/user';
 import { environment } from 'src/environments/environment';
