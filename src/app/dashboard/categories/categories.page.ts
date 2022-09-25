@@ -55,16 +55,16 @@ export class CategoriesPage implements OnInit {
 
   onColorChange(color: string, category: ICategory) {
     category.color = color;
-    this.common.showSpinner();
+    this.config.cloudSyncing.next(true);
     this.firebase.updateCategory(category, category.id)
       .then(() => {
-        this.common.showToast('Category color updated successfully');
+        // this.common.showToast('Category color updated successfully');
       }).catch(err => {
         console.log(err);
         this.common.showToast('Error updating category color');
       })
       .finally(() => {
-        this.common.hideSpinner();
+        this.config.cloudSyncing.next(false);
       });
   }
 

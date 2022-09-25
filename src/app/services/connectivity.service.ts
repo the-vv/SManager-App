@@ -8,7 +8,7 @@ import { Network } from '@capacitor/network';
 })
 export class ConnectivityService {
 
-  public appIsOnline: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public appIsOnline: BehaviorSubject<boolean> = new BehaviorSubject(true);
   public isOnline = false;
 
   constructor() {

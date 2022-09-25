@@ -7,7 +7,7 @@ import { ConfigService } from 'src/app/services/config.service';
   templateUrl: './sidemenu.component.html',
   styleUrls: ['./sidemenu.component.scss'],
 })
-export class SidemenuComponent implements OnInit {
+export class SideMenuComponent implements OnInit {
 
   constructor(
     public user: UserService,

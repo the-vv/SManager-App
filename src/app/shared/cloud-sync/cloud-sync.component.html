@@ -4,7 +4,7 @@
 <ion-icon name="cloud-offline-outline" slot="icon-only" color="danger" (click)="presentPopover($event)"
   *ngIf="offline && !popMode">
 </ion-icon>
-<ion-spinner *ngIf="!offline && !popMode && !syncDone" color="danger" (click)="presentPopover($event)"></ion-spinner>
+<ion-spinner name="crescent" *ngIf="!offline && !popMode && !syncDone" color="danger" (click)="presentPopover($event)"></ion-spinner>
 <ion-content *ngIf="!offline && popMode && !syncDone">
   <ion-card>
     <ion-card-header>

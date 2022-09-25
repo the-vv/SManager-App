@@ -16,24 +16,38 @@
     <ion-card-header class="pb-0 mb-0">
       <ion-card-title>This Month Overview</ion-card-title>
       <ion-card-subtitle>
-        <span class="font-bolder uppercase">{{currentAccount?.name}}</span> • {{cashService.currentMonthData.month}} {{cashService.currentMonthData.year}}
+        <span class="font-bolder uppercase">{{currentAccount?.name}}</span> • {{cashService.currentMonthData.month}}
+        {{cashService.currentMonthData.year}}
       </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <div class="text-center my-2">
         <div class="grid grid-cols-2 gap-2">
           <ion-text
-            class="text-2xl text-white font-bold font-sans bg-opacity-40 bg-green-500 rounded-lg p-1 flex ion-align-items-center justify-center">
-            <ion-icon name="wallet-outline" class="mr-1"></ion-icon> ₹{{cashService.currentMonthData.totalIncome}}
+            class="text-2xl text-white font-bold font-sans bg-opacity-40 bg-green-500 rounded-lg flex ion-align-items-center justify-center flex-col">
+            <ion-label class="smalll text-sm text-gray-400 flex ion-align-items-center">
+              <ion-icon name="wallet-outline" class="mr-0.5"></ion-icon> Income
+            </ion-label>
+            <ion-label class="block">₹{{cashService.currentMonthData.totalIncome}}</ion-label>
           </ion-text>
           <ion-text
-            class="text-2xl text-white font-bold font-sans bg-opacity-40 bg-red-500 rounded-lg p-1 flex ion-align-items-center justify-center">
-            <ion-icon name="cash-outline" class="mr-1"></ion-icon> ₹{{cashService.currentMonthData.totalExpense}}
+            class="text-2xl text-white font-bold font-sans bg-opacity-40 bg-red-500 rounded-lg flex ion-align-items-center justify-center flex-col">
+            <ion-label class="smalll text-sm text-gray-400 flex ion-align-items-center">
+              <ion-icon name="cash-outline" class="mr-0.5"></ion-icon> Expense
+            </ion-label>
+            <ion-label class="block">₹{{cashService.currentMonthData.totalExpense}}</ion-label>
           </ion-text>
         </div>
         <ion-text
+          class="text-2xl text-white font-bold mt-1 font-sans bg-opacity-40 bg-blue-600 rounded-lg flex ion-align-items-center justify-center flex-col">
+          <ion-label class="smalll text-sm text-gray-400 flex ion-align-items-center">
+            Current Balance
+          </ion-label>
+          <ion-label class="block">₹{{cashService.currentMonthData.totalIncome - cashService.currentMonthData.totalExpense}}</ion-label>
+        </ion-text>
+        <!-- <ion-text
           class="text-2xl font-bold font-sans mt-1 bg-blue-600 bg-opacity-40 text-white rounded-lg p-1 flex ion-align-items-center justify-center">
-          Balance: ₹{{cashService.currentMonthData.totalIncome - cashService.currentMonthData.totalExpense}}</ion-text>
+          Balance: ₹{{cashService.currentMonthData.totalIncome - cashService.currentMonthData.totalExpense}}</ion-text> -->
       </div>
     </ion-card-content>
   </ion-card>
@@ -41,14 +55,14 @@
     <ion-card-header>
       <ion-card-title>
         <p class="p-0 m-0">
-          This Month Expenses Overview 
-        </p>       
+          This Month Expenses Overview
+        </p>
         <small class="text-gray-500 text-xs -mt-2 align-top">Tap on a label to hide it</small>
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <div class="text-center mt-8 text-lg" *ngIf="!showPieChart">Create an Expense to view</div>
-        <canvas #pieCanvas slot="start"></canvas>
+      <canvas #pieCanvas slot="start"></canvas>
     </ion-card-content>
   </ion-card>
   <ion-card [ngClass]="'rounded-3xl'" class="mb-20">
@@ -56,7 +70,7 @@
       <ion-card-title>This Month Daily Overview</ion-card-title>
     </ion-card-header>
     <ion-card-content [classList]="'m-0'">
-        <canvas #lineCanvas slot="start"></canvas>
+      <canvas #lineCanvas slot="start"></canvas>
     </ion-card-content>
   </ion-card>
 </ion-content>
