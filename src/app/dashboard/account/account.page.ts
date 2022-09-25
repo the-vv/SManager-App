@@ -31,9 +31,9 @@ export class AccountPage implements OnInit {
     rememberLastPage: new FormControl(false),
   });
   public allPages = Object.values(EPageTypes);
-  public savingSettings = false;
   public allAutomations: IAutomation[] = [];
   private subs: Subscription = new Subscription();
+  private subs1: Subscription = new Subscription();
   private allCategories: ICategory[] = [];
 
   constructor(
@@ -73,10 +73,15 @@ export class AccountPage implements OnInit {
     this.currentAccount = this.config.currentAccountId;
     this.storage.setLastPage(this.router.url.slice(this.router.url.lastIndexOf('/') + 1));
     this.getUserAutomations();
-    this.firebase.getAllUserCategories().pipe(take(1))
-      .subscribe((categories) => {
-        this.allCategories = categories;
-      });
+    this.firebase.getAllUserCategories().pipe(take(1)).subscribe((categories) => {
+      this.allCategories = categories;
+    });
+    if (this.subs1) {
+      this.subs1.unsubscribe();
+    }
+    this.settingsForm.valueChanges.subscribe((val) => {
+      this.onSubmitSettings();
+    });
   }
 
   ionViewDidLeave() {
@@ -287,11 +292,11 @@ export class AccountPage implements OnInit {
         this.firebase.updateAccount(account)
           .then(() => {
             this.config.cloudSyncing.next(false);
-            this.common.showToast('Accocunt updated successfully');
+            this.common.showToast('Account updated successfully');
           }).catch(err => {
             this.config.cloudSyncing.next(false);
             console.log(err);
-            this.common.showToast('Error updating accocunt');
+            this.common.showToast('Error updating account');
           });
       }
     });
@@ -339,20 +344,19 @@ export class AccountPage implements OnInit {
   }
 
   onSubmitSettings() {
-    this.savingSettings = true;
+    this.config.cloudSyncing.next(true);
     this.firebase.updateUserSettings(this.settingsForm.getRawValue())
       .then(() => {
-        this.savingSettings = false;
         const newUser: IUser = {
           ...this.config.currentUser,
           settings: this.settingsForm.getRawValue()
         };
         this.user.setUser(newUser);
-        this.common.showToast('Settings updated successfully');
       }).catch(err => {
-        this.savingSettings = false;
         console.log(err);
         this.common.showToast('Error updating settings');
+      }).finally(() => {
+        this.config.cloudSyncing.next(false);
       });
   }
 

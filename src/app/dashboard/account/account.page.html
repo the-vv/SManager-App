@@ -39,31 +39,27 @@
       <ion-label>
         App Settings
       </ion-label>
-      <ion-button color="primary" class="text-sm" shape="round" size="small" fill="solid" (click)="onSubmitSettings()">
-        <span *ngIf="!savingSettings">Save</span>
-        <ion-spinner *ngIf="savingSettings" name="dots"></ion-spinner>
-      </ion-button>
     </ion-card-header>
     <ion-card-content>
       <form [formGroup]="settingsForm">
         <ion-list>
           <ion-item>
-            <ion-label>Carry forward last month balance</ion-label>
-            <ion-toggle formControlName="addLastMonthBalance"></ion-toggle>
+            <ion-label  (click)="toggle1.checked = !toggle1.checked">Carry forward last month balance</ion-label>
+            <ion-toggle formControlName="addLastMonthBalance" #toggle1></ion-toggle>
           </ion-item>
           <ion-item>
-            <ion-label class="">
+            <ion-label class="" (click)="toggle2.checked = !toggle2.checked">
               <span class="block">Remember last Page when exit</span>
               <ion-note class="block absolute bottom-0.5 text-xs" *ngIf="settingsForm.get('rememberLastPage').value">
                 Default page will be ignored
               </ion-note>
             </ion-label>
-            <ion-toggle formControlName="rememberLastPage"></ion-toggle>
+            <ion-toggle formControlName="rememberLastPage" #toggle2></ion-toggle>
           </ion-item>
           <ion-item>
             <ion-label>Default Page</ion-label>
             <ion-select [disabled]="settingsForm.get('rememberLastPage').value" placeholder="Select One"
-              interface="action-sheet" formControlName="defaultPage">
+              interface="popover" formControlName="defaultPage">
               <ion-select-option [value]="page" *ngFor="let page of allPages">{{page | titlecase}}</ion-select-option>
             </ion-select>
           </ion-item>
@@ -152,7 +148,7 @@
     </ion-card-header>
     <ion-card-content>
       <ion-button [hidden]="true" color="warning" expand="block" (click)="confirmClear()">Clear History</ion-button>
-      <ion-button color="danger" expand="block" class="ion-margin-top" (click)="onLogout()">Logout</ion-button>
+      <ion-button color="danger" expand="block" class="ion-margin-top" fill="outline" (click)="onLogout()">Logout</ion-button>
     </ion-card-content>
   </ion-card>
 </ion-content>
