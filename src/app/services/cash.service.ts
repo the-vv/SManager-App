@@ -14,6 +14,7 @@ import { FirebaseService } from './firebase.service';
 import { BehaviorSubject, firstValueFrom, Subscription, take } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserService } from './user.service';
+import { ConnectivityService } from './connectivity.service';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,8 @@ export class CashService {
     private config: ConfigService,
     private commonService: CommonService,
     private router: Router,
-    private user: UserService
+    private user: UserService,
+    private connectivity: ConnectivityService
   ) {
     this.config.authEvents.subscribe(userRes => {
       if (!userRes) {
@@ -83,6 +85,10 @@ export class CashService {
   }
 
   setup(timestamp: Date, checkAutomation: boolean = false) {
+    if (!this.connectivity.isOnline) {
+      this.commonService.showToast('You are offline. Please connect to internet');
+      return;
+    }
     this.commonService.showSpinner();
     this.clearAll();
     this.firebase.getUserAccounts().pipe(take(1)).subscribe(async (accounts) => {

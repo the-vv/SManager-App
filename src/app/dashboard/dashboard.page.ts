@@ -43,7 +43,7 @@ export class DashboardPage implements OnInit {
 
   ionViewDidEnter() {
     SplashScreen.hide();
-    console.log(App.getInfo());
+    // console.log(App.getInfo());
   }
 
   ngOnInit() {
